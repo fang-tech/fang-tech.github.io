@@ -60,9 +60,21 @@
     <link href="/2023/11/26/My-Blog/"/>
     <url>/2023/11/26/My-Blog/</url>
     
-    <content type="html"><![CDATA[<p>待更新</p>]]></content>
+    <content type="html"><![CDATA[<p>How to update my blog(simplified version):</p><ol><li>Use Git Bash at My Blog</li><li>hexo s -p 5000 (Override the default port (4000), change it to 5000)</li><li>enter the web and add &#x2F;admin to revise My Blog</li><li>hexo g : generate the up-dated imformation and put them into public</li><li>hexo d : put publish into github<br>Andthen your blog will be revised and you can visit it at swjtu.beauty.</li></ol>]]></content>
     
     
+    <categories>
+      
+      <category>how to use</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>how to use hexo</tag>
+      
+    </tags>
     
   </entry>
   
