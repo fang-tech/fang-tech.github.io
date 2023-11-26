@@ -4,19 +4,6 @@
   
   
   <entry>
-    <title>test</title>
-    <link href="/2023/11/26/test/"/>
-    <url>/2023/11/26/test/</url>
-    
-    <content type="html"><![CDATA[<p><strong>just for test!!!</strong></p>]]></content>
-    
-    
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Plan</title>
     <link href="/2023/11/26/Plan/"/>
     <url>/2023/11/26/Plan/</url>
@@ -96,7 +83,7 @@
   
   
   <entry>
-    <title>数据结构与算法</title>
+    <title>Introduction to Algorithms</title>
     <link href="/2023/11/26/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
     <url>/2023/11/26/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/</url>
     
@@ -157,7 +144,7 @@
     <link href="/2023/11/26/C/"/>
     <url>/2023/11/26/C/</url>
     
-    <content type="html"><![CDATA[<p>待更新</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="2023-11-6"><a href="#2023-11-6" class="headerlink" title="2023.11.6"></a>2023.11.6</h1><hr><h2 id="C-Primer-Plus-Chapter-4"><a href="#C-Primer-Plus-Chapter-4" class="headerlink" title="C++ Primer Plus Chapter 4:"></a>C++ Primer Plus Chapter 4:</h2><h3 id="1-line-oriented-input"><a href="#1-line-oriented-input" class="headerlink" title="(1) line-oriented input:"></a>(1) line-oriented input:</h3><p> “cin” input stream is used for word-oriented input where it reads data encounters whitespace characters.<br>So we need a function for word-oriented input :<br><strong>1. cin.getline()</strong><br>cin.getline() reads a whole line ,it use the newline character entered by pressing the Enter key to determine the end of input.</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C++">cin.<span class="hljs-built_in">getline</span>(name,n_length) <br></code></pre></td></tr></table></figure><p>EG:  </p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C++">cin.<span class="hljs-built_in">getline</span>(array_name,array_length);<br></code></pre></td></tr></table></figure><p>Notes:<br>1.The number of characters stored in “name” is one less than “n_length”<br>2.The </p><p>**2. cin.gets</p>]]></content>
     
     
     
