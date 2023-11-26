@@ -4,6 +4,40 @@
   
   
   <entry>
+    <title>Plan</title>
+    <link href="/2023/11/26/Plan/"/>
+    <url>/2023/11/26/Plan/</url>
+    
+    <content type="html"><![CDATA[<h2 id="2023-11-26"><a href="#2023-11-26" class="headerlink" title="2023 .11.26"></a>2023 .11.26</h2><h4 id="course-study"><a href="#course-study" class="headerlink" title="course study"></a>course study</h4><ol><li>English-language periodicals studying</li><li>Linear algebra studying and homework</li><li>Calculus studying and homework</li></ol><h4 id="achievement-criteria"><a href="#achievement-criteria" class="headerlink" title="achievement criteria"></a>achievement criteria</h4><h6 id="1-English-language-periodicals-studying"><a href="#1-English-language-periodicals-studying" class="headerlink" title="(1) English-language periodicals studying"></a>(1) English-language periodicals studying</h6><p>1.highlight and record unfamiliar words and sentence<br>2.outline the structure of the article<br>3.able to listen to it once without seeing the text</p><h6 id="2-Linear-algebra-studying-and-homework"><a href="#2-Linear-algebra-studying-and-homework" class="headerlink" title="(2) Linear algebra studying and homework"></a>(2) Linear algebra studying and homework</h6><p>1.finish homework<br>2.grasp the concept<br>3.grasp the essence of the question type<br>4.read the PPT of teacher</p><h6 id="3-Calculus-studying-and-homework"><a href="#3-Calculus-studying-and-homework" class="headerlink" title="(3) Calculus studying and homework"></a>(3) Calculus studying and homework</h6><p>2.grasp the concept<br>3.grasp the essence of the question type<br>4.read the PPT of teacher  </p><h4 id="professional-study"><a href="#professional-study" class="headerlink" title="professional study"></a>professional study</h4><ol><li>Learn C++</li><li>study data structures and algorithms</li><li>using C++ to implement algorithms</li><li>study how to use hexo</li></ol><h4 id="achievement-criteria-1"><a href="#achievement-criteria-1" class="headerlink" title="achievement criteria"></a>achievement criteria</h4><h6 id="1-Learn-C"><a href="#1-Learn-C" class="headerlink" title="(1) Learn C++"></a>(1) Learn C++</h6><p>1.read C++ Primer Plus frome p80 to p165<br>2.take notes<br>3.do homework from C++ Primer Plus</p><h6 id="2-Study-data-structures-and-algorithms"><a href="#2-Study-data-structures-and-algorithms" class="headerlink" title="(2) Study data structures and algorithms"></a>(2) Study data structures and algorithms</h6><p>1.review linklist and learn linear list<br>2.take notes  </p><h6 id="3-Using-C-to-implement-algorithms"><a href="#3-Using-C-to-implement-algorithms" class="headerlink" title="(3) Using C++ to implement algorithms"></a>(3) Using C++ to implement algorithms</h6><p>1.implement linked list operations<br>2.implement linear list operations  </p><h6 id="4-Study-how-to-use-hexo"><a href="#4-Study-how-to-use-hexo" class="headerlink" title="(4) Study how to use hexo"></a>(4) Study how to use hexo</h6><p>1.learn how to make a radio button</p><h4 id="literary-study"><a href="#literary-study" class="headerlink" title="literary study"></a>literary study</h4><ol><li>translate kill a Mockingbird</li><li>calligraphy practice</li></ol><h4 id="achievement-criteria-2"><a href="#achievement-criteria-2" class="headerlink" title="achievement criteria"></a>achievement criteria</h4><h6 id="1-Translate-kill-a-Mockingbird"><a href="#1-Translate-kill-a-Mockingbird" class="headerlink" title="(1) Translate kill a Mockingbird"></a>(1) Translate kill a Mockingbird</h6><p>1.translate 6 pages<br>2.take notes </p><h6 id="2-Calligraphy-practice"><a href="#2-Calligraphy-practice" class="headerlink" title="(2) Calligraphy practice"></a>(2) Calligraphy practice</h6><ol><li>practice 30 min</li></ol>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>plan</tag>
+      
+      <tag>journal</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>English</title>
+    <link href="/2023/11/26/English/"/>
+    <url>/2023/11/26/English/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Hello World</title>
     <link href="/2023/11/26/hello-world/"/>
     <url>/2023/11/26/hello-world/</url>
@@ -56,19 +90,6 @@
   
   
   <entry>
-    <title>Git Bash</title>
-    <link href="/2023/11/26/Git-Bash/"/>
-    <url>/2023/11/26/Git-Bash/</url>
-    
-    <content type="html"><![CDATA[<h2 id="How-to-use-Git-bash-to-revise-Github"><a href="#How-to-use-Git-bash-to-revise-Github" class="headerlink" title="How to use Git bash to revise Github:"></a>How to use Git bash to revise Github:</h2><h4 id="1-”Git-bash-here”-at-a-blank-file"><a href="#1-”Git-bash-here”-at-a-blank-file" class="headerlink" title="1.”Git bash here” at a  blank file"></a>1.”Git bash here” at a  blank file</h4><h4 id="2-If-you-want-to-clean-your-github-repositories"><a href="#2-If-you-want-to-clean-your-github-repositories" class="headerlink" title="2.If you want to clean your github repositories"></a>2.If you want to clean your github repositories</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git <span class="hljs-built_in">clone</span> URL <span class="hljs-comment">#URL :find it in the code</span><br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git add .<br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git commit -m <span class="hljs-string">&quot;name&quot;</span> <span class="hljs-comment">#the name is not important,just for its need</span><br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git push <br></code></pre></td></tr></table></figure><h4 id="3-If-you-want-to-revise-your-blog"><a href="#3-If-you-want-to-revise-your-blog" class="headerlink" title="3.If you want to revise your blog"></a>3.If you want to revise your blog</h4><p> just clone and revise the file andthen follow steps like NO.2.</p>]]></content>
-    
-    
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Hexo</title>
     <link href="/2023/11/26/My-Blog/"/>
     <url>/2023/11/26/My-Blog/</url>
@@ -86,6 +107,25 @@
     <tags>
       
       <tag>how to use hexo</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Git Bash</title>
+    <link href="/2023/11/26/Git-Bash/"/>
+    <url>/2023/11/26/Git-Bash/</url>
+    
+    <content type="html"><![CDATA[<h2 id="How-to-use-Git-bash-to-revise-Github"><a href="#How-to-use-Git-bash-to-revise-Github" class="headerlink" title="How to use Git bash to revise Github:"></a>How to use Git bash to revise Github:</h2><h4 id="1-”Git-bash-here”-at-a-blank-file"><a href="#1-”Git-bash-here”-at-a-blank-file" class="headerlink" title="1.”Git bash here” at a  blank file"></a>1.”Git bash here” at a  blank file</h4><h4 id="2-If-you-want-to-clean-your-github-repositories"><a href="#2-If-you-want-to-clean-your-github-repositories" class="headerlink" title="2.If you want to clean your github repositories"></a>2.If you want to clean your github repositories</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git <span class="hljs-built_in">clone</span> URL <span class="hljs-comment">#URL :find it in the code</span><br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git add .<br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git commit -m <span class="hljs-string">&quot;name&quot;</span> <span class="hljs-comment">#the name is not important,just for its need</span><br></code></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git push <br></code></pre></td></tr></table></figure><h4 id="3-If-you-want-to-revise-your-blog"><a href="#3-If-you-want-to-revise-your-blog" class="headerlink" title="3.If you want to revise your blog"></a>3.If you want to revise your blog</h4><p> just clone and revise the file andthen follow steps like NO.2.</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>how to use</tag>
       
     </tags>
     
