@@ -8,7 +8,7 @@
     <link href="/2023/11/27/Date-struct/"/>
     <url>/2023/11/27/Date-struct/</url>
     
-    <content type="html"><![CDATA[<ul><li><input disabled="" type="checkbox"> 吃早餐</li><li><input checked="" disabled="" type="checkbox"> 背单词</li></ul>]]></content>
+    <content type="html"><![CDATA[<p><input type="radio" name="gender"> 男</p>]]></content>
     
     
     
