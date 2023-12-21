@@ -109,11 +109,11 @@
   
   
   <entry>
-    <title>8051 Microcontroller</title>
+    <title>STM32</title>
     <link href="/2023/11/26/51%E5%8D%95%E7%89%87%E6%9C%BA/"/>
     <url>/2023/11/26/51%E5%8D%95%E7%89%87%E6%9C%BA/</url>
     
-    <content type="html"><![CDATA[<p>Untitled</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="2023-12-21"><a href="#2023-12-21" class="headerlink" title="2023.12.21"></a>2023.12.21</h1><hr><h2 id="2-2-新建工程"><a href="#2-2-新建工程" class="headerlink" title="2.2 新建工程"></a>2.2 新建工程</h2><h3 id="一句话总结课程内容"><a href="#一句话总结课程内容" class="headerlink" title="一句话总结课程内容:"></a>一句话总结课程内容:</h3><p><strong>可以利用右键加Go To Definition” “来查看函数功能和参数,而对注释中的内容可用Ctrl + f查找</strong></p><h3 id="课程内容的理解"><a href="#课程内容的理解" class="headerlink" title="课程内容的理解"></a>课程内容的理解</h3><p><strong>1.使用各种库函数去实现自己要的功能</strong><br><strong>2.GPIO应该是引脚的意思</strong><br><strong>3.好像在开始的地方需要先放一个使能计时的函数</strong><br><strong>4.每次新建文件都去看视频来一遍</strong><br><img src="/images/pasted-12.png" alt="upload successful"></p><p><strong>5.这是根据flash和型号做的缩写分类,用于查找到start文件</strong>  </p><p><img src="/images/pasted-9.png" alt="upload successful"></p><hr><h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
     
     
     
