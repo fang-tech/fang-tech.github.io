@@ -16,12 +16,12 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="2023.12.21** 3.2核心内容:操作STM32的GPIO总共需要三个步骤1. 使用RCC开启GPIO的时钟2. 使用GPIO_Init函数初始化GPIO3. 使用输入或输出的函数控制GPIO口   核心函数的介绍:RCC:1.常用函数  2.函数相关内容 3.AHB函数的功能查看位置 @brief 这里显示AHB外设时针控制的函数就是使能或失能ABHB外设时钟的@param 这里显示可选">
+    <meta name="description" content="2023.12.26 6.1 TIM定时中断代码及解释:1234567891011121314151617181920212223242526272829303132333435363738void Timer_Inir(void)&#123;	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);    &#x2F;&#x2F;开启TIM2时钟,该接口对应的APB1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="STM32">
 <meta property="og:url" content="http://example.com/2023/11/26/51%E5%8D%95%E7%89%87%E6%9C%BA/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="2023.12.21** 3.2核心内容:操作STM32的GPIO总共需要三个步骤1. 使用RCC开启GPIO的时钟2. 使用GPIO_Init函数初始化GPIO3. 使用输入或输出的函数控制GPIO口   核心函数的介绍:RCC:1.常用函数  2.函数相关内容 3.AHB函数的功能查看位置 @brief 这里显示AHB外设时针控制的函数就是使能或失能ABHB外设时钟的@param 这里显示可选">
+<meta property="og:description" content="2023.12.26 6.1 TIM定时中断代码及解释:1234567891011121314151617181920212223242526272829303132333435363738void Timer_Inir(void)&#123;	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);    &#x2F;&#x2F;开启TIM2时钟,该接口对应的APB1">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/images/pasted-14.png">
 <meta property="og:image" content="http://example.com/images/pasted-17.png">
@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://example.com/images/pasted-9.png">
 <meta property="og:image" content="http://example.com/images/pasted-13.png">
 <meta property="article:published_time" content="2023-11-25T16:14:42.000Z">
-<meta property="article:modified_time" content="2023-12-21T18:01:20.363Z">
+<meta property="article:modified_time" content="2023-12-26T16:22:59.680Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/images/pasted-14.png">
@@ -227,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k 字
+          3k 字
         
       </span>
     
@@ -238,7 +238,7 @@
         
         
         
-          15 分钟
+          25 分钟
         
       </span>
     
@@ -280,7 +280,12 @@
             
               <div class="markdown-body">
                 
-                <h1 id="2023-12-21"><a href="#2023-12-21" class="headerlink" title="2023.12.21"></a>2023.12.21</h1><p>**</p>
+                <h1 id="2023-12-26"><a href="#2023-12-26" class="headerlink" title="2023.12.26"></a>2023.12.26</h1><hr>
+<h2 id="6-1-TIM定时中断"><a href="#6-1-TIM定时中断" class="headerlink" title="6.1 TIM定时中断"></a>6.1 TIM定时中断</h2><h3 id="代码及解释"><a href="#代码及解释" class="headerlink" title="代码及解释:"></a>代码及解释:</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">Timer_Inir</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);<br>    <span class="hljs-comment">//开启TIM2时钟,该接口对应的APB1</span><br>	TIM_InternalClockConfig(TIM2);<br>    <span class="hljs-comment">//开启内部时钟,这个可以不写,因为一般是默认开启的</span><br>	<br>	TIM_ETRClockMode2Config(TIM2, TIM_ExtTRGPSC_OFF, TIM_ExtTRGPolarity_NonInverted, <span class="hljs-number">0x00</span>);<br>	<span class="hljs-comment">//使用外部时钟模式2</span><br>	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;<br>	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1 ;<br>    <span class="hljs-comment">//接下来三个参数是时基单元的重点</span><br>	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;<br>    <span class="hljs-comment">//计数Model : 向上计数</span><br>	TIM_TimeBaseInitStructure.TIM_Period = <span class="hljs-number">10000</span> - <span class="hljs-number">1</span>;<br>    <span class="hljs-comment">//更新事件触发的数字数</span><br>	TIM_TimeBaseInitStructure.TIM_Prescaler = <span class="hljs-number">7200</span>- <span class="hljs-number">1</span>;<br>    <span class="hljs-comment">//计数频率/速度</span><br>	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = <span class="hljs-number">0</span>;<br>    <span class="hljs-comment">//高级计数计数器会用到的,不需要考虑</span><br>	TIM_TimeBaseInit(TIM2,&amp;TIM_TimeBaseInitStructure);<br>	<span class="hljs-comment">//用上列参数初始化TIM时钟</span><br>	TIM_ClearFlag(TIM2, TIM_FLAG_Update);<br>    <span class="hljs-comment">//清除标志位,因为TIM_TimeBaseInit会自动设置参数</span><br>	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);<br>	 <span class="hljs-comment">//不知道作用</span><br>	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);<br>	<span class="hljs-comment">//接下来的都是初始化NVIC</span><br>	NVIC_InitTypeDef NVIC_InitStruct;<br>	NVIC_InitStruct.NVIC_IRQChannel = TIM2_IRQn;<br>	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;<br>	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = <span class="hljs-number">2</span>;<br>	NVIC_InitStruct.NVIC_IRQChannelSubPriority = <span class="hljs-number">1</span>;<br>	NVIC_Init(&amp;NVIC_InitStruct);<br>	<br>	TIM_Cmd(TIM2,ENABLE);<br>    <span class="hljs-comment">//给TIM2使能</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="2023-12-21"><a href="#2023-12-21" class="headerlink" title="2023.12.21"></a>2023.12.21</h1><hr>
 <h2 id="3-2"><a href="#3-2" class="headerlink" title="3.2"></a>3.2</h2><h3 id="核心内容-操作STM32的GPIO总共需要三个步骤"><a href="#核心内容-操作STM32的GPIO总共需要三个步骤" class="headerlink" title="核心内容:操作STM32的GPIO总共需要三个步骤"></a>核心内容:操作STM32的GPIO总共需要三个步骤</h3><p><strong>1. 使用RCC开启GPIO的时钟</strong><br><strong>2. 使用GPIO_Init函数初始化GPIO</strong><br><strong>3. 使用输入或输出的函数控制GPIO口</strong>  </p>
 <h3 id="核心函数的介绍"><a href="#核心函数的介绍" class="headerlink" title="核心函数的介绍:"></a>核心函数的介绍:</h3><h4 id="RCC"><a href="#RCC" class="headerlink" title="RCC:"></a>RCC:</h4><p><strong>1.常用函数</strong>  <br><img src="/images/pasted-14.png" srcset="/img/loading.gif" lazyload alt="upload successful"><br><strong>2.函数相关内容</strong></p>
 <p><img src="/images/pasted-17.png" srcset="/img/loading.gif" lazyload alt="upload successful"><br><strong>3.AHB函数的功能查看位置</strong></p>
