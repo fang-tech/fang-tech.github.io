@@ -16,15 +16,15 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="2024.01.15 1-6 DDL : 操作数据库,  表 操作数据库 : CRUD   C(Create): 创建 创建数据库 :    1    create database 数据库名称;  创建数据库, 判断不存在, 再创建 :   1    create database if not exists 数据库名称;  创建数据库, 判断是否存在, 并制定字符集为gbk :   1">
+    <meta name="description" content="2024.01.15 1-7 DML : 操作表操作表 : CRUD1. C(Create): 创建创建表语法 :   语法 : 123456create table 表名(   列名1 数据类型1,   列名2 数据类型2,   ...   列名n 数据类型n   );&#x2F;&#x2F;注意最后一列, 不需要加逗号 数据库类型 :   int : 整数类型1age int double : 小数类型1scor">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MYSQL">
 <meta property="og:url" content="http://example.com/2024/01/15/MYSQL/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="2024.01.15 1-6 DDL : 操作数据库,  表 操作数据库 : CRUD   C(Create): 创建 创建数据库 :    1    create database 数据库名称;  创建数据库, 判断不存在, 再创建 :   1    create database if not exists 数据库名称;  创建数据库, 判断是否存在, 并制定字符集为gbk :   1">
+<meta property="og:description" content="2024.01.15 1-7 DML : 操作表操作表 : CRUD1. C(Create): 创建创建表语法 :   语法 : 123456create table 表名(   列名1 数据类型1,   列名2 数据类型2,   ...   列名n 数据类型n   );&#x2F;&#x2F;注意最后一列, 不需要加逗号 数据库类型 :   int : 整数类型1age int double : 小数类型1scor">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-01-15T01:46:31.000Z">
-<meta property="article:modified_time" content="2024-01-15T02:31:21.610Z">
+<meta property="article:modified_time" content="2024-01-15T16:18:29.534Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          970 字
+          1.7k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          9 分钟
+          14 分钟
         
       </span>
     
@@ -273,19 +273,44 @@
               <div class="markdown-body">
                 
                 <h1 id="2024-01-15"><a href="#2024-01-15" class="headerlink" title="2024.01.15"></a>2024.01.15</h1><hr>
-<h2 id="1-6-DDL-操作数据库-表"><a href="#1-6-DDL-操作数据库-表" class="headerlink" title="1-6 DDL : 操作数据库,  表"></a>1-6 DDL : 操作数据库,  表</h2><ul>
-<li>操作数据库 : CRUD</li>
-</ul>
+<h2 id="1-7-DML-操作表"><a href="#1-7-DML-操作表" class="headerlink" title="1-7 DML : 操作表"></a>1-7 DML : 操作表</h2><h3 id="操作表-CRUD"><a href="#操作表-CRUD" class="headerlink" title="操作表 : CRUD"></a>操作表 : CRUD</h3><h4 id="1-C-Create-创建"><a href="#1-C-Create-创建" class="headerlink" title="1. C(Create): 创建"></a>1. C(Create): 创建</h4><p>创建表语法 : </p>
 <ol>
-<li>C(Create): 创建<br> 创建数据库 :    <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database 数据库名称;<br></code></pre></td></tr></table></figure>
- 创建数据库, 判断不存在, 再创建 :   <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database if <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> 数据库名称;<br></code></pre></td></tr></table></figure>
- 创建数据库, 判断是否存在, 并制定字符集为gbk :   <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database if <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> 数据库名称 <span class="hljs-type">character</span> <span class="hljs-keyword">set</span> gbk;<br></code></pre></td></tr></table></figure></li>
-<li>R(Retrieve): 查询<br> 查询所有的数据库的名称 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">show</span> databases;<br></code></pre></td></tr></table></figure>
- 查询某个数据库的字符集: 查询某个数据库的创建语句 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">show</span> <span class="hljs-keyword">create</span> database 数据库名称;<br></code></pre></td></tr></table></figure></li>
-<li>U(Update): 修改</li>
-<li>D(Delete): 删除 </li>
-<li>使用数据库</li>
+<li>语法 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> 表名(<br>   列名<span class="hljs-number">1</span> 数据类型<span class="hljs-number">1</span>,<br>   列名<span class="hljs-number">2</span> 数据类型<span class="hljs-number">2</span>,<br>   ...<br>   列名n 数据类型n<br>   );<span class="hljs-operator">/</span><span class="hljs-operator">/</span>注意最后一列, 不需要加逗号<br></code></pre></td></tr></table></figure></li>
+<li>数据库类型 :</li>
 </ol>
+<ul>
+<li>int : 整数类型<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">age <span class="hljs-type">int</span><br></code></pre></td></tr></table></figure></li>
+<li>double : 小数类型<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">score <span class="hljs-keyword">double</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>)(最大位,小数点后保留) <br></code></pre></td></tr></table></figure></li>
+<li>date : 日期, 只包含年月日, yyyy-MM-dd</li>
+<li>datetime: 日期, 包含年月日时分秒 yyyy-MM-dd HH:mm:ss</li>
+<li>timestamp:时间戳类型 包含年月日时分秒 yyyy-MM-dd HH:mm:ss * 如果将来不给这个字段赋值, 后赋值为null, 则默认使用当前系统时间;来自动赋值</li>
+<li>varchar : 字符串<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">name <span class="hljs-type">varchar</span>(<span class="hljs-number">20</span>) : 姓名最大为<span class="hljs-number">20</span>个字符(中文算一个字符)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<ol start="3">
+<li>操作实例 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> student(<br>	id <span class="hljs-type">int</span>,<br>   name <span class="hljs-type">varchar</span>(<span class="hljs-number">32</span>),<br>   age <span class="hljs-type">int</span>,<br>   score <span class="hljs-keyword">double</span>(<span class="hljs-number">4</span>,<span class="hljs-number">1</span>),<br>   birthday <span class="hljs-type">date</span>,<br>   insert_time <span class="hljs-type">timestamp</span><br>   );<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="2-R-Retrieve-查询"><a href="#2-R-Retrieve-查询" class="headerlink" title="2. R(Retrieve): 查询"></a>2. R(Retrieve): 查询</h4><ul>
+<li>查询某个数据库中所有的表的名称 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">show</span> tables;<br></code></pre></td></tr></table></figure></li>
+<li>查询表结构 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">desc</span> 表名;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-U-Update-修改"><a href="#3-U-Update-修改" class="headerlink" title="3. U(Update): 修改"></a>3. U(Update): 修改</h4><h4 id="4-D-Delete-删除"><a href="#4-D-Delete-删除" class="headerlink" title="4. D(Delete): 删除"></a>4. D(Delete): 删除</h4><h4 id="5-使用数据库"><a href="#5-使用数据库" class="headerlink" title="5. 使用数据库"></a>5. 使用数据库</h4><h2 id="1-6-DDL-操作数据库-表"><a href="#1-6-DDL-操作数据库-表" class="headerlink" title="1-6 DDL : 操作数据库,  表"></a>1-6 DDL : 操作数据库,  表</h2><h3 id="操作数据库-CRUD"><a href="#操作数据库-CRUD" class="headerlink" title="操作数据库 : CRUD"></a>操作数据库 : CRUD</h3><h4 id="1-C-Create-创建-1"><a href="#1-C-Create-创建-1" class="headerlink" title="1. C(Create): 创建"></a>1. C(Create): 创建</h4><p> 创建数据库 :    </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database 数据库名称;<br></code></pre></td></tr></table></figure>
+<p> 创建数据库, 判断不存在, 再创建 :   </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database if <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> 数据库名称;<br></code></pre></td></tr></table></figure>
+<p> 创建数据库, 判断是否存在, 并制定字符集为gbk :   </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database if <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> 数据库名称 <span class="hljs-type">character</span> <span class="hljs-keyword">set</span> gbk;<br></code></pre></td></tr></table></figure>
+<h4 id="2-R-Retrieve-查询-1"><a href="#2-R-Retrieve-查询-1" class="headerlink" title="2. R(Retrieve): 查询"></a>2. R(Retrieve): 查询</h4><p> 查询所有的数据库的名称 : </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">show</span> databases;<br></code></pre></td></tr></table></figure>
+<p> 查询某个数据库的字符集: 查询某个数据库的创建语句 : </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">show</span> <span class="hljs-keyword">create</span> database 数据库名称;<br></code></pre></td></tr></table></figure>
+<h4 id="3-U-Update-修改-1"><a href="#3-U-Update-修改-1" class="headerlink" title="3. U(Update): 修改"></a>3. U(Update): 修改</h4><p>修改数据库的字符集 : </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">alter</span> databse 数据库名称 <span class="hljs-type">character</span> <span class="hljs-keyword">set</span> 字符集名称;<br></code></pre></td></tr></table></figure>
+<h4 id="4-D-Delete-删除-1"><a href="#4-D-Delete-删除-1" class="headerlink" title="4. D(Delete): 删除"></a>4. D(Delete): 删除</h4><p>删除数据库 : </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">drop</span> database 数据库名称;<br></code></pre></td></tr></table></figure>
+<h4 id="5-使用数据库-1"><a href="#5-使用数据库-1" class="headerlink" title="5. 使用数据库"></a>5. 使用数据库</h4><p>查询当前正在使用的数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">select</span> database();<br></code></pre></td></tr></table></figure>
+<p>使用数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">use 数据库名称;<br></code></pre></td></tr></table></figure>
 <hr>
 <h2 id="1-5-SQL分类"><a href="#1-5-SQL分类" class="headerlink" title="1-5 SQL分类"></a>1-5 SQL分类</h2><p>根据操作和目标分为三类 : </p>
 <ol>
