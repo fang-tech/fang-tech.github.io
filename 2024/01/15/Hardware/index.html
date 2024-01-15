@@ -16,21 +16,34 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="2024.01.15 1-6 DDL : 操作数据库,  表 操作数据库 : CRUD   C(Create): 创建 创建数据库 :    1    create database 数据库名称;  创建数据库, 判断不存在, 再创建 :   1    create database if not exists 数据库名称;  创建数据库, 判断是否存在, 并制定字符集为gbk :   1">
+    <meta name="description" content="2024.01.15常用元器件 ( 分立元件 )1.1 电阻 电阻分为直插电阻, 贴片电阻, 热敏电阻, 电位器(变阻器)等 一般来说只考虑贴片电阻 常用的封装有0603和0805 封装数字越大他的大小越大 封装和功率大小是相关的, 但还未明白这个的实际意义 现在的理解是封装只涉及大小, 然后值是额外填 的.  1.2 电容常用作用 : 储能, 滤波  一般用的多的电容 : 贴片电容MLCC, 瓷">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MYSQL">
-<meta property="og:url" content="http://example.com/2024/01/15/MYSQL/index.html">
+<meta property="og:title" content="Hardware">
+<meta property="og:url" content="http://example.com/2024/01/15/Hardware/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="2024.01.15 1-6 DDL : 操作数据库,  表 操作数据库 : CRUD   C(Create): 创建 创建数据库 :    1    create database 数据库名称;  创建数据库, 判断不存在, 再创建 :   1    create database if not exists 数据库名称;  创建数据库, 判断是否存在, 并制定字符集为gbk :   1">
+<meta property="og:description" content="2024.01.15常用元器件 ( 分立元件 )1.1 电阻 电阻分为直插电阻, 贴片电阻, 热敏电阻, 电位器(变阻器)等 一般来说只考虑贴片电阻 常用的封装有0603和0805 封装数字越大他的大小越大 封装和功率大小是相关的, 但还未明白这个的实际意义 现在的理解是封装只涉及大小, 然后值是额外填 的.  1.2 电容常用作用 : 储能, 滤波  一般用的多的电容 : 贴片电容MLCC, 瓷">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-01-15T01:46:31.000Z">
-<meta property="article:modified_time" content="2024-01-15T02:31:21.610Z">
+<meta property="og:image" content="http://example.com/images/pasted-27.png">
+<meta property="og:image" content="http://example.com/images/pasted-26.png">
+<meta property="og:image" content="http://example.com/images/pasted-28.png">
+<meta property="og:image" content="http://example.com/images/pasted-29.png">
+<meta property="og:image" content="http://example.com/images/pasted-30.png">
+<meta property="og:image" content="http://example.com/images/pasted-31.png">
+<meta property="og:image" content="http://example.com/images/pasted-32.png">
+<meta property="og:image" content="http://example.com/images/pasted-33.png">
+<meta property="og:image" content="http://example.com/images/pasted-34.png">
+<meta property="og:image" content="http://example.com/images/pasted-35.png">
+<meta property="og:image" content="http://example.com/images/pasted-36.png">
+<meta property="og:image" content="http://example.com/images/pasted-37.png">
+<meta property="article:published_time" content="2024-01-15T02:33:51.000Z">
+<meta property="article:modified_time" content="2024-01-15T14:05:49.036Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/images/pasted-27.png">
   
   
   
-  <title>MYSQL - Hexo</title>
+  <title>Hardware - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +209,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="MYSQL"></span>
+            <span id="subtitle" data-typed-text="Hardware"></span>
           
         </div>
 
@@ -207,7 +220,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-15 09:46" pubdate>
+        <time datetime="2024-01-15 10:33" pubdate>
           2024年1月15日 上午
         </time>
       </span>
@@ -219,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          970 字
+          874 字
         
       </span>
     
@@ -230,7 +243,7 @@
         
         
         
-          9 分钟
+          8 分钟
         
       </span>
     
@@ -267,67 +280,95 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">MYSQL</h1>
+            <h1 id="seo-header">Hardware</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="2024-01-15"><a href="#2024-01-15" class="headerlink" title="2024.01.15"></a>2024.01.15</h1><hr>
-<h2 id="1-6-DDL-操作数据库-表"><a href="#1-6-DDL-操作数据库-表" class="headerlink" title="1-6 DDL : 操作数据库,  表"></a>1-6 DDL : 操作数据库,  表</h2><ul>
-<li>操作数据库 : CRUD</li>
+                <h1 id="2024-01-15"><a href="#2024-01-15" class="headerlink" title="2024.01.15"></a>2024.01.15</h1><h2 id="常用元器件-分立元件"><a href="#常用元器件-分立元件" class="headerlink" title="常用元器件 ( 分立元件 )"></a>常用元器件 ( 分立元件 )</h2><h3 id="1-1-电阻"><a href="#1-1-电阻" class="headerlink" title="1.1 电阻"></a>1.1 电阻</h3><ul>
+<li>电阻分为直插电阻, 贴片电阻, 热敏电阻, 电位器(变阻器)等</li>
+<li>一般来说只考虑贴片电阻</li>
+<li>常用的封装有0603和0805</li>
+<li>封装数字越大他的大小越大</li>
+<li>封装和功率大小是相关的, 但还未明白这个的实际意义</li>
+<li>现在的理解是封装只涉及大小, 然后值是额外填 的.</li>
 </ul>
-<ol>
-<li>C(Create): 创建<br> 创建数据库 :    <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database 数据库名称;<br></code></pre></td></tr></table></figure>
- 创建数据库, 判断不存在, 再创建 :   <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database if <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> 数据库名称;<br></code></pre></td></tr></table></figure>
- 创建数据库, 判断是否存在, 并制定字符集为gbk :   <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL">    <span class="hljs-keyword">create</span> database if <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> 数据库名称 <span class="hljs-type">character</span> <span class="hljs-keyword">set</span> gbk;<br></code></pre></td></tr></table></figure></li>
-<li>R(Retrieve): 查询<br> 查询所有的数据库的名称 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">show</span> databases;<br></code></pre></td></tr></table></figure>
- 查询某个数据库的字符集: 查询某个数据库的创建语句 : <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs SQL"><span class="hljs-keyword">show</span> <span class="hljs-keyword">create</span> database 数据库名称;<br></code></pre></td></tr></table></figure></li>
-<li>U(Update): 修改</li>
-<li>D(Delete): 删除 </li>
-<li>使用数据库</li>
-</ol>
-<hr>
-<h2 id="1-5-SQL分类"><a href="#1-5-SQL分类" class="headerlink" title="1-5 SQL分类"></a>1-5 SQL分类</h2><p>根据操作和目标分为三类 : </p>
-<ol>
-<li>DDL (Data Definnition Language)(数据定义语言) 操作对象主要是表和库 如: 建表, 建库</li>
-<li>DML (Data Manipulation Language)(数据查询语言) 操作对象主要是数据记录 如: 对表中的查询操作</li>
-<li>DCL (Data Con Language)(数据控制语言) 操作对象主要是数据记录 如: 对用户的权限的设置</li>
-</ol>
-<hr>
-<h2 id="1-4-SQL通用语法"><a href="#1-4-SQL通用语法" class="headerlink" title="1-4 SQL通用语法"></a>1-4 SQL通用语法</h2><ol>
-<li>SQL语句可以单行或多行书写, 以分号结尾</li>
-<li>可使用空格和缩进来增强语句的可读性</li>
-<li>MySQL 数据库的 SQL 语句不区分大小写, 关键字建议大写书写</li>
-<li>3种注释</li>
-</ol>
+<h3 id="1-2-电容"><a href="#1-2-电容" class="headerlink" title="1.2 电容"></a>1.2 电容</h3><h4 id="常用作用"><a href="#常用作用" class="headerlink" title="常用作用 :"></a>常用作用 :</h4><ul>
+<li>储能, 滤波</li>
+</ul>
+<h4 id="一般用的多的电容"><a href="#一般用的多的电容" class="headerlink" title="一般用的多的电容 :"></a>一般用的多的电容 :</h4><ul>
+<li>贴片电容MLCC, 瓷片电容, 电解电容.</li>
+</ul>
+<h4 id="特性"><a href="#特性" class="headerlink" title="特性 :"></a>特性 :</h4><p><img src="/images/pasted-27.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
 <ul>
-<li>单行注释 : – (右边需要一个空格) 或 #(不用空格)</li>
-<li>多行注释 : &#x2F;* * &#x2F; 和 c语言一样</li>
+<li>直流电流无法通过电容, 电阻电压为0</li>
 </ul>
-<hr>
-<h2 id="1-3-SQL"><a href="#1-3-SQL" class="headerlink" title="1-3 SQL"></a>1-3 SQL</h2><ul>
-<li>什么是SQL</li>
-<li>Structured Query Language : 结构化查询语言 </li>
-<li>其实就是定义了操作所有关系型数据库的规则. 每一种数据库操作的方式存在不一样的地方, 称为”方言”.</li>
+<h4 id="储能作用"><a href="#储能作用" class="headerlink" title="储能作用 :"></a>储能作用 :</h4><p><img src="/images/pasted-26.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<h4 id="滤波作用"><a href="#滤波作用" class="headerlink" title="滤波作用 :"></a>滤波作用 :</h4><p><img src="/images/pasted-28.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<h4 id="电容的主要参数"><a href="#电容的主要参数" class="headerlink" title="电容的主要参数 :"></a>电容的主要参数 :</h4><ul>
+<li>容量, 耐压</li>
 </ul>
-<hr>
-<h2 id="1-2-MYSQL登录和登出"><a href="#1-2-MYSQL登录和登出" class="headerlink" title="1-2 MYSQL登录和登出"></a>1-2 MYSQL登录和登出</h2><ol>
-<li>登入本地用户<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs MYSQL">mysql -uroot -p密码<br></code></pre></td></tr></table></figure></li>
-<li>登入非本地用户<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs MYSQL">mysql -h目标ip -uroot -p连接目标的密码<br></code></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs MYSQL">mysql --host=ip -user=root --passwpord=密码<br></code></pre></td></tr></table></figure></li>
-<li>退出<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs MYSQL">quit (or) exit<br></code></pre></td></tr></table></figure></li>
-</ol>
-<hr>
-<h2 id="1-1-MYSQL服务启动和关闭"><a href="#1-1-MYSQL服务启动和关闭" class="headerlink" title="1-1 MYSQL服务启动和关闭"></a>1-1 MYSQL服务启动和关闭</h2><ul>
-<li>MYSQL本质是一种服务</li>
-<li>启动和关闭方式</li>
+<h4 id="直插点解电容"><a href="#直插点解电容" class="headerlink" title="直插点解电容:"></a>直插点解电容:</h4><ul>
+<li>常用在给电源升压模块后的电压滤波, 用直插电解电容的一般是大电压, 然后电容也是比较大的, 用来过滤低频的波, 小的电容一般用来过滤高频波</li>
 </ul>
-<ol>
-<li>手动点开此电脑的属性</li>
-<li>cmd –&gt; services.msc 打开服务的窗口</li>
-<li>使用管理员打开cmd –&gt;  <br>net start mysql : 启动mysql的服务  <br>net stop mysql : 关闭mysql的服务</li>
-</ol>
-
+<h3 id="1-3-电感"><a href="#1-3-电感" class="headerlink" title="1.3 电感"></a>1.3 电感</h3><h4 id="性质-电流惯性"><a href="#性质-电流惯性" class="headerlink" title="性质 : 电流惯性"></a>性质 : 电流惯性</h4><ul>
+<li>其实这个东西和电容很想, 有电压和电流惯性</li>
+</ul>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用 :"></a>作用 :</h4><ul>
+<li>和电容类似 : 也是储能和滤波</li>
+</ul>
+<h4 id="重要参数"><a href="#重要参数" class="headerlink" title="重要参数 :"></a>重要参数 :</h4><ul>
+<li>电感量 , 饱和电流</li>
+</ul>
+<h4 id="和电容区别"><a href="#和电容区别" class="headerlink" title="和电容区别 :"></a>和电容区别 :</h4><ul>
+<li>未知</li>
+</ul>
+<h3 id="1-4-二极管和LED"><a href="#1-4-二极管和LED" class="headerlink" title="1.4 二极管和LED"></a>1.4 二极管和LED</h3><h4 id="常用二极管"><a href="#常用二极管" class="headerlink" title="常用二极管 :"></a>常用二极管 :</h4><ul>
+<li>普通二极管, 稳压二极管, TVS二极管, (肖特基二极管, 快恢复二极管)(高频二极管), 发光二极管</li>
+</ul>
+<h4 id="二极管性质"><a href="#二极管性质" class="headerlink" title="二极管性质 :"></a>二极管性质 :</h4><ul>
+<li>单向导通</li>
+</ul>
+<h4 id="二极管参数"><a href="#二极管参数" class="headerlink" title="二极管参数 :"></a>二极管参数 :</h4><ul>
+<li>最大电流, 正向压降, 反向压降</li>
+</ul>
+<h4 id="稳压二极管"><a href="#稳压二极管" class="headerlink" title="稳压二极管 :"></a>稳压二极管 :</h4><ul>
+<li>正常的二极管方向击穿后就坏了, 但是稳压二极管专门工作在反向击穿去反向击穿后, 电压会维持在一个特定值<br><img src="/images/pasted-29.png" srcset="/img/loading.gif" lazyload alt="upload successful"></li>
+</ul>
+<h4 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用 :"></a>实际应用 :</h4><ul>
+<li>阻容降压</li>
+</ul>
+<h4 id="整流"><a href="#整流" class="headerlink" title="整流 :"></a>整流 :</h4><p><img src="/images/pasted-30.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<h4 id="作用-1"><a href="#作用-1" class="headerlink" title="作用 :"></a>作用 :</h4><ul>
+<li>整流作用</li>
+</ul>
+<h4 id="TVS二极管-瞬态电压抑制二极管"><a href="#TVS二极管-瞬态电压抑制二极管" class="headerlink" title="TVS二极管  : 瞬态电压抑制二极管"></a>TVS二极管  : 瞬态电压抑制二极管</h4><ul>
+<li>可以保护电器设备不受导线引入的电压尖峰破坏, 可以对尖峰电压削顶</li>
+</ul>
+<p><img src="/images/pasted-31.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<h3 id="1-5-三极管和光耦"><a href="#1-5-三极管和光耦" class="headerlink" title="1.5 三极管和光耦"></a>1.5 三极管和光耦</h3><h4 id="三极管的作用"><a href="#三极管的作用" class="headerlink" title="三极管的作用:"></a>三极管的作用:</h4><ul>
+<li>用作电子开关, 信号的放大</li>
+</ul>
+<h4 id="控制原理"><a href="#控制原理" class="headerlink" title="控制原理:"></a>控制原理:</h4><ul>
+<li>有三个电极 : e(发射极) b(基极) c(集电极)</li>
+<li>小电流控制大电流, 小电流就像是水龙头的止水阀一样, 调节基极, 基极的电流越大, 集电极的电流就会有越多被放出</li>
+</ul>
+<p><img src="/images/pasted-32.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<p><img src="/images/pasted-33.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<h4 id="NPN三极管"><a href="#NPN三极管" class="headerlink" title="NPN三极管 :"></a>NPN三极管 :</h4><p><img src="/images/pasted-34.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<p><img src="/images/pasted-35.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<h4 id="PNP三极管"><a href="#PNP三极管" class="headerlink" title="PNP三极管 :"></a>PNP三极管 :</h4><p><img src="/images/pasted-36.png" srcset="/img/loading.gif" lazyload alt="upload successful"> </p>
+<ul>
+<li>实际上PNP就像是NPN三极管的对称, 日常工作中使用得更多的是NPN三极管</li>
+</ul>
+<h4 id="三极管的日常应用"><a href="#三极管的日常应用" class="headerlink" title="三极管的日常应用 :"></a>三极管的日常应用 :</h4><ul>
+<li>流控型开关, 有点就能导通</li>
+</ul>
+<p><img src="/images/pasted-37.png" srcset="/img/loading.gif" lazyload alt="upload successful"></p>
+<ul>
+<li>这里会有一个重要的应用, 三极管可以拿来做高低电平使能</li>
+</ul>
+<h3 id="1-6-MOS管-场效应管"><a href="#1-6-MOS管-场效应管" class="headerlink" title="1.6 MOS管 (场效应管)"></a>1.6 MOS管 (场效应管)</h3><h3 id="1-7-自恢复保险丝"><a href="#1-7-自恢复保险丝" class="headerlink" title="1.7 自恢复保险丝"></a>1.7 自恢复保险丝</h3><h3 id="1-8-线性稳压器"><a href="#1-8-线性稳压器" class="headerlink" title="1.8 线性稳压器"></a>1.8 线性稳压器</h3><h2 id="常用元器件-集成电路"><a href="#常用元器件-集成电路" class="headerlink" title="常用元器件 ( 集成电路 )"></a>常用元器件 ( 集成电路 )</h2><h3 id="2-1-与或非-等逻辑电路"><a href="#2-1-与或非-等逻辑电路" class="headerlink" title="2.1 与或非 等逻辑电路"></a>2.1 与或非 等逻辑电路</h3><h3 id="2-2-运算-运算放大器"><a href="#2-2-运算-运算放大器" class="headerlink" title="2.2 运算 ( 运算放大器 )"></a>2.2 运算 ( 运算放大器 )</h3><h3 id="2-3-其他电气零件-接线端子-开关-排针排母等"><a href="#2-3-其他电气零件-接线端子-开关-排针排母等" class="headerlink" title="2.3 其他电气零件 ( 接线端子, 开关, 排针排母等)"></a>2.3 其他电气零件 ( 接线端子, 开关, 排针排母等)</h3>
                 
               </div>
             
@@ -344,8 +385,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>MYSQL</div>
-      <div>http://example.com/2024/01/15/MYSQL/</div>
+      <div>Hardware</div>
+      <div>http://example.com/2024/01/15/Hardware/</div>
     </div>
     <div class="license-meta">
       
@@ -389,18 +430,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/15/Hardware/" title="Hardware">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hardware</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/01/12/PCB%E8%AE%BE%E8%AE%A1/" title="PCB设计">
-                        <span class="hidden-mobile">PCB设计</span>
+                      <a href="/2024/01/15/MYSQL/" title="MYSQL">
+                        <span class="hidden-mobile">MYSQL</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
