@@ -1,0 +1,421 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>窄门 | 窄门</title><meta name="author" content="Fun"><meta name="copyright" content="Fun"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Redis 数据结构SDSSDS的出现主要是为了解决C语言字符串的三个问题  需要O(n)的时间复杂度获取字符串的长度 无法动态拓展缓冲区 二进制不安全(原本的c语言字符串只能存储文本)  SDS的结构  alloc : 分配的空间长度, 通过这个属性 alloc - len能获取到剩余的空间 flags : sds的类型, sdshdr5、sdshdr8、sdshdr16、sdshdr32 和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="窄门">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="窄门">
+<meta property="og:description" content="Redis 数据结构SDSSDS的出现主要是为了解决C语言字符串的三个问题  需要O(n)的时间复杂度获取字符串的长度 无法动态拓展缓冲区 二进制不安全(原本的c语言字符串只能存储文本)  SDS的结构  alloc : 分配的空间长度, 通过这个属性 alloc - len能获取到剩余的空间 flags : sds的类型, sdshdr5、sdshdr8、sdshdr16、sdshdr32 和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fang-tech.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-07-08T15:03:04.763Z">
+<meta property="article:modified_time" content="2025-07-06T16:09:28.206Z">
+<meta property="article:author" content="Fun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang-tech.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "url": "https://fang-tech.github.io/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/",
+  "image": "https://fang-tech.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-07-08T15:03:04.763Z",
+  "dateModified": "2025-07-06T16:09:28.206Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Fun",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://fang-tech.github.io/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '窄门',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">窄门</span></a><a class="nav-page-title" href="/"><span class="site-name">窄门</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">无标题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-08T15:03:04.763Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-06T16:09:28.206Z" title="更新于 2025-07-07 00:09:28">2025-07-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Redis-数据结构"><a href="#Redis-数据结构" class="headerlink" title="Redis 数据结构"></a>Redis 数据结构</h1><h2 id="SDS"><a href="#SDS" class="headerlink" title="SDS"></a>SDS</h2><p>SDS的出现主要是为了解决C语言字符串的三个问题</p>
+<ul>
+<li><strong>需要O(n)的时间复杂度获取字符串的长度</strong></li>
+<li><strong>无法动态拓展缓冲区</strong></li>
+<li><strong>二进制不安全</strong>(原本的c语言字符串只能存储文本)</li>
+</ul>
+<h3 id="SDS的结构"><a href="#SDS的结构" class="headerlink" title="SDS的结构"></a>SDS的结构</h3><p><img src="https://img-blog.csdnimg.cn/img_convert/516738c4058cdf9109e40a7812ef4239.png"></p>
+<ul>
+<li>alloc : 分配的空间长度, 通过这个属性 alloc - len能获取到剩余的空间</li>
+<li>flags : sds的类型, sdshdr5、sdshdr8、sdshdr16、sdshdr32 和 sdshdr64用处在节省内存空间那里</li>
+</ul>
+<h3 id="O-1-获取字符串的长度"><a href="#O-1-获取字符串的长度" class="headerlink" title="O(1)获取字符串的长度"></a>O(1)获取字符串的长度</h3><p>SDS中会额外记录字符串的长度</p>
+<h3 id="二进制安全"><a href="#二进制安全" class="headerlink" title="二进制安全"></a>二进制安全</h3><p>原本的C语言风格字符串是通过<code>\0</code>来标识字符串的结尾, 现在通过len长度来标识字符串的结尾, 这样也就没有二进制不安全的缺陷, 能够<strong>存储二进制文件</strong></p>
+<h3 id="动态扩容"><a href="#动态扩容" class="headerlink" title="动态扩容"></a>动态扩容</h3><p>和ArrayList之类的集合类一样, 会在缓冲区空间不足的时候, 自动进行扩容</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">hisds <span class="title function_">hi_sdsMakeRoomFor</span><span class="params">(hisds s, <span class="type">size_t</span> addlen)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// s 目前的剩余空间已足够，无需扩展，直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (avail &gt;= addlen)</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    <span class="comment">//获取目前 s 的长度</span></span><br><span class="line">    len = hi_sdslen(s);</span><br><span class="line">    sh = (<span class="type">char</span> *)s - hi_sdsHdrSize(oldtype);</span><br><span class="line">    <span class="comment">//扩展之后 s 至少需要的长度</span></span><br><span class="line">    newlen = (len + addlen);</span><br><span class="line">    <span class="comment">//根据新长度，为 s 分配新空间所需要的大小</span></span><br><span class="line">    <span class="keyword">if</span> (newlen &lt; HI_SDS_MAX_PREALLOC)</span><br><span class="line">        <span class="comment">//新长度&lt;HI_SDS_MAX_PREALLOC 则分配所需空间*2 的空间</span></span><br><span class="line">        newlen *= <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="comment">//否则，分配长度为目前长度 +1MB</span></span><br><span class="line">        newlen += HI_SDS_MAX_PREALLOC;</span><br><span class="line">       ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>当申请的最小空间 &lt; 1MB的时候, 会申请两倍的最小空间</strong></li>
+<li><strong>当申请的最小空间 &gt;&#x3D; 1MB的时候, 会申请最小空间 + 1MB的内存空间</strong></li>
+</ul>
+<p>在拓展SDS内存空间之前还会检查 [未使用空间]的大小, 如果不够SDS分配修改需要的空间, 还会执行分配SDS额外的 [未使用空间]</p>
+<p>这样做的好处是能<strong>减少内存分配的次数</strong>, 就像建立了一个内存的缓冲池一样</p>
+<h3 id="节省内存空间"><a href="#节省内存空间" class="headerlink" title="节省内存空间"></a>节省内存空间</h3><p>SDS中的flags属性标识了这个flags的类型有五种类型 : sdshdr5、sdshdr8、sdshdr16、sdshdr32 和 sdshdr64</p>
+<p>这五种类型之间的区别就是SDS头的<strong>len和alloc属性的数据类型(长度)不一样</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="type">uint16_t</span> len;</span><br><span class="line">    <span class="type">uint16_t</span> alloc; </span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags; </span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> len;</span><br><span class="line">    <span class="type">uint32_t</span> alloc; </span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags;</span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>不同的len和alloc的长度, 限定了这个字符串的长度</p>
+<p>这样的设计能够灵活地适应不同长度的字符串, 有效<strong>减少占用的内存空间</strong></p>
+<p>同时<code>__attribute__ ((__packed__))</code>还能阻止编译过程的优化对齐导致的结构体中的属性不紧凑, 从而进一步的节省内存空间, 按照实际占用的字节数对齐</p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>就是简单的双向链表</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//前置节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">prev</span>;</span></span><br><span class="line">    <span class="comment">//后置节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">next</span>;</span></span><br><span class="line">    <span class="comment">//节点的值</span></span><br><span class="line">    <span class="type">void</span> *value;</span><br><span class="line">&#125; listNode;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">list</span> &#123;</span></span><br><span class="line">    <span class="comment">//链表头节点</span></span><br><span class="line">    listNode *head;</span><br><span class="line">    <span class="comment">//链表尾节点</span></span><br><span class="line">    listNode *tail;</span><br><span class="line">    <span class="comment">//节点值复制函数</span></span><br><span class="line">    <span class="type">void</span> *(*dup)(<span class="type">void</span> *ptr);</span><br><span class="line">    <span class="comment">//节点值释放函数</span></span><br><span class="line">    <span class="type">void</span> (*<span class="built_in">free</span>)(<span class="type">void</span> *ptr);</span><br><span class="line">    <span class="comment">//节点值比较函数</span></span><br><span class="line">    <span class="type">int</span> (*match)(<span class="type">void</span> *ptr, <span class="type">void</span> *key);</span><br><span class="line">    <span class="comment">//链表节点数量</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> len;</span><br><span class="line">&#125; <span class="built_in">list</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/img_convert/cadf797496816eb343a19c2451437f1e.png"></p>
+<h3 id="优势和缺陷"><a href="#优势和缺陷" class="headerlink" title="优势和缺陷"></a>优势和缺陷</h3><p>优点</p>
+<ul>
+<li>双向的链表, 获取某个节点的前置或者后置节点的时间复杂度是O(1)</li>
+<li>获取头尾节点的时间复杂度是O(1)</li>
+<li>获取节点数量的时间复杂度是O(1)</li>
+<li>数据的类型是void*, 所以能够保存不同类型的数据</li>
+</ul>
+<p>缺陷</p>
+<ul>
+<li>申请的内存是不保证连续的, 不能很好地利用CPU缓存 (因此有了压缩列表)</li>
+<li>前驱后置节点带来了额外的内存开销</li>
+</ul>
+<h2 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h2><p>为了节省内存而开发的, <strong>连续内存块组成的顺序型数据结构</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/a3b1f6235cf0587115b21312fe60289c.png"></p>
+<ul>
+<li><p>zlbytes : 整个压缩列表占用的字节数</p>
+</li>
+<li><p>zltail : 记录压缩列表尾部的节点距离起始地址的偏移量, 用于快速访问尾部节点</p>
+</li>
+<li><p>zllen : 记录压缩列表的节点数量</p>
+</li>
+<li><p>zlend : 标志压缩列表的结束点, 固定值 0xFF</p>
+</li>
+<li><p>entry : 压缩列表的节点</p>
+<ul>
+<li>prevlen : 记录前一个节点占用的字节数, 用于从后往前遍历</li>
+<li>encoding : 记录了数据数据类型和长度</li>
+<li>data : 记录了当前节点的实际数据</li>
+</ul>
+</li>
+</ul>
+<h3 id="prevlen和encoding"><a href="#prevlen和encoding" class="headerlink" title="prevlen和encoding"></a>prevlen和encoding</h3><p>这两个节点是根据数据的大小和类型动态分配内存空间</p>
+<blockquote>
+<p> prevlen </p>
+</blockquote>
+<ul>
+<li>如果前一个节点的<strong>长度(这里包括三个属性) 小于254字节,prevlen属性占用1个字节</strong></li>
+<li>如果前一个节点的<strong>长度大于等于254字节, prevlen属性占用5个字节</strong></li>
+</ul>
+<blockquote>
+<p>encoding</p>
+</blockquote>
+<p>encoding会根据存储的数据类型和长度动态分配内存空间, 主要分为<strong>字符串</strong>和<strong>整数</strong>两类</p>
+<ul>
+<li>如果是整数会根据整数的长度存储不同内容, <strong>encoding属性占用一个字节</strong></li>
+<li>如果是字符串, 会根据字符串的长度分配内存, <strong>encoding存储字符串的长度</strong>, <strong>长度小于等于63&#x2F;小于等于2^14-1&#x2F;小于等于2^32-1</strong>, 分别分配<strong>1字节&#x2F;2字节&#x2F;5字节的空间</strong>进行编码</li>
+</ul>
+<h3 id="连锁更新"><a href="#连锁更新" class="headerlink" title="连锁更新"></a>连锁更新</h3><p>压缩列表新增某个元素或者修改某个元素的时候, 如果内存空间不够, 就需要更新节点重新分配内存. 但是当更新的节点较大的时候, 可能会导致后续元素的prevlen都发生变化, 从1字节变化到5字节, 引起连锁更新</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/1f0e5ae7ab749078cadda5ba0ed98eac.png"></p>
+<h3 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h3><ul>
+<li><p>访问元素本质上是O(n)的时间复杂度, 如果节点数量多了以后, 性能会下降</p>
+</li>
+<li><p>同时连锁更新的问题会影响写入性能</p>
+</li>
+</ul>
+<p>也是针对这些设计上的缺陷, 后面引入了quicklist和listpack</p>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p>Redis中的哈希表采用的是<strong>链式哈希</strong>来解决哈希冲突</p>
+<h3 id="Hash的结构"><a href="#Hash的结构" class="headerlink" title="Hash的结构"></a>Hash的结构</h3><p>哈希表数据结构</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    <span class="comment">//哈希表数组</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="comment">//哈希表大小</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size;  </span><br><span class="line">    <span class="comment">//哈希表大小掩码，用于计算索引值</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask;</span><br><span class="line">    <span class="comment">//该哈希表已有的节点数量</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used;</span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
+
+<p>哈希表表项数据结构</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="comment">//键值对中的键</span></span><br><span class="line">    <span class="type">void</span> *key;</span><br><span class="line">  </span><br><span class="line">    <span class="comment">//键值对中的值</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="type">void</span> *val;</span><br><span class="line">        <span class="type">uint64_t</span> u64;</span><br><span class="line">        <span class="type">int64_t</span> s64;</span><br><span class="line">        <span class="type">double</span> d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="comment">//指向下一个哈希表节点，形成链表</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; dictEntry;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/img_convert/dc495ffeaa3c3d8cb2e12129b3423118.png" alt="哈希表结构"></p>
+<p>简单来说dictht中存有table和size属性, table指向dictEntry表, 也就是hash映射表, 每个表项也指向dictEntry也就是真实的数据</p>
+<p>dictEntry中的value使用 <strong>联合体</strong>存储, 这样在存储数值型value的时候, 可以直接存在hash表中, 不需要额外创建一个指针</p>
+<h3 id="哈希冲突"><a href="#哈希冲突" class="headerlink" title="哈希冲突"></a>哈希冲突</h3><p>从key到table中的索引的转换过程 : <code>hash(key) % size</code><br>如果两个不同的key在经过转换以后得到了相同的索引, 这个时候就发生了哈希冲突<br>链式哈希就是将, <strong>被分配到同一个哈希桶上的多个节点用单向链表链接起来</strong></p>
+<p>链式哈希有个明显的缺点, 就是<strong>hash表的查找性能会向O(n)退化</strong><br>在这个时候, 就要进行<strong>rehash</strong>, 重新建立hash表</p>
+<h3 id="rehash"><a href="#rehash" class="headerlink" title="rehash"></a>rehash</h3><blockquote>
+<p>Redis是怎么进行的rehash</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    …</span><br><span class="line">    <span class="comment">//两个 Hash 表，交替使用，用于 rehash 操作</span></span><br><span class="line">    dictht ht[<span class="number">2</span>]; </span><br><span class="line">    …</span><br><span class="line">&#125; dict;</span><br></pre></td></tr></table></figure>
+
+<p>Redis为一个hash表数据类型会建立两个哈希表(dickht)<br><img src="https://img-blog.csdnimg.cn/img_convert/2fedbc9cd4cb7236c302d695686dd478.png" alt="两个哈希"></p>
+<p>执行的过程</p>
+<ol>
+<li>为第二个hash表分配内存, 一般是原来的两倍</li>
+<li>将表1的数据拷贝到表二中</li>
+<li>拷贝完成以后, 将表1释放, 将表2设置为表1, 重新创建一个空的表2</li>
+</ol>
+<blockquote>
+<p>渐进式rehash</p>
+</blockquote>
+<p>如果像上面一样进行rehash, 一次性将所有节点都重新拷贝到新的hash表中, 那么在hash表的节点数量很多的时候, 拷贝的开销很大, 这个时候就会造成redis主线程的阻塞</p>
+<p>所以在Redis中, rehash采用了 <strong>渐进式rehash</strong>, 不再一次性完成, 而是在需要rehash的时候, 进入到rehash时期, 在这个时期内</p>
+<ul>
+<li>不再对原hash表1进行插入操作, 所有的新增项, 将所有的项插入到表2</li>
+<li>不是一次性迁移, 而是在执行插入, 更新, 查询, 删除的时候, 将整个hash桶上的key-value迁移到表2上</li>
+<li>在执行查询操作的时候, 会优先从表1中查询, 如果没有查询到, 会从表2中查询</li>
+</ul>
+<blockquote>
+<p>什么时候进行rehash呢?</p>
+</blockquote>
+<p>根据负载因子来看 : 负载因子 &#x3D; 哈希表中保存的节点数量 &#x2F; 哈希表的大小</p>
+<ul>
+<li>如果负载因子 &gt;&#x3D; 1, 并且没有进行bgsave与bgwriteaof的时候, 进行rehash操作</li>
+<li>如果负载因子 &gt; 5, 不管是不是在执行AOF重写或者RDB快照, 都会执行rehash操作</li>
+</ul>
+<h2 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h2><p>整数集合是Set数据类型在存储的数据类型是整数, 并且元素数量不多的时候, 采用的底层实现, 之所以采用这个实际查询性能是O(n)的数据结构, 是因为其紧凑连续的内存布局, 能减少内存的占用, 同时能有效利用CPU的缓存局部性, 实际的性能并不差</p>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">intset</span> &#123;</span></span><br><span class="line">    <span class="comment">//编码方式</span></span><br><span class="line">    <span class="type">uint32_t</span> encoding;</span><br><span class="line">    <span class="comment">//集合包含的元素数量</span></span><br><span class="line">    <span class="type">uint32_t</span> length;</span><br><span class="line">    <span class="comment">//保存元素的数组</span></span><br><span class="line">    <span class="type">int8_t</span> contents[];</span><br><span class="line">&#125; intset;</span><br></pre></td></tr></table></figure>
+
+<p>虽然contents数组的类型是int8_t, 但是实际上contents的类型由encoding来决定</p>
+<ul>
+<li>encoding的值为INT_SET_ENC_INT16的时候contents的类型为int16_t</li>
+<li>encoding的值为INT_SET_ENC_INT32的时候contents的类型为int32_t</li>
+<li>encoding的值为INT_SET_ENC_INT64的时候contents的类型为int64_t</li>
+</ul>
+<h3 id="升级操作"><a href="#升级操作" class="headerlink" title="升级操作"></a>升级操作</h3><p>当存入了数据长度大于encoding中的编码的时候, 会进行升级操作, <strong>修改encoding, 并将数组中所有元素的类型都进行升级</strong></p>
+<ol>
+<li>计算需要的额外的内存空间并进行扩容操作</li>
+<li>数据迁移</li>
+<li>将新的数据存入</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/e84b052381e240eeb8cc97d6b729968b.png" alt="升级操作"></p>
+<p>升级操作能有效地节省内存, 同时又能适应存储大数据的需求<br><strong>一旦升级, 没有降级操作, 删除了大数据也不会降级</strong></p>
+<h2 id="跳表"><a href="#跳表" class="headerlink" title="跳表"></a>跳表</h2><h3 id="数据结构-1"><a href="#数据结构-1" class="headerlink" title="数据结构"></a>数据结构</h3><p>zset由 <strong>跳表 + 哈希表</strong>实现, 其中跳表能有效支持范围查询, 而哈希表能提升单点查询的性能, 也是ZSCORE能在O(1)的时间复杂度下查找到一个filed对应的score</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span> &#123;</span></span><br><span class="line">    dict *dict;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//Zset 对象的元素值</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="comment">//元素权重值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后向指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">  </span><br><span class="line">    <span class="comment">//节点的 level 数组，保存每层上的前向指针和跨度</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">long</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
+
+<p>跳表能在O(logN)的时间复杂度的时间复杂度下进行查询操作, 这里的查询是指基于范围的查找, 比如说我要查找到分数是12-12的节点(基于filed的查找由哈希表实现)<br>跳表之所以能在logN的时间复杂度下查询主要就是因为跳表中的level层高的设计, 让便利链表不再是需要逐个访问, 而是能够跳跃访问</p>
+<h3 id="跳表执行查询的过程"><a href="#跳表执行查询的过程" class="headerlink" title="跳表执行查询的过程"></a>跳表执行查询的过程</h3><p>跳表执行查询的时候, 会从头节点的最高层开始, 会根据以下两个标准来判断是访问当前层的下一个节点还是访问下一层</p>
+<ul>
+<li>如果当前层的下一个节点的权重小于需要查询的权重的时候, 跳表会访问当前层的下一个几点</li>
+<li>如果当前层的下一个节点的权重等于需要查询的权重的时候, 如果下一个节点的SDS值小于需要查询的数据的时候, 会访问下一层的节点</li>
+</ul>
+<p>如果都不满足或者当前层指向null, 则访问当前节点的下一层</p>
+<p><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/3%E5%B1%82%E8%B7%B3%E8%A1%A8-%E8%B7%A8%E5%BA%A6.drawio.png"></p>
+<p>我们现在要访问abcd 4</p>
+<ol>
+<li>从头节点的最高层L2出发, 因为当前层的下一个节点的score &#x3D; 3 &lt; 4, 访问下一个节点</li>
+<li>从该节点的最高层level[2]触发, 访问到null, 访问下一层</li>
+<li>下一层的权重等于4, 但是sds元素的大小 &gt; abcd, 不符合, 访问下一层</li>
+<li>level[0]的下一个节点的权重 &#x3D;&#x3D; 4, 同时元素值 &#x3D;&#x3D; abcd, 找到了符合要求的节点</li>
+</ol>
+<h3 id="跳表是如何实现的logN的查询"><a href="#跳表是如何实现的logN的查询" class="headerlink" title="跳表是如何实现的logN的查询"></a>跳表是如何实现的logN的查询</h3><p>在最开始的时候, 看小林coding的图示, 以为跳表只有三层, 那么最快的情况, 需要查询的节点都在最高层, 那么查询时间复杂度也不过是n&#x2F;3, 并没有做到logN</p>
+<blockquote>
+<p>那么怎么设置层高能实现logN的时间复杂度呢?</p>
+</blockquote>
+<p>假设元素的数量是n, 层高为L, 新增一层的概率为p, 我们从执行查询的时候查询路径分析</p>
+<p>想象跳表就是一个金字塔, 一共有L层, P(层高 &gt;&#x3D; n) &#x3D; p^(n-1)</p>
+<ul>
+<li>所以P(层高 &gt;&#x3D; 1) &#x3D; 1</li>
+<li>P(层高 &gt;&#x3D; 2) &#x3D; p</li>
+<li>P(层高 &gt;&#x3D; 3) &#x3D; p^2</li>
+<li>…</li>
+<li>P(层高 &gt;&#x3D; N) &#x3D; p^(N-1)</li>
+</ul>
+<p>所以节点在第一层的期望是 P(层高&gt;&#x3D;1) - P(层高&gt;&#x3D;2)</p>
+<p>在第i层的期望是P(层高&#x3D;&#x3D;i) &#x3D; P(层高&gt;&#x3D;i) - P(层高&gt;&#x3D;i+1) &#x3D; p^(i-1) - p^i</p>
+<p>**第i层的节点个数是$N * (p^{(i-1)} - p^i) &#x3D; N <em>(1-p)<em>p^{(i-1)}$</em></em></p>
+<p>设层高为L, 则$\sum_{i&#x3D;1}^{L} (p^{(i-1)} - p^i) &#x3D; 1$</p>
+<p>由等比数列的求和公式得 $1-p^L &#x3D; 1$, 但是这个公式只有在<strong>L趋近于inf 的时候才成立</strong>, 实际上的跳表的高度肯定不是无穷, 所以我们只能<strong>使用$N*(1-p)*p^{(L-1)}$这个期望值为1的项来近似1</strong></p>
+<p>所以<strong>最后的公式是$\sum_{i&#x3D;1}^{L} (p^{(i-1)} - p^i) &#x3D; N*(1-p)*p^{(L-1)}$</strong></p>
+<p>$1-p^L &#x3D; N*(p^{L-1} - p^L)$ 得到 **$L &#x3D; log_pN + C$也就是$**L &#x3D; O(log_2N)$</p>
+<p>从查询路径分析时间复杂度</p>
+<ul>
+<li>在第i层, 节点出现的概率是$p^{i-1}$</li>
+<li>在第i层, 相邻两个节点之间的距离是$1&#x2F;p^{(i-1)}$</li>
+<li>也就是从第i层出发, 大概每$1&#x2F;p^{(i-1)}$会遇到一个节点</li>
+<li><strong>第i+1层的两个节点之间, 第i层平均有1&#x2F;p个节点</strong></li>
+<li>也就是从第i+1层降到第i层的时候, 我们<strong>最多访问1&#x2F;p个节点</strong></li>
+</ul>
+<p>所以最后的时间复杂度 &#x3D; O(log_2N) + O(1&#x2F;p) &#x3D; O(log_2N)</p>
+<blockquote>
+<p>Redis中的p是多少</p>
+</blockquote>
+<p>理论上来讲p &#x3D; 1&#x2F;2是查询最快速的值, 但是实际上Redis取得是1&#x2F;4, 这里是内存效率和查询性能的平衡</p>
+<p>由一个节点的期望层高 &#x3D; $\sum_{i&#x3D;1}^{\inf} P_{L&gt;&#x3D;i} &#x3D; \sum_{i&#x3D;1}^{\inf} p^{(i-1)} &#x3D; 1*(1-p^{inf} ) &#x2F; (1-p) &#x3D; 1&#x2F;(1-p)$</p>
+<p>所以所有节点的期望总层高就是 N * 1&#x2F;(1-p), <strong>p越大, 层数越多, 要占用越多的内存</strong></p>
+<h3 id="跳表是的层高设置"><a href="#跳表是的层高设置" class="headerlink" title="跳表是的层高设置"></a>跳表是的层高设置</h3><p>跳表在<strong>创建节点的时候会生成一个[0,1]随机数, 如果随机数的大小 &lt;&#x3D; 0.25, 则层数增加一层, 循环直到最后随机数 &gt; 0.25为止</strong></p>
+<p>创建跳表的头节点的时候, <strong>如果层高的最大限制是64, 创建跳表的头节点的时候会直接创建64层高的头节点</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Create a new skiplist. */</span></span><br><span class="line">zskiplist *<span class="title function_">zslCreate</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">int</span> j;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line"></span><br><span class="line">    zsl = zmalloc(<span class="keyword">sizeof</span>(*zsl));</span><br><span class="line">    zsl-&gt;level = <span class="number">1</span>;</span><br><span class="line">    zsl-&gt;length = <span class="number">0</span>;</span><br><span class="line">    zsl-&gt;header = zslCreateNode(ZSKIPLIST_MAXLEVEL,<span class="number">0</span>,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; ZSKIPLIST_MAXLEVEL; j++) &#123;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].forward = <span class="literal">NULL</span>;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].span = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    zsl-&gt;header-&gt;backward = <span class="literal">NULL</span>;</span><br><span class="line">    zsl-&gt;tail = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> zsl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ZSKIPLIST_MAXLEVEL 定义的是最高的层数，Redis 7.0 定义为 32，Redis 5.0 定义为 64，Redis 3.0 定义为 32。</p>
+<h3 id="为什么使用跳表而不使用平衡树"><a href="#为什么使用跳表而不使用平衡树" class="headerlink" title="为什么使用跳表而不使用平衡树"></a>为什么使用跳表而不使用平衡树</h3><ul>
+<li>跳表在实现和维护上都是更加简单的</li>
+<li>内存开销更小, 每个节点的指针数量期望值为1&#x2F;(1-p) &#x3D; 4&#x2F;3而不是平衡树的2</li>
+<li>更新操作开销更小, BTree在更新节点的时候涉及到复杂的节点分裂合并和平衡操作</li>
+<li>天然支持范围查询, 只需要沿着底层链表遍历就行</li>
+<li>空间局部性更好, 更能利用CPU的高速缓存<ul>
+<li>跳表在Redis中采用了连续分配的内存块来存储节点, 而不是和传统的链表一样完全随机分配的链表节点</li>
+<li>B树节点内部是内存是连续的, 但是节点之间内存连续性是不保证的, 同时因为频繁的动态调整节点以维护平衡, 内存碎片和不连续会更进一步</li>
+</ul>
+</li>
+</ul>
+<h2 id="quicklist"><a href="#quicklist" class="headerlink" title="quicklist"></a>quicklist</h2><p>这个数据结构的出现主要是为了解决压缩列表的设计缺陷</p>
+<ul>
+<li>节点数量多了以后的查询性能差</li>
+<li>节点数量多了以后难以承受的连锁更新</li>
+</ul>
+<h3 id="数据结构-2"><a href="#数据结构-2" class="headerlink" title="数据结构"></a>数据结构</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">quicklist</span> &#123;</span></span><br><span class="line">    <span class="comment">//quicklist 的链表头</span></span><br><span class="line">    quicklistNode *head;      <span class="comment">//quicklist 的链表头</span></span><br><span class="line">    <span class="comment">//quicklist 的链表尾</span></span><br><span class="line">    quicklistNode *tail; </span><br><span class="line">    <span class="comment">//所有压缩列表中的总元素个数</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> count;</span><br><span class="line">    <span class="comment">//quicklistNodes 的个数</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> len;       </span><br><span class="line">    ...</span><br><span class="line">&#125; quicklist;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">quicklistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//前一个 quicklistNode</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">quicklistNode</span> *<span class="title">prev</span>;</span>     <span class="comment">//前一个 quicklistNode</span></span><br><span class="line">    <span class="comment">//下一个 quicklistNode</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">quicklistNode</span> *<span class="title">next</span>;</span>     <span class="comment">//后一个 quicklistNode</span></span><br><span class="line">    <span class="comment">//quicklistNode 指向的压缩列表</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *zl;              </span><br><span class="line">    <span class="comment">//压缩列表的的字节大小</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> sz;                </span><br><span class="line">    <span class="comment">//压缩列表的元素个数</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> count : <span class="number">16</span>;        <span class="comment">//ziplist 中的元素个数 </span></span><br><span class="line">    ....</span><br><span class="line">&#125; quicklistNode;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/img_convert/f46cbe347f65ded522f1cc3fd8dba549.png"></p>
+<p>quicklist的解决方案就是让压缩列表的节点数量控制在一定数量以内, 在添加一个元素的时候, 会先尝试检查插入位置的压缩列表能不能容纳该元素, 如果不能容纳就会创建一个新的压缩列表, 将新节点添加到新的压缩列表中</p>
+<h2 id="listpack"><a href="#listpack" class="headerlink" title="listpack"></a>listpack</h2><p>quicklist并不是解决了压缩列表中的连锁更新的问题, 只是控制了这个问题发生的时候的成本, 而listpack是确实实现了解决连锁更新的问题</p>
+<p>解决方式也很简单, 删除了entry中的prevlen属性将entry修改为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;encoding-type&gt;&lt;element-data&gt;&lt;element-tot-len&gt;</span><br></pre></td></tr></table></figure>
+
+<p>从原先的</p>
+<ul>
+<li>pervlen</li>
+<li>encoding</li>
+<li>contents</li>
+</ul>
+<p>变为</p>
+<ul>
+<li>encoding</li>
+<li>data</li>
+<li>backlen : encoding + data 的长度, 也就是只记录当前entry的元信息, 就不会导致连锁更新的问题</li>
+</ul>
+<h3 id="删除prevlen以后listpack是怎么同样实现向前遍历的"><a href="#删除prevlen以后listpack是怎么同样实现向前遍历的" class="headerlink" title="删除prevlen以后listpack是怎么同样实现向前遍历的?"></a>删除prevlen以后listpack是怎么同样实现向前遍历的?</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">                                  当前位置</span><br><span class="line">                                     ↓</span><br><span class="line">[Header][E1-type][E1-data][E1-backlen][E2-type][E2-data][E2-backlen][EOF]</span><br></pre></td></tr></table></figure>
+
+<p>我们怎么向前遍历E1?</p>
+<p>backlen的高位会有特殊的编码标识, 我们从当前位置向前读取字节, 也就是想低位读取字节</p>
+<ol>
+<li>如果最高位是<strong>0</strong>（即0xxxxxxx），表示这是一个1字节的backlen，直接表示0-127的长度值</li>
+<li>如果高两位是<strong>10</strong>（即10xxxxxx），表示这是一个2字节backlen的第一个字节</li>
+<li>如果高三位是<strong>110</strong>（即110xxxxx），表示这是一个3字节backlen的第一个字节</li>
+<li>如果高四位是<strong>1110</strong>（即1110xxxx），表示这是一个4字节backlen的第一个字节</li>
+<li>如果高五位是<strong>11110</strong>（即11110xxx），表示这是一个5字节backlen的第一个字节</li>
+</ol>
+<p>第一次读取到了这样的特殊的编码标识, 就说明我们已经读取完了backlen, 就能完整得到backlen的值 </p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io">Fun</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">https://fang-tech.github.io/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://fang-tech.github.io" target="_blank">窄门</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%BA%94%E7%94%A8/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">Redis中的数据结构String数据类型详解String类型使用的核心数据结构是SDS(简单动态字符串), 这种存储字符串的方式相比于c原生字符串的优点是  能动态拓展缓冲区, 保证不会在拓展字符串的时候不会缓冲区溢出 能以O(1)的时间复杂度获取到字符串的长度 : SDS数据结构会记录字符串的长度 能存储二进制数据 : 不再通过’\0’作为字符串的结尾标识符, 而是通过len来标记字符串该在什么时候结束, 内部的数据都是以二进制的形式存储, 所以不光能存储文本, 还能存储视频, 图片等数据  这个数据类型的最大存储容量是512M 这个数据类型内部编码有三种 : 用于存储数字的INT, 存储非数字的embstr, raw  INT : 在string类型中的数据是数字, 并且数字能使用long类型存储, 这个时候就会采用INT内部编码, 会将整数值保存在字符换对象结构里的ptr属性值里 embstr : 在字符串的长度 &lt;&#x3D; 32字节(不是字符) (redis2.x) 的时候, 会将对象的编码设置成embstr raw : 在字符串的长度 &gt; 32字节的时...</div></div></div></a><a class="pagination-related" href="/2025/07/08/middle_ware/Redis/%E6%8C%81%E4%B9%85%E5%8C%96/RDB/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">RDB快照RDB快照是怎么实现的和AOF文件记录的是操作命令不同, RDB文件是直接记录的某一个瞬间的Redis中的内存数据, 是实际的数据  AOF记录的是操作命令 RDB记录的是二进制数据  因此, 在恢复数据的时候, RDB的效率高于AOF 快照是怎么生成的Redis提供了两个命令来生成快照  save命令 : 是在主进程进行的, 也就是会阻塞主进程 bgsave命令 : 在后台子进程执行, 避免了阻塞主进程  RDB的加载工作是服务器在启动的时候自动加载的, 并没有额外的命令对应 可以通过配置redis.conf文件来定时自动执行RDB快照记录, 默认会提供以下的配置 123save 900 1save 300 10save 60 10000   900秒内, 对数据库至少进行了1次修改 300秒内, 对数据库至少进行了10次修改 60秒内, 对数据库至少进行了10000次修改  这里虽然标识的是save, 但是实际上执行的是bgsave命令 RDB是全量快照, 所以开销很高, 不能频繁进行, 使用RDB快照恢复, 一般来说在服务器宕机以后, 有更高的风险丢失更多的数据 ...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fun</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">239</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">Redis 数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SDS"><span class="toc-number">1.1.</span> <span class="toc-text">SDS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SDS%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.1.</span> <span class="toc-text">SDS的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#O-1-%E8%8E%B7%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E9%95%BF%E5%BA%A6"><span class="toc-number">1.1.2.</span> <span class="toc-text">O(1)获取字符串的长度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">二进制安全</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E6%89%A9%E5%AE%B9"><span class="toc-number">1.1.4.</span> <span class="toc-text">动态扩容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%9C%81%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4"><span class="toc-number">1.1.5.</span> <span class="toc-text">节省内存空间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8"><span class="toc-number">1.2.</span> <span class="toc-text">链表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF%E5%92%8C%E7%BC%BA%E9%99%B7"><span class="toc-number">1.2.1.</span> <span class="toc-text">优势和缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="toc-number">1.3.</span> <span class="toc-text">压缩列表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#prevlen%E5%92%8Cencoding"><span class="toc-number">1.3.1.</span> <span class="toc-text">prevlen和encoding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E9%94%81%E6%9B%B4%E6%96%B0"><span class="toc-number">1.3.2.</span> <span class="toc-text">连锁更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%99%B7"><span class="toc-number">1.3.3.</span> <span class="toc-text">缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="toc-number">1.4.</span> <span class="toc-text">哈希表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.1.</span> <span class="toc-text">Hash的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81"><span class="toc-number">1.4.2.</span> <span class="toc-text">哈希冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rehash"><span class="toc-number">1.4.3.</span> <span class="toc-text">rehash</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="toc-number">1.5.</span> <span class="toc-text">整数集合</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.5.1.</span> <span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7%E6%93%8D%E4%BD%9C"><span class="toc-number">1.5.2.</span> <span class="toc-text">升级操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8"><span class="toc-number">1.6.</span> <span class="toc-text">跳表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-1"><span class="toc-number">1.6.1.</span> <span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8%E6%89%A7%E8%A1%8C%E6%9F%A5%E8%AF%A2%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">1.6.2.</span> <span class="toc-text">跳表执行查询的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84logN%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.6.3.</span> <span class="toc-text">跳表是如何实现的logN的查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8%E6%98%AF%E7%9A%84%E5%B1%82%E9%AB%98%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.6.4.</span> <span class="toc-text">跳表是的层高设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%A1%A8%E8%80%8C%E4%B8%8D%E4%BD%BF%E7%94%A8%E5%B9%B3%E8%A1%A1%E6%A0%91"><span class="toc-number">1.6.5.</span> <span class="toc-text">为什么使用跳表而不使用平衡树</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#quicklist"><span class="toc-number">1.7.</span> <span class="toc-text">quicklist</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-2"><span class="toc-number">1.7.1.</span> <span class="toc-text">数据结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#listpack"><span class="toc-number">1.8.</span> <span class="toc-text">listpack</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4prevlen%E4%BB%A5%E5%90%8Elistpack%E6%98%AF%E6%80%8E%E4%B9%88%E5%90%8C%E6%A0%B7%E5%AE%9E%E7%8E%B0%E5%90%91%E5%89%8D%E9%81%8D%E5%8E%86%E7%9A%84"><span class="toc-number">1.8.1.</span> <span class="toc-text">删除prevlen以后listpack是怎么同样实现向前遍历的?</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/3-%E5%8A%A8%E6%80%81%E9%99%90%E6%B5%81/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.870Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/1-DCC/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.868Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%9C%AA%E7%90%86%E8%A7%A3%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.857Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/deployment/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.856Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Fun</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

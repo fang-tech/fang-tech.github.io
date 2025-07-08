@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>窄门</title><meta name="author" content="Fun"><meta name="copyright" content="Fun"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="窄门">
+<meta property="og:url" content="https://fang-tech.github.io/page/4/index.html">
+<meta property="og:site_name" content="窄门">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fang-tech.github.io/img/butterfly-icon.png">
+<meta property="article:author" content="Fun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang-tech.github.io/img/butterfly-icon.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://fang-tech.github.io/page/4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '窄门',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">窄门</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">窄门</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E9%9B%86%E7%BE%A4/%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.773Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">主从复制是怎么实现的保证高可用的核心就是多副本构建, 冗余, 这样才能在其中一个实例出现问题的时候, 通过其他的副本恢复服务 Redis通过主从复制来保证高可用 构建了多副本以后就需要面临以下问题  如何进行副本和主实例之间的数据同步 数据的读写是主服务器和副服务器都可以操作的吗   Redis的主从复制模式  只有主服务器能写数据, 其他的从服务器只能读数据 主服务器发生写操作的时候, 会自动将写操作同步给从服务器  第一次同步通过replicaof(Redis5.0之前是slaveof)命令构建主服务器和从服务器之间的关系 12# 服务器B执行这条命令replicaof &lt;服务器A IP&gt; &lt; 服务器A Redis端口号&gt;  接着服务器B就会变成服务器A的从服务器 主从服务器之间的第一次同步可以分为三步  第一步 : 建立链接, 协商同步 第二步 : 主服务器同步数据给从服务器 第三步 : 主服务器发送新写操作给从服务器   建立链接, 协商同步从服务器发送 psync命令给主服务器, 表示要进行数据同步 psync &#123;runID&#125;...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E7%BC%93%E5%AD%98/Redis%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%BC%93%E5%AD%98%E5%A6%82%E4%BD%95%E4%BF%9D%E6%8C%81%E4%B8%80%E8%87%B4%E6%80%A7/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.769Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">Redis数据库和缓存如何保证一致性先更新缓存还是先更新数据库注意, 这里说的不是删除缓存, 而是更新缓存, 最后的结论是, 不管是先更新缓存还是先更新数据库, 都会因为并发出现数据库和缓存中数据不一致的情况 先更新缓存 先更新数据库 先更新数据库还是先删除缓存这里的内容在 中的常见缓存更新策略中能看到 这里是想说下在旁路缓存的方式中, 过期时间的用处 通过设置过期时间, 能保证在更新一定时间以后, 一定能保证缓存数据和数据库数据的一致性, 因为可能删除缓存这个操作会出现错误 补充 (一些保护手段)如果业务对缓存的命中率有一定的要求, 这个时候先更新数据库再更新缓存的策略其实是更好的选择, 那么如何在这样的策略下保证数据的一致性呢  在更新缓存前加上一个分布式锁 : 将[更新数据库 + 更新缓存]从线程的角度来看视作一个互斥操作, 这样就能保证数据库和缓存中的数据的一致性 在更新完缓存以后, 为缓存加上一个较短的过期时间, 这样能兜底保证业务中的数据一致性  如何保证两个操作都能执行成功不论是先删除缓存 + 更新数据库还是先更新数据库 + 删除缓存都会因为第二个操作失败而导致数据...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%BA%94%E7%94%A8/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.765Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">Redis中的数据结构String数据类型详解String类型使用的核心数据结构是SDS(简单动态字符串), 这种存储字符串的方式相比于c原生字符串的优点是  能动态拓展缓冲区, 保证不会在拓展字符串的时候不会缓冲区溢出 能以O(1)的时间复杂度获取到字符串的长度 : SDS数据结构会记录字符串的长度 能存储二进制数据 : 不再通过’\0’作为字符串的结尾标识符, 而是通过len来标记字符串该在什么时候结束, 内部的数据都是以二进制的形式存储, 所以不光能存储文本, 还能存储视频, 图片等数据  这个数据类型的最大存储容量是512M 这个数据类型内部编码有三种 : 用于存储数字的INT, 存储非数字的embstr, raw  INT : 在string类型中的数据是数字, 并且数字能使用long类型存储, 这个时候就会采用INT内部编码, 会将整数值保存在字符换对象结构里的ptr属性值里 embstr : 在字符串的长度 &lt;&#x3D; 32字节(不是字符) (redis2.x) 的时候, 会将对象的编码设置成embstr raw : 在字符串的长度 &gt; 32字节的时...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/Redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.763Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">Redis 数据结构SDSSDS的出现主要是为了解决C语言字符串的三个问题  需要O(n)的时间复杂度获取字符串的长度 无法动态拓展缓冲区 二进制不安全(原本的c语言字符串只能存储文本)  SDS的结构  alloc : 分配的空间长度, 通过这个属性 alloc - len能获取到剩余的空间 flags : sds的类型, sdshdr5、sdshdr8、sdshdr16、sdshdr32 和 sdshdr64用处在节省内存空间那里  O(1)获取字符串的长度SDS中会额外记录字符串的长度 二进制安全原本的C语言风格字符串是通过\0来标识字符串的结尾, 现在通过len长度来标识字符串的结尾, 这样也就没有二进制不安全的缺陷, 能够存储二进制文件 动态扩容和ArrayList之类的集合类一样, 会在缓冲区空间不足的时候, 自动进行扩容 1234567891011121314151617181920hisds hi_sdsMakeRoomFor(hisds s, size_t addlen)&#123;    ... ...    // s 目前的剩余空间已足够，无需扩展，直接返回...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E6%8C%81%E4%B9%85%E5%8C%96/RDB/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.760Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">RDB快照RDB快照是怎么实现的和AOF文件记录的是操作命令不同, RDB文件是直接记录的某一个瞬间的Redis中的内存数据, 是实际的数据  AOF记录的是操作命令 RDB记录的是二进制数据  因此, 在恢复数据的时候, RDB的效率高于AOF 快照是怎么生成的Redis提供了两个命令来生成快照  save命令 : 是在主进程进行的, 也就是会阻塞主进程 bgsave命令 : 在后台子进程执行, 避免了阻塞主进程  RDB的加载工作是服务器在启动的时候自动加载的, 并没有额外的命令对应 可以通过配置redis.conf文件来定时自动执行RDB快照记录, 默认会提供以下的配置 123save 900 1save 300 10save 60 10000   900秒内, 对数据库至少进行了1次修改 300秒内, 对数据库至少进行了10次修改 60秒内, 对数据库至少进行了10000次修改  这里虽然标识的是save, 但是实际上执行的是bgsave命令 RDB是全量快照, 所以开销很高, 不能频繁进行, 使用RDB快照恢复, 一般来说在服务器宕机以后, 有更高的风险丢失更多的数据 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E6%8C%81%E4%B9%85%E5%8C%96/big-key%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.758Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">Big-Key对持久化的影响对AOF日志写入的影响Big-Key对AOF日志写入的影响是在执行fsync()函数的时候, big-key会导致长时间的阻塞 这里得分三种情况讨论, 也就是AOF选用的三种策略  Always : 这个时候每写入一条命令就会立刻同步执行fsync(), big-key会造成阻塞 Everysec : 因为fsync()是异步执行的, 所以不会造成阻塞, 没有影响 No : 同样不会有影响  对AOF重写和RDB的影响对这两个过程的影响主要是在两个过程中  创建子进程的时候需要复制页表, big-key会导致页表的增大, 最后延长了fork的时间 在执行修改big-key的时候, 写时复制会导致的长时间的阻塞复制  除了持久化方面的影响, 其他方面的影响 客户端阻塞超时, 阻塞工作线程 : 操作big-key的时候会比较耗时 引发网络阻塞 : 每次获取big-key的时候产生的网络流量较大 内存分布不均匀: 在slot分片均匀情况下, 会出现数据和查询倾斜的情况, 部分big-key的Redis节点占用内存多, QPS也较大  如何避免big-key呢...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E6%8C%81%E4%B9%85%E5%8C%96/aof/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.756Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">AOF持久化什么是AOF持久化AOF持久化是Redis持久化数据的一种方式, 通过每进行写命令, 将这条命令写入到AOF appendonly.aof文件中, 这样在Redis重启的时候, 就能通过重新执行aof文件中的写命令恢复数据  AOF持久化需要在redis.conf主动开启 123//redis.confappendonly yes // 默认关闭appendfilename &quot;appendonly.aof&quot; // AOF持久化文件名  写入到AOF文件中的命令会经过再一次的编码 Redis执行写AOF日志的时机 执行写日志的时机是在Redis执行客户端发送过来的命令之后, 这样做有两大好处  不会阻塞当前命令的执行, 但是实际上会阻塞下一条命令的执行 如果先执行写入日志, 在命令错误以后, 就需要将命令从AOF文件中删除, 带来了额外的开销, 如果在写日志中进行检查, 就会带来额外的检查开销, 而先执行命令, 就能在命令错误的时候不再写入到AOF日志中  但是这个时机也带来了问题  执行写操作和记录日志是两个过程, 也就是会出现AOF磁盘文件和缓存...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E5%8A%9F%E8%83%BD/%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.753Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">Redis过期删除策略和内存淘汰策略Redis如何设置过期时间? 给已有的key设置过期时间   expire &lt;key&gt; &lt;time&gt;  : 单位是s, 在time秒后过期 pexpire &lt;key&gt; &lt;time&gt; : 单位是ms, 在time毫秒以后过期 expireat &lt;key&gt; &lt;timestamp&gt; : 在timestamp(精确到秒)时刻后过期 pexpireat &lt;key&gt; &lt;timestamp&gt; : 在timestamp(精确到毫秒)时刻后过期   在创建可以的时候设置过期时间   set &lt;key&gt; &lt;value&gt; ex &lt;time&gt; set &lt;key&gt; &lt;value&gt; px &lt;time&gt; setex &lt;key&gt; &lt;time&gt; &lt;value&gt;   查看某个key过期时间还剩多少   ttl key   取消key的过期时间   PERISIST &lt;key...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/redis%E9%9D%A2%E8%AF%95%E9%A2%98/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.750Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">Redis面试题为什么使用Redis为什么选用Redis作为MySQL数据库的缓存?Redis过期删除与缓存淘汰策略Redis使用的过期删除策略是什么?Redis中可以为key设置过期时间, Redis中有单独的一张表用于记录每个key的过期时间 对于删除操作, Redis中有 懒惰删除 和 定期删除 两种策略  懒惰删除 : Redis会在下一次使用到这个key的时候, 先去检查这个key是不是再过期时间表中, 如果在并且已经过期了, 就会将这个key删除, 也就是从内存中释放 优点 : 对CPU时间友好, 占用CPU的时间更少 缺点 : 对缓存不友好, 没有被使用到的key会一直占用内存, 即使它已经过期了   定期删除 : 为了补足上面懒惰删除中某些没有被使用的过期key会一直占用内存的问题, Redis还有定期删除的设置, Redis会定期抽取一定数量的key, 并检查它们是不是过期了, 过期了就删除. 如果(过期的key &#x2F; 所有检查的key) &gt; 25%, 就会立马开启下一轮检查, 因为这个时候说明redis中有很多过期的key. 否则则等待下一轮检查...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/Redis%20Task/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.749Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">Redis  Redis数据库缓存缓存一致性保证  Redis面试  Redis面试的后半部分  Redis面试的前半部分  制作复习问题卡片    Redis数据结构  Redis数据类型和常用命令以及场景  数据结构  制作数据类型的复习问题卡片  制作数据结构的复习问题卡片    Redis中过期删除策略和内存淘汰策略  制作复习问题卡片  Redis中的过期删除策略和内存淘汰策略    持久化  AOF  RDB  大key存储对持久化的影响  制作复习问题卡片    集群  制作复习问题卡片  缓存问题 : 缓存击穿, 雪崩, 传透  主从复制时怎么实现的  哨兵机制  为大营销添加上哨兵和主从复制  检查大营销中的缓存问题    </div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/3/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#content-inner">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#content-inner">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/#content-inner">24</a><a class="extend next" rel="next" href="/page/5/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fun</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">239</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/3-%E5%8A%A8%E6%80%81%E9%99%90%E6%B5%81/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.870Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/1-DCC/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.868Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%9C%AA%E7%90%86%E8%A7%A3%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.857Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/deployment/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.856Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/package-management/" style="font-size: 1.1em; color: #999">package-management</a> <a href="/tags/ES6/" style="font-size: 1.1em; color: #999">ES6</a> <a href="/tags/Servlet/" style="font-size: 1.1em; color: #999">Servlet</a> <a href="/tags/backend/" style="font-size: 1.26em; color: #999fa8">backend</a> <a href="/tags/frontend/" style="font-size: 1.34em; color: #99a3b0">frontend</a> <a href="/tags/HTML/" style="font-size: 1.1em; color: #999">HTML</a> <a href="/tags/Listener/" style="font-size: 1.1em; color: #999">Listener</a> <a href="/tags/Java/" style="font-size: 1.5em; color: #99a9bf">Java</a> <a href="/tags/JavaWeb/" style="font-size: 1.42em; color: #99a6b7">JavaWeb</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 1.1em; color: #999">设计模式</a> <a href="/tags/HTTP/" style="font-size: 1.1em; color: #999">HTTP</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/JDBC/" style="font-size: 1.1em; color: #999">JDBC</a> <a href="/tags/Tomcat/" style="font-size: 1.1em; color: #999">Tomcat</a> <a href="/tags/Maven/" style="font-size: 1.1em; color: #999">Maven</a> <a href="/tags/build-tool/" style="font-size: 1.1em; color: #999">build-tool</a> <a href="/tags/Spring/" style="font-size: 1.18em; color: #999ca1">Spring</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/protocol/" style="font-size: 1.1em; color: #999">protocol</a> <a href="/tags/Filter/" style="font-size: 1.1em; color: #999">Filter</a> <a href="/tags/XML/" style="font-size: 1.1em; color: #999">XML</a> <a href="/tags/Deployment/" style="font-size: 1.1em; color: #999">Deployment</a> <a href="/tags/Ajax/" style="font-size: 1.1em; color: #999">Ajax</a> <a href="/tags/%E5%90%AB%E6%9C%89%E5%85%AB%E8%82%A1%E5%86%85%E5%AE%B9/" style="font-size: 1.18em; color: #999ca1">含有八股内容</a> <a href="/tags/async/" style="font-size: 1.1em; color: #999">async</a> <a href="/tags/JS/" style="font-size: 1.18em; color: #999ca1">JS</a> <a href="/tags/session/" style="font-size: 1.1em; color: #999">session</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/07/">
+            <span class="card-archive-list-date">
+              七月 2025
+            </span>
+            <span class="card-archive-list-count">239</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">239</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-07-08T15:04:30.709Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Fun</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

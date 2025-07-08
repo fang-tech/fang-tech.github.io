@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>窄门 | 窄门</title><meta name="author" content="Fun"><meta name="copyright" content="Fun"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TCP连接断开TCP四次挥手的过程  客户端打算关闭连接, 客户端发送FIN报文, 进入FIN_WAIT_1状态 服务端接受到了FIN_WAIT_1报文, 进入CLOSED_WAIT状态, 回复ACK报文, 服务端接受到了ACK报文, 进入到FIN_WAIT_2状态 服务端发送FIN报文, 进入LAST_ACK状态 客户端接收到了FIN报文, 客户端发送ACK报文, 进入到TIME_WAIT状态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="窄门">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/index.html">
+<meta property="og:site_name" content="窄门">
+<meta property="og:description" content="TCP连接断开TCP四次挥手的过程  客户端打算关闭连接, 客户端发送FIN报文, 进入FIN_WAIT_1状态 服务端接受到了FIN_WAIT_1报文, 进入CLOSED_WAIT状态, 回复ACK报文, 服务端接受到了ACK报文, 进入到FIN_WAIT_2状态 服务端发送FIN报文, 进入LAST_ACK状态 客户端接收到了FIN报文, 客户端发送ACK报文, 进入到TIME_WAIT状态">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fang-tech.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-07-08T15:02:57.444Z">
+<meta property="article:modified_time" content="2025-06-04T16:03:45.608Z">
+<meta property="article:author" content="Fun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang-tech.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "url": "https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/",
+  "image": "https://fang-tech.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-07-08T15:02:57.444Z",
+  "dateModified": "2025-06-04T16:03:45.608Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Fun",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '窄门',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">窄门</span></a><a class="nav-page-title" href="/"><span class="site-name">窄门</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">无标题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-08T15:02:57.444Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-04T16:03:45.608Z" title="更新于 2025-06-05 00:03:45">2025-06-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="TCP连接断开"><a href="#TCP连接断开" class="headerlink" title="TCP连接断开"></a>TCP连接断开</h2><h3 id="TCP四次挥手的过程"><a href="#TCP四次挥手的过程" class="headerlink" title="TCP四次挥手的过程"></a>TCP四次挥手的过程</h3><p><img src="https://cdn.xiaolincoding.com//mysql/other/format,png-20230309230614791.png"></p>
+<ul>
+<li>客户端打算关闭连接, 客户端发送<code>FIN</code>报文, 进入<code>FIN_WAIT_1</code>状态</li>
+<li>服务端接受到了<code>FIN_WAIT_1</code>报文, 进入<code>CLOSED_WAIT</code>状态, 回复<code>ACK</code>报文, 服务端接受到了<code>ACK</code>报文, 进入到<code>FIN_WAIT_2</code>状态</li>
+<li>服务端发送<code>FIN</code>报文, 进入<code>LAST_ACK</code>状态</li>
+<li>客户端接收到了<code>FIN</code>报文, 客户端发送<code>ACK</code>报文, 进入到<code>TIME_WAIT</code>状态</li>
+<li>服务端在收到<code>ACK</code>报文以后, 进入到<code>CLOSE</code>状态</li>
+<li>客户端在经过<code>2MSL</code>一段时间后, 自动进入到<code>CLOSE</code>状态</li>
+</ul>
+<p>主动关闭连接的, 才有TIME_WAIT状态</p>
+<h3 id="为什么挥手需要四次而不是三次"><a href="#为什么挥手需要四次而不是三次" class="headerlink" title="为什么挥手需要四次而不是三次?"></a>为什么挥手需要四次而不是三次?</h3><ul>
+<li>关闭连接的时候, 客户端向服务端发送FIN, 仅仅表示客户端不再发送数据了但是还能接收数据</li>
+<li>服务端接收到客户端的FIN报文时, 先回一个ACK报文, 而服务端可能还有数据需要处理和发送, 等服务端不再发送数据的时候, 才发送FIN报文给客户端表示同意关闭现在的连接</li>
+</ul>
+<p>但是也有三次, 在被动关闭方TCP挥手的过程中, 如果没有数据要发送, 并且没有开启TCP_QUICKACK(默认没有开启), 就会启用TCP延迟确认机制, 第二次和第三次挥手就会合并</p>
+<blockquote>
+<p>TCP延迟确认机制</p>
+</blockquote>
+<ul>
+<li>当有响应数据要发送的时候, ACK会和响应数据一起发送给对象</li>
+<li>当没有响应数据要发送的时候, ACK将会延迟一段时间, 等待是否有响应数据可以一起发送给对方</li>
+<li>如果在延迟等待发送ACK期间, 对方的第二个数据段又到达了, 就会立即发送ACK</li>
+</ul>
+<h3 id="第一次挥手丢失会发生什么"><a href="#第一次挥手丢失会发生什么" class="headerlink" title="第一次挥手丢失会发生什么"></a>第一次挥手丢失会发生什么</h3><p>主动方发送的<code>FIN</code>报文丢失, 主动方在发送报文以后就进入到了<code>FIN_WAIT_1</code>状态, 主动方会在超时时间内没有接收到ACK响应报文而触发超时重传</p>
+<p>超时时间会随着超时次数翻倍</p>
+<p>重发次数通过<code>tcp_orphan_retries</code>参数来控制</p>
+<h3 id="第二次挥手丢失会发生什么"><a href="#第二次挥手丢失会发生什么" class="headerlink" title="第二次挥手丢失会发生什么"></a>第二次挥手丢失会发生什么</h3><p>被动方接收到了发起方的<code>FIN</code>报文, 进入到<code>CLOSE_WAIT</code>状态</p>
+<p>但是ACK报文是不会重传的, 从发起方的角度来看, 就是自己的第一次挥手丢失了, 就会超时重传第一次挥手</p>
+<h3 id="第三次挥手丢失会发生什么"><a href="#第三次挥手丢失会发生什么" class="headerlink" title="第三次挥手丢失会发生什么"></a>第三次挥手丢失会发生什么</h3><p>发起方接收到ACK报文以后, 进入到<code> FIN_WAIT_2</code>状态, 需要接收到被动方发送的<code>FIN</code>报文才能进入到<code>TIME_WAIT</code>状态</p>
+<p>从客户端的角度来看就是一直没有接收到被动方发送的FIN报文, 一直在FIN_WAIT_状态, 从服务端的角度来看, 就是发送的FIN丢失了, 超时重传, 超过了设定的重试次数, 就会从服务端断开连接</p>
+<p>如果主动关闭方使用的关闭函数是<code>close()</code>函数, 它有一个<code>tcp_fin_timeout</code>的参数, 控制了在<code>FIN_WAIT_2</code>阶段的最长时间, 如果超过了这个时间, TCP连接会被强行关闭, 从客户端断开丽娜姐</p>
+<p>如果使用的是<code>shutdown()</code>函数, 那就是死等了</p>
+<h3 id="第四次挥手丢失会发生什么"><a href="#第四次挥手丢失会发生什么" class="headerlink" title="第四次挥手丢失会发生什么"></a>第四次挥手丢失会发生什么</h3><p>客户端在第三次挥手以后就会进入到TIME_WAIT阶段, 2MSL之后就会从客户端关闭连接</p>
+<ul>
+<li>服务端重传<code>FIN</code>报文的次数达到<code>tcp_orphan_retries</code>的最大重传次数的时候, 等待上次等待时间的两倍以后, 就会从服务端断开连接</li>
+<li>客户端进入到<code>TIME_WAIT</code>阶段以后, 开启2MSL的定时器, 如果收到<code>FIN</code>报文, 就会重置定时器, 定时器到了, 就从客户端关闭连接</li>
+</ul>
+<h3 id="为什么TIME-WAIT等待的时间是2MSL"><a href="#为什么TIME-WAIT等待的时间是2MSL" class="headerlink" title="为什么TIME_WAIT等待的时间是2MSL"></a>为什么TIME_WAIT等待的时间是2MSL</h3><p><code>MSL</code> : Maximum Segment Lifetime, 报文的最大生存时间, 任何报文在网络上存在的最长时间</p>
+<p>MSL与TTL的区别 : <strong>MSL的单位是时间, TTL是经过路由跳数</strong></p>
+<p><strong>TTL的值一般是64, Linux将MSL的值设置为30s, 意味着Linux认为数据经过64个路由器的时间不会超过30s, 如果超过了, 就认为报文已经消失在网络中了</strong></p>
+<p>TIME_WAIT等待2倍的MSL, 比较合理的解释是 : 网络中可能存在发送方发送过来的数据包(也就是第三次挥手的FIN包), 接收到这个包的最长可能时间是一个MSL, 然后接收到以后又会给对方响应, 这个最大可接受时间又是一个MSL</p>
+<p>相当于至少允许报文丢失一次, 如果ACK在一个MSL内丢失, 这样被动方重发的FIN会在第2个MSL内到达</p>
+<h3 id="为什么需要TIME-WAIT状态"><a href="#为什么需要TIME-WAIT状态" class="headerlink" title="为什么需要TIME_WAIT状态"></a>为什么需要TIME_WAIT状态</h3><p>TIME_WAIT是只有主动方才有的状态</p>
+<ul>
+<li>防止历史连接中的数据, 被后面相同的四元组连接错误接收<ul>
+<li>2MSL的时长能保证历史数据包都已经自然消失在网络中了</li>
+</ul>
+</li>
+<li>确保被动关闭连接的一方能正确关闭<ul>
+<li>等待足够的时间,  保证自己的ACK是能被对方收到的, 从而帮助其自然关闭</li>
+</ul>
+</li>
+</ul>
+<h3 id="TIME-WAIT过多有什么危害"><a href="#TIME-WAIT过多有什么危害" class="headerlink" title="TIME_WAIT过多有什么危害"></a>TIME_WAIT过多有什么危害</h3><ul>
+<li>占用系统资源, 比如文件描述符, 内存资源, CPU资源, 线程资源等, 简单来说就是在TIME_WAIT过多会导致资源得不到快速的释放</li>
+<li>占用端口资源, 端口资源是有限的, 一般范围是<code>32768 ~ 61000</code>, 可以通过修改net.ipv4.ip_local_port_range<ul>
+<li>如果客户端(主动发起关闭连接方)TIME_WAIT状态过多, 就没办法再向[目的IP, 目的PORT]一样的服务建立连接了, 因为四元组相同</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何优化TIME-WAIT"><a href="#如何优化TIME-WAIT" class="headerlink" title="如何优化TIME_WAIT"></a>如何优化TIME_WAIT</h3><p>优化的点在于TIME_WAIT会延缓资源释放的时间, 解决最短等待时间是<code>2MSL</code>的问题</p>
+<p><em>方式一 : net.ipv4.tcp_tw_reuse和tcp_timestamps</em></p>
+<p>开启<code>net.ipv4.tcp_te_reuse = 1</code>以后, 可以复用处于TIME_WAIT的socket为新的连接所用</p>
+<p><strong>tcp_twreuse功能只能是客户端(连接发起方), 因为开启了这个功能,  在调用connect()函数的时候, 内核会随机找出来一个time_wait状态超过1s的连接给新的连接复用</strong></p>
+<p>开启这个功能的一个前提是, 需要打开TCP对时间戳的支持</p>
+<p><code>net.ipv4.tcp_timestamps = 1(默认为1)</code><br>引入了时间戳, 就不需要通过等待2MSL来确保历史数据已经消失在网络中, 因为时间戳过期的数据包自然会被丢弃</p>
+<p><em>方式二: net.ipv4.tcp_max_tw_buckets</em></p>
+<p>这个值默认是18000. <strong>当系统中处于TIME_WAIT的连接一旦超过这个值, 系统无法为这些新关闭的连接分配TIME_WAIT状态的资源, 会直接关闭资源, 也就是向这些连接发送RST包而不是FIN包</strong></p>
+<p><em>方式三: 程序中使用SO_LINGER</em></p>
+<p>通过设置socket的选项, 来设置调用close关闭连接行为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">linger</span> <span class="title">so_linger</span>;</span></span><br><span class="line">so_linger.l_onoff = <span class="number">1</span>;</span><br><span class="line">so_linger.l_linger = <span class="number">0</span>;</span><br><span class="line">setsockopt(s, SOL_SOCKET, SO_LINGER, &amp;so_linger, <span class="keyword">sizeof</span>(so_linger));</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>l_onoff</code>为非0, 且<code>l_linger</code>的值为0, 调用<code>close</code>以后, 就会立刻发送一个<code>RST</code>报文给对端, 该TCP连接将跳过第四次挥手</p>
+<p>上面的三种方法其实都是在想办法跳过TIME_WAIT状态, 会发生乱七八糟的事情的, 毕竟它设计出来就是为了给下一个TCP连接一个纯净的环境</p>
+<p><strong>如果服务端要避免过多的TIME_WAIT状态的连接, 就永远不要主动断开连接, 让客户端去断开, 由分布在各处的用户端来承受TIME_WAIT</strong></p>
+<h3 id="服务器上出现大量的TIME-WAIT状态的原因有哪些"><a href="#服务器上出现大量的TIME-WAIT状态的原因有哪些" class="headerlink" title="服务器上出现大量的TIME_WAIT状态的原因有哪些"></a>服务器上出现大量的TIME_WAIT状态的原因有哪些</h3><p>出现大量的TIME_WAIT, 说明TCP连接被频繁关闭, 服务端主动断开了连接, 原因有三</p>
+<ul>
+<li>没有开启HTTP长连接</li>
+<li>HTTP长连接超时</li>
+<li>HTTP长连接中的请求数量超过最大值</li>
+</ul>
+<p><em>场景一 : 没有开启HTTP长连接</em></p>
+<p>客户端和服务端有任意一端发出的HTTP消息头部中的<code>Connection: close</code>, HTTP就不会使用长连接, 也就是每次TCP的连接都是走三次握手, 发送消息, 接收响应, 四次挥手这个流程</p>
+<p>无论是客户端还是服务端中的HTTP消息头部是<code>Connection: close</code>, 都会是<strong>服务端主动断开连接</strong></p>
+<p>解决方法也很简单, 让客户端和服务端都开启长连接就行了</p>
+<p><em>场景二: HTTP连接超时</em></p>
+<p>为了防止长连接一直占用系统资源, 长连接会有超时时间, 如果长连接超过超时时间都没有发起新的请求, 定时器的时间一道, 长连接就会被关闭</p>
+<p>这个时候解决方法主要是排查网络问题, 看什么原因导致客户端的请求服务端一直没有收到</p>
+<p><em>场景三: HTTP长连接中的请求数量超过最大值</em></p>
+<p>Web服务上一般会有个参数来定义一条HTTP长连接上最大能处理的连接数量, 当超过最大限制的时候, 就会主动关闭连接</p>
+<p>解决方法就是调高keepalive_requests参数就行</p>
+<h3 id="服务器出现大量的CLOSE-WAIT状态的原因有哪些"><a href="#服务器出现大量的CLOSE-WAIT状态的原因有哪些" class="headerlink" title="服务器出现大量的CLOSE_WAIT状态的原因有哪些"></a>服务器出现大量的CLOSE_WAIT状态的原因有哪些</h3><p><strong>服务端出现大量CLOSE_WAIT状态的连接的时候, 说明服务端的程序没有调用close函数关闭连接</strong></p>
+<p>一个普通的TCP服务端的流程</p>
+<ol>
+<li>创建服务端socket, bind绑定端口, listen端口</li>
+<li>将服务端socket注册到epoll</li>
+<li>epoll_wait等待连接到来, 连接到来的时候, 调用accept 从accept队列中获取已连接的socket</li>
+<li>将已连接的socket注册到epoll</li>
+<li>epoll_wait等待事件发生</li>
+<li>对方连接关闭的时候, 调用close</li>
+</ol>
+<p><strong>原因一</strong> : 第二步没有做, 没有将socket注册到epoll, 这样有新连接到来的时候, 服务端就没有办法感知这个事件, 也就无法获取到已经连接的socket, 那么也就没有办法对这个socket调用close了</p>
+<p>**原因二: ** 第三步没有做, 当新的连接到来的时候, 没有主动调用accept()获取到该连接的socket, 导致当有大量的客户端断开连接的时候, 服务端无法对该socket调用close()函数关闭连接</p>
+<p>**原因三: ** 第四步没有做, 通过accept获取到已经连接的socket以后, 没有注册到epoll, 导致后续收到FIN报文的时候, 没有办法感知这个事件</p>
+<p>**原因四: ** 在客户端关闭连接以后, 服务端因为代码逻辑问题, 没有执行close()函数</p>
+<p><strong>服务端出现大量的CLOSE_WAIT状态的连接的时候, 通常都是代码出现了问题导致服务端没办法调用close, 这个时候需要顺着一个TCP服务建立的过程逐步排查</strong></p>
+<h3 id="如果已经建立了连接-但是客户端突然出现故障了怎么办"><a href="#如果已经建立了连接-但是客户端突然出现故障了怎么办" class="headerlink" title="如果已经建立了连接, 但是客户端突然出现故障了怎么办?"></a>如果已经建立了连接, 但是客户端突然出现故障了怎么办?</h3><p>这里的情景是客户端断开了连接, 但是同时服务端也一直不给服务端发送请求, 这个时候服务端就永远无法感知到客户端宕机这个事件, 也就是服务端的TCP会一直处于<code>ESTABLISH</code>状态</p>
+<p>为了避免这个情况, TCP有对应的<strong>保活机制</strong></p>
+<p>定义一个时间段, 如果这个时间段内都没有任何连接相关的活动, TCP保活机制就会开始作用, 每隔一个时间段, 发送一个探测报文, 如果连续几个探测报文都没有得到响应, 则认为当前的TCP连接已经死亡了, 系统内科将错误信息通知给上层应用程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_keepalive_time=7200 // 保活时间, 如果超过这个时间TCP没有任何的连接相关活动就会触发保活机制</span><br><span class="line">net.ipv4.tcp_keepalive_intvl=75  // 每次检测间隔75s</span><br><span class="line">net.ipv4.tcp_keepalive_probes=9 // 9次无响应, 认为对方是不可达的, 中断本次连接</span><br></pre></td></tr></table></figure>
+
+<p>也就是在Linux系统中至少需要 7200 + 75*9 &#x3D; 7875秒 (2h11min15sec)才能发现一个死亡连接</p>
+<p>如果应用程序想使用TCP保活机制, 需要通过socket接口设置<code>SO_KEEPALIVE</code>选项才能够生效</p>
+<p>TCP的保活机制比较长, 我们其实也可以基于这个方式自己在Web服务中实现一个心跳机制</p>
+<h3 id="如果已经建立了连接-但是服务端的进程崩溃了会发生什么"><a href="#如果已经建立了连接-但是服务端的进程崩溃了会发生什么" class="headerlink" title="如果已经建立了连接, 但是服务端的进程崩溃了会发生什么"></a>如果已经建立了连接, 但是服务端的进程崩溃了会发生什么</h3><p>TCP的连接信息是由内核维护的, 所以当进程崩溃了以后, 内核需要回收该进程的所有TCP连接资源, 于是内核会发送第一次FIN挥手报文, 后续的挥手过程也是在内核中完成, 并不需要该进程参与</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io">Fun</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/">https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://fang-tech.github.io" target="_blank">窄门</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/3_TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">TCP重传, 滑动窗口, 流量控制, 拥塞控制常见的重传机制TCP会在以下两种情况触发重传机制  数据包丢失, 通过序列号判断出来消息丢失了 确认应答丢失, 通过没有收到ACK来判断消息丢失了  超时重传RTT (Round-Trip Time往返时延)  RTT是数据发送时刻到接受到确认的时刻的差值 超时重传时间用RTO(Retransmission Timeout 超时重传时间) 表示 如果超时时间设置得过大或者过小  RTO过大, 重发就慢, 丢了很久才重发, 没有效率 RTP过小, 会导致可能没有丢失, 只是ACK晚了一点到, 就触发了重发机制, 增加网络拥塞, 导致更多的超时, 导致更多的重发, 最后直接堵死了  在Linux中RTO的计算  需要采样RTT的时间, 然后进行加权平均, 算出来一个平滑RTT值, 而且这个值还是动态变化的, 因为网络状况也是在动态地变化 除了采用RTT, 还需要采样RTT的波动范围, 避免RTT有一个大的波动的话很难被发现的情况   根据这个公式, 越早之前的SRTT, DevRTT, RTT对RTO的影响呈指数级变化(每次变为原来的al...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/1_TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">TCP 三次握手与四次挥手常见面试题TCP基本认识TCP头格式有哪些内容  序列号 : 在建立连接时计算机生成的随机数作为初始值, 通过SYN包传给接收端主机, 每发送一次数据就会累加一次, 用于解决网络包乱序的问题  确认应答号 : 下一次期望收到的数据的序列号, 发送端收到这个确认应答以后, 可以认为在这个序列号之前的数据都已经被正常接受. 用来解决丢包问题  控制位 :  ACK : 该位置为1的时候, 确认应答字段变为有效, TCP规定除了最开始建立连接时的SYN包之外, 该位必须为1 RST : 该位置为1的时候, 表示TCP连接出现异常, 必须强行断开连接 SYN : 该位置为1的时候, 表示希望建立连接, 需要计算机生成随机值初始化序列号 FIN : 该位置为1的时候, 表示今后不会再有数据发送过来了, 希望断开连接. 当通信结束希望断开连接的时候, 通信双方的主机之间就可以相互交换FIN位为1 的TCP段    为什么需要TCP协议? TCP在哪一层IP层提供的服务是不可靠的, 不能保证网络包的交付, 不保证网络包的按序交付, 也不保证网络包中的数据的完整性 TC...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fun</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">239</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E8%BF%9E%E6%8E%A5%E6%96%AD%E5%BC%80"><span class="toc-number">1.</span> <span class="toc-text">TCP连接断开</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">TCP四次挥手的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8C%A5%E6%89%8B%E9%9C%80%E8%A6%81%E5%9B%9B%E6%AC%A1%E8%80%8C%E4%B8%8D%E6%98%AF%E4%B8%89%E6%AC%A1"><span class="toc-number">1.2.</span> <span class="toc-text">为什么挥手需要四次而不是三次?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.3.</span> <span class="toc-text">第一次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.4.</span> <span class="toc-text">第二次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.</span> <span class="toc-text">第三次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.6.</span> <span class="toc-text">第四次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88TIME-WAIT%E7%AD%89%E5%BE%85%E7%9A%84%E6%97%B6%E9%97%B4%E6%98%AF2MSL"><span class="toc-number">1.7.</span> <span class="toc-text">为什么TIME_WAIT等待的时间是2MSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81TIME-WAIT%E7%8A%B6%E6%80%81"><span class="toc-number">1.8.</span> <span class="toc-text">为什么需要TIME_WAIT状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TIME-WAIT%E8%BF%87%E5%A4%9A%E6%9C%89%E4%BB%80%E4%B9%88%E5%8D%B1%E5%AE%B3"><span class="toc-number">1.9.</span> <span class="toc-text">TIME_WAIT过多有什么危害</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96TIME-WAIT"><span class="toc-number">1.10.</span> <span class="toc-text">如何优化TIME_WAIT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E5%87%BA%E7%8E%B0%E5%A4%A7%E9%87%8F%E7%9A%84TIME-WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-number">1.11.</span> <span class="toc-text">服务器上出现大量的TIME_WAIT状态的原因有哪些</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%87%BA%E7%8E%B0%E5%A4%A7%E9%87%8F%E7%9A%84CLOSE-WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-number">1.12.</span> <span class="toc-text">服务器出现大量的CLOSE_WAIT状态的原因有哪些</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%B7%B2%E7%BB%8F%E5%BB%BA%E7%AB%8B%E4%BA%86%E8%BF%9E%E6%8E%A5-%E4%BD%86%E6%98%AF%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AA%81%E7%84%B6%E5%87%BA%E7%8E%B0%E6%95%85%E9%9A%9C%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-number">1.13.</span> <span class="toc-text">如果已经建立了连接, 但是客户端突然出现故障了怎么办?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%B7%B2%E7%BB%8F%E5%BB%BA%E7%AB%8B%E4%BA%86%E8%BF%9E%E6%8E%A5-%E4%BD%86%E6%98%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%B4%A9%E6%BA%83%E4%BA%86%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.14.</span> <span class="toc-text">如果已经建立了连接, 但是服务端的进程崩溃了会发生什么</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/3-%E5%8A%A8%E6%80%81%E9%99%90%E6%B5%81/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.870Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/1-DCC/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.868Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%9C%AA%E7%90%86%E8%A7%A3%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.857Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/deployment/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.856Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Fun</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

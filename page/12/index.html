@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>窄门</title><meta name="author" content="Fun"><meta name="copyright" content="Fun"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="窄门">
+<meta property="og:url" content="https://fang-tech.github.io/page/12/index.html">
+<meta property="og:site_name" content="窄门">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fang-tech.github.io/img/butterfly-icon.png">
+<meta property="article:author" content="Fun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang-tech.github.io/img/butterfly-icon.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://fang-tech.github.io/page/12/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '窄门',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">窄门</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">窄门</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/2_volatile/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.321Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">volatile关键字大厂的问题volatile关键字的作用是什么? volatile能保证原子性吗? 之前32位机器上共享的long和double变量的为什么要用volatile? 现在64位机器上是否也要设置呢? i++为什么不能保证原子性? volatile是如何实现可见性的? 内存屏障。 volatile是如何实现有序性的? happens-before等 说下volatile的应用场景? volatile关键字的作用防止指令重排序&#x2F;实现有序性最典型的例子就是双重检查锁定模式中, 需要对对象的实例加上volatile关键字的问题 1234567891011121314151617public class Singleton &#123;    public static volatile Singleton singleton;    /**     * 构造函数私有，禁止外部实例化     */    private Singleton() &#123;&#125;;    public static Singleton getInstance() &#123...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/1_JMM/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.320Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">Java内存模型什么是JMMJMM指的是Java Memory Model, 是Java虚拟机规范中定义的一组规则, 用于规范多线程环境下的内存访问操作  从通信的角度来看, JMM决定了一个线程对共享变量的写入什么时候对另一个线程可见 从抽象的角度来看, JMM定义了线程和主内存之间的抽象关系 : 线程之间共享变量存储在主内存 每个线程都有一个私有的本地内存 本地内存中存储了该线程以读&#x2F;写共享变量的副本   关于本地内存 本地内存是JMM的一个抽象概念, 并不是真实存在的.  它涵盖了缓存, 写寄存器以及其他的硬件和编译器优化导致的线程中实际读写共享变量的时候, 并不是直接读写主存中的共享变量   JMM的目的 JMM通过控制主内存与每个线程的本地内存之间的交互, 来为Java程序员提供内存可见性, 操作原子性, 有序性的保证 为程序员提供跨平台的内存可见性保证 为程序员屏蔽各种硬件架构和操作系统之间的差异   JMM解决的核心问题 可见性: 保证一个线程修改的数据对其他线程可见 通过内存屏障保证修改后的值能立即被其他线程看到   原子性: 保证操作不会被线程调度机制...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/TreeMap/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.317Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">TreeMapTreeMap实现了元素根据key进行排序12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849public V put(K key, V value) &#123;    Entry&lt;K,V&gt; t = root; // 将根节点赋值给变量t    if (t == null) &#123; // 如果根节点为null，说明TreeMap为空        compare(key, key); // type (and possibly null) check，检查key的类型是否合法        root = new Entry&lt;&gt;(key, value, null); // 创建一个新节点作为根节点        size = 1; // size设置为1        return null; // 返回null，表示插入成功    &#125;    int cmp;    Entry&lt;K,V&gt; p...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/Queue/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.316Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">ArrayDequeQueue是个接口,  继承自Collection, 除了Collection的接口方法外, 额外提供了     throws Exception Returns special value    Insert add(e) offer(e)   Remove remove() poll()   Examine element() peek()   Deque和Queue的接口基本一样, 只不过提供了两头的方法, 也就是能操作两端, 原本add只是在队尾插入元素, 在Deque中就有addFirst和addLast两套方法, 其他的方法也是一样, 提供了两套方法, 使用栈的时候首选ArrayDeque, 因为Stack是个很粗糙的线程安全类, 效率不高 ArrayDeque 又实现了 Deque 接口（Deque 又实现了 Queue 接口） 方法剖析这里只针对ArrayDeque, 底层使用数组实现, head指向头元素所在位置, tail指向尾端第一个可以插入的空位,  这个数组中不允许存放null addFirst(E e) 通过head &#x3D;&...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/LinkedHashMap/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.315Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">LinkedHashMapLinkedHashMap是怎么实现的维持插入顺序的Entry添加了before和after123456static class Entry&lt;K,V&gt; extends HashMap.Node&lt;K,V&gt; &#123;    Entry&lt;K,V&gt; before, after;    Entry(int hash, K key, V value, Node&lt;K,V&gt; next) &#123;        super(hash, key, value, next);    &#125;&#125;  继承了HashMap的Node, 在里面添加了before指向前一个元素和after指向后一个元素 插入顺序LinkedHashMap并没有重写HashMap的put方法, 而是重写了put()方法中调用的内部方法newNode()  HashMap的  123Node&lt;K,V&gt; newNode(int hash, K key, V value, Node&lt;K,V&gt; next) &#123;...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/HashMap/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.314Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">HashMaphash方法原理hash(Object key)1234static final int hash(Object key) &#123;    int h;    return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);&#125;  这段代码就是计算存进来的元素的hash值的函数 123public V put(K key, V value) &#123;    return putVal(hash(key), key, value, false, true);&#125;  这个函数将key Object的hashcode异或hashcode逻辑右移16得到最终的hash值 如果要通过这个hash值计算出来桶的位置, 则通过(n - 1) &amp; hash, 这样就是hash值对n取余后的结果, 因为在数组长度是2的n次方的时候, 取余运算和与运算的结果是一样的(因为在长度是2的n次方的时候, length - 1后会除了第n位全是1, 就能达到取余的效果) HashMap中...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/ArrayList/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.312Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">ArrayList创建ArrayListArrayList(int initialCapacity)12345678910public ArrayList(int initialCapacity) &#123;        if (initialCapacity &gt; 0) &#123;            this.elementData = new Object[initialCapacity];        &#125; else if (initialCapacity == 0) &#123;            this.elementData = EMPTY_ELEMENTDATA;        &#125; else &#123;            throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+                                               initialCapacity);        &#125;    &#12...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E6%96%B0%E7%89%B9%E6%80%A7/JDK8-Stream%E6%B5%81/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.309Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">Stream流Stream配合Lambda表达式, 能极大便利程序员操作集合 </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E6%96%B0%E7%89%B9%E6%80%A7/JDK8-Optional%E7%B1%BB/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.307Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div><div class="content">Optional</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E6%96%B0%E7%89%B9%E6%80%A7/JDK8-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:01.306Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time></span></div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/#content-inner">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/#content-inner">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/#content-inner">24</a><a class="extend next" rel="next" href="/page/13/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fun</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">239</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/3-%E5%8A%A8%E6%80%81%E9%99%90%E6%B5%81/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.870Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/1-DCC/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.868Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%9C%AA%E7%90%86%E8%A7%A3%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.857Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/deployment/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.856Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/package-management/" style="font-size: 1.1em; color: #999">package-management</a> <a href="/tags/ES6/" style="font-size: 1.1em; color: #999">ES6</a> <a href="/tags/Servlet/" style="font-size: 1.1em; color: #999">Servlet</a> <a href="/tags/backend/" style="font-size: 1.26em; color: #999fa8">backend</a> <a href="/tags/frontend/" style="font-size: 1.34em; color: #99a3b0">frontend</a> <a href="/tags/HTML/" style="font-size: 1.1em; color: #999">HTML</a> <a href="/tags/Listener/" style="font-size: 1.1em; color: #999">Listener</a> <a href="/tags/Java/" style="font-size: 1.5em; color: #99a9bf">Java</a> <a href="/tags/JavaWeb/" style="font-size: 1.42em; color: #99a6b7">JavaWeb</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 1.1em; color: #999">设计模式</a> <a href="/tags/HTTP/" style="font-size: 1.1em; color: #999">HTTP</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/JDBC/" style="font-size: 1.1em; color: #999">JDBC</a> <a href="/tags/Tomcat/" style="font-size: 1.1em; color: #999">Tomcat</a> <a href="/tags/Maven/" style="font-size: 1.1em; color: #999">Maven</a> <a href="/tags/build-tool/" style="font-size: 1.1em; color: #999">build-tool</a> <a href="/tags/Spring/" style="font-size: 1.18em; color: #999ca1">Spring</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/protocol/" style="font-size: 1.1em; color: #999">protocol</a> <a href="/tags/Filter/" style="font-size: 1.1em; color: #999">Filter</a> <a href="/tags/XML/" style="font-size: 1.1em; color: #999">XML</a> <a href="/tags/Deployment/" style="font-size: 1.1em; color: #999">Deployment</a> <a href="/tags/Ajax/" style="font-size: 1.1em; color: #999">Ajax</a> <a href="/tags/%E5%90%AB%E6%9C%89%E5%85%AB%E8%82%A1%E5%86%85%E5%AE%B9/" style="font-size: 1.18em; color: #999ca1">含有八股内容</a> <a href="/tags/async/" style="font-size: 1.1em; color: #999">async</a> <a href="/tags/JS/" style="font-size: 1.18em; color: #999ca1">JS</a> <a href="/tags/session/" style="font-size: 1.1em; color: #999">session</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/07/">
+            <span class="card-archive-list-date">
+              七月 2025
+            </span>
+            <span class="card-archive-list-count">239</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">239</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-07-08T15:04:30.709Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Fun</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

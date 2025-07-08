@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>窄门</title><meta name="author" content="Fun"><meta name="copyright" content="Fun"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="窄门">
+<meta property="og:url" content="https://fang-tech.github.io/page/23/index.html">
+<meta property="og:site_name" content="窄门">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fang-tech.github.io/img/butterfly-icon.png">
+<meta property="article:author" content="Fun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang-tech.github.io/img/butterfly-icon.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://fang-tech.github.io/page/23/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '窄门',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">窄门</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">窄门</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Database/MySQL/MySQL%E5%8E%9F%E7%90%86/0_MySQL%E4%BC%98%E5%8C%96/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.471Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">MySQL优化1. MySQL分页优化MySQL是怎么完成一次分页查询的, 性能问题在哪里有两种分页查询语句 1select * from t_user order by id limit offset, size  1select * from t_user order by id limit size  第二种查询语句, 其实相当于offset &#x3D;&#x3D; 0的情况 每次执行分页查询的时候, 引擎层首先根据where条件筛选出来符合条件的所有记录, 然后对这些已经筛选的记录order by, 最后应用LIMIT, 从已经筛选出来和排序的结果中取出来指定的offset到offset + size范围的记录  性能问题出在哪里  这里的问题就是, 我们不管size是多少, 我们都需要额外取出来offset条冗余的数据, 这就造成了当offset越来越来的时候, 执行分页查询的开销就越大, 也造成了 limit 1000, 10的开销比limit 100, 10的开销更大 从where筛选 -&gt; order by 排序 -&gt; limit分页, 其中需要做对...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Database/MySQL/MySQLbase/SQL/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.457Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">1. 数据库概述数据库相关概念DB: 数据库 DBMS: 数据库管理系统 (Database Management System) SQL: 结构化查询语言 (Structured Query Language) 关系型数据库设计规则 E - R (entity - relationship, 实体-联系) 模型中有三个主要概念是: 实体集, 属性, 联系集  表的关联关系 一对一关联  一般用于将一张表拆成两张表, 一张存储常用的, 一张存储不常用的   一对多关联  多对一关联  自我引用   2. MySQL环境搭建启动和关闭服务 使用命令行工具  12345# 启动SQL服务net start MySQL服务名(MySQL80)# 关闭SQL服务net stop MySQL服务名(MySQL80)  登录1mysql -h 主机名(localhost) -P 3306 -u root -p密码   client和server在同一台机器上的时候, host其实就是127.0.0.1或者localhost, 所以-hlocalhost可以不写, 同样的, 如果端口号没有做修...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/6_TCP%E7%9A%84%E7%BC%BA%E7%82%B9/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.450Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">为什么要基于UDP实现可靠传输 (TCP的缺点)最大的原因就是TCP不是没有缺点的, 只是看似完美, 甚至正是TCP的缺点导致了HTTP2的瓶颈 TCP有四大缺点 升级TCP的工作困难TCP协议是在内核中实现的, 应用程序只能使用不能修改, 如果想升级TCP协议, 只能升级内核, 升级内核的成本是很高的(升级, 测试, 考虑兼容性….), 并且如果想使用升级的TCP协议, 需要通信双端都升级, 进一步加大了升级TCP的难度 TCP建立连接的延迟基于TCP实现的应用层协议, 都需要经过三次握手后 常用的HTTPS, 甚至需要在TCP三次握手以后, 还需要经过TLS四次握手, 才能进行HTTP数据的传输, 增加了数据传输的延迟  最后最少需要6次握手环节才能开始HTTP数据的传输 TCP存在队头堵塞TCP队头堵塞的原因 : TCP需要保证数据按序交付  如果TCP发送端发送的某条数据丢失了, 会导致接收窗口的左边界堵塞在丢失的数据上, 不能滑动(右边界还是可以继续滑动的, 使窗口保持原有的大小或根据接收缓冲区空间调整),  同时使序列号更高的数据接收到了, 但是因为低序列的数据没有接...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/5_Socket/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.448Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">Socket编程针对TCP如何进行socket编程  服务端和客户端初始化socket, 得到文件描述符 服务端调用bind将socket绑定监听IP和端口, 调用listen监听该端口 服务端调用accept等待客户端连接 客户端调用connect, 向服务端的地址和端口发起连接请求 服务端accept返回用于传输的socket的文件描述符 客户端调用write写入数据, 服务端调用read读取数据 客户端断开连接, 调用close, 服务端read数据的时候, 就会读取到EOF, 处理完数据以后, 服务端就会调用close  服务端调用accept时, 返回的时一个已经完成连接的socket, 后续用来传输数据 所以用于监听端口的socket和真正用来传输数据的socket是两个socket, 一个叫做监听socket, 一个叫做已完成连接socket listen的时候参数backlog参数的意义1int listen(int socketfd, int backlog)  在早期的linux内核中, backlog是SYN队列的大小 在Linux内核2.2以后, back...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/4_UDP_QUIC/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.447Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">如何基于UDP实现可靠传输为什么需要基于UDP实现的可靠传输(在我们使用TCP能保证可靠传输的前提下)TCP有四大缺点  TCP的升级很困难 TCP存在队头堵塞 TCP建立连接的延迟 网络迁移需要重建TCP连接  QUIC协议的实现, 也是主要聚焦于解决这些问题 QUIC是怎么实现可靠传输的拿HTTP3举例说明, 在UDP报文和HTTP消息之间, 有三层协议   Packet Header QUIC Frame Header HTTP3 Frame Header  Packet HeaderPacket Header细分成两种  Long Packet Header 用于首次建立连接 源连接ID长度, 源连接ID 目标连接ID长度, 目标连接ID   Short Packet Header 用于日常传输数据 目标连接ID 编号 Packet Number 负载数据    Packet Number是每个报文独一无二的编号, 是严格递增的, 也就是如果Packet N丢失了, 重传的Packet N的Packet Number也不是N了, 而是一个比N大的值 这样设计的原因, 主要...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/3_TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.446Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">TCP重传, 滑动窗口, 流量控制, 拥塞控制常见的重传机制TCP会在以下两种情况触发重传机制  数据包丢失, 通过序列号判断出来消息丢失了 确认应答丢失, 通过没有收到ACK来判断消息丢失了  超时重传RTT (Round-Trip Time往返时延)  RTT是数据发送时刻到接受到确认的时刻的差值 超时重传时间用RTO(Retransmission Timeout 超时重传时间) 表示 如果超时时间设置得过大或者过小  RTO过大, 重发就慢, 丢了很久才重发, 没有效率 RTP过小, 会导致可能没有丢失, 只是ACK晚了一点到, 就触发了重发机制, 增加网络拥塞, 导致更多的超时, 导致更多的重发, 最后直接堵死了  在Linux中RTO的计算  需要采样RTT的时间, 然后进行加权平均, 算出来一个平滑RTT值, 而且这个值还是动态变化的, 因为网络状况也是在动态地变化 除了采用RTT, 还需要采样RTT的波动范围, 避免RTT有一个大的波动的话很难被发现的情况   根据这个公式, 越早之前的SRTT, DevRTT, RTT对RTO的影响呈指数级变化(每次变为原来的al...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.444Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">TCP连接断开TCP四次挥手的过程  客户端打算关闭连接, 客户端发送FIN报文, 进入FIN_WAIT_1状态 服务端接受到了FIN_WAIT_1报文, 进入CLOSED_WAIT状态, 回复ACK报文, 服务端接受到了ACK报文, 进入到FIN_WAIT_2状态 服务端发送FIN报文, 进入LAST_ACK状态 客户端接收到了FIN报文, 客户端发送ACK报文, 进入到TIME_WAIT状态 服务端在收到ACK报文以后, 进入到CLOSE状态 客户端在经过2MSL一段时间后, 自动进入到CLOSE状态  主动关闭连接的, 才有TIME_WAIT状态 为什么挥手需要四次而不是三次? 关闭连接的时候, 客户端向服务端发送FIN, 仅仅表示客户端不再发送数据了但是还能接收数据 服务端接收到客户端的FIN报文时, 先回一个ACK报文, 而服务端可能还有数据需要处理和发送, 等服务端不再发送数据的时候, 才发送FIN报文给客户端表示同意关闭现在的连接  但是也有三次, 在被动关闭方TCP挥手的过程中, 如果没有数据要发送, 并且没有开启TCP_QUICKACK(默认没有开启), 就会启...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/1_TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.443Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">TCP 三次握手与四次挥手常见面试题TCP基本认识TCP头格式有哪些内容  序列号 : 在建立连接时计算机生成的随机数作为初始值, 通过SYN包传给接收端主机, 每发送一次数据就会累加一次, 用于解决网络包乱序的问题  确认应答号 : 下一次期望收到的数据的序列号, 发送端收到这个确认应答以后, 可以认为在这个序列号之前的数据都已经被正常接受. 用来解决丢包问题  控制位 :  ACK : 该位置为1的时候, 确认应答字段变为有效, TCP规定除了最开始建立连接时的SYN包之外, 该位必须为1 RST : 该位置为1的时候, 表示TCP连接出现异常, 必须强行断开连接 SYN : 该位置为1的时候, 表示希望建立连接, 需要计算机生成随机值初始化序列号 FIN : 该位置为1的时候, 表示今后不会再有数据发送过来了, 希望断开连接. 当通信结束希望断开连接的时候, 通信双方的主机之间就可以相互交换FIN位为1 的TCP段    为什么需要TCP协议? TCP在哪一层IP层提供的服务是不可靠的, 不能保证网络包的交付, 不保证网络包的按序交付, 也不保证网络包中的数据的完整性 TC...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/1_HTTP/HTTP%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.440Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">HTTP常见面试题目HTTP基本概念HTTP 是一个在计算机世界里专门在「两点」之间「传输」文字、图片、音频、视频等「超文本」数据的「约定和规范」。 HTTP常见的状态码有哪些1xx类状态码属于提示信息, 基本遇不到 2xx类状态码表示服务器成功处理了客户端的请求  [200 OK] 是最常见的成功状态码, 表示一切正常, 非HEAD请求, 服务器返回的响应头都会有body数据 [204 No Content] 也是最常见的状态码, 和200 OK的区别是响应头没有数据 [206 Partial Content] 应用于HTTP分块下载或断点续传, 表示响应返回的body不是资源的全部, 而是其中的一部分  3xx类状态码表示客户端请求的资源发生了变动, 需要客户端重定向  [301 Moved Permanently] 永久重定向, 请求的资源已经不存在, 浏览器会自动重定向到新的服务器 [302 Found] 临时重定向, 请求的资源还在, 但是需要用另一个URL来 访问  301和302都会在响应头里面使用字段Location来指明接下来要跳转到的URL地址  [304 N...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/network%20Task/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.438Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">   HTTP    HTTP    缓存    HTTPS    WebSocket    RPC    制作复习卡片    HTTP2    HTTP3      TCP   TCP四次挥手三次握手  TCP拥塞控制  QUIC协议 (基于UDP实现可靠的协议)  制作复习卡片     IP  [ ]    </div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/22/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/#content-inner">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/#content-inner">24</a><a class="extend next" rel="next" href="/page/24/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fun</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">239</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/3-%E5%8A%A8%E6%80%81%E9%99%90%E6%B5%81/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.870Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/1-DCC/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.868Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%9C%AA%E7%90%86%E8%A7%A3%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.857Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/deployment/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.856Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/package-management/" style="font-size: 1.1em; color: #999">package-management</a> <a href="/tags/ES6/" style="font-size: 1.1em; color: #999">ES6</a> <a href="/tags/Servlet/" style="font-size: 1.1em; color: #999">Servlet</a> <a href="/tags/backend/" style="font-size: 1.26em; color: #999fa8">backend</a> <a href="/tags/frontend/" style="font-size: 1.34em; color: #99a3b0">frontend</a> <a href="/tags/HTML/" style="font-size: 1.1em; color: #999">HTML</a> <a href="/tags/Listener/" style="font-size: 1.1em; color: #999">Listener</a> <a href="/tags/Java/" style="font-size: 1.5em; color: #99a9bf">Java</a> <a href="/tags/JavaWeb/" style="font-size: 1.42em; color: #99a6b7">JavaWeb</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 1.1em; color: #999">设计模式</a> <a href="/tags/HTTP/" style="font-size: 1.1em; color: #999">HTTP</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/JDBC/" style="font-size: 1.1em; color: #999">JDBC</a> <a href="/tags/Tomcat/" style="font-size: 1.1em; color: #999">Tomcat</a> <a href="/tags/Maven/" style="font-size: 1.1em; color: #999">Maven</a> <a href="/tags/build-tool/" style="font-size: 1.1em; color: #999">build-tool</a> <a href="/tags/Spring/" style="font-size: 1.18em; color: #999ca1">Spring</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/protocol/" style="font-size: 1.1em; color: #999">protocol</a> <a href="/tags/Filter/" style="font-size: 1.1em; color: #999">Filter</a> <a href="/tags/XML/" style="font-size: 1.1em; color: #999">XML</a> <a href="/tags/Deployment/" style="font-size: 1.1em; color: #999">Deployment</a> <a href="/tags/Ajax/" style="font-size: 1.1em; color: #999">Ajax</a> <a href="/tags/%E5%90%AB%E6%9C%89%E5%85%AB%E8%82%A1%E5%86%85%E5%AE%B9/" style="font-size: 1.18em; color: #999ca1">含有八股内容</a> <a href="/tags/async/" style="font-size: 1.1em; color: #999">async</a> <a href="/tags/JS/" style="font-size: 1.18em; color: #999ca1">JS</a> <a href="/tags/session/" style="font-size: 1.1em; color: #999">session</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/07/">
+            <span class="card-archive-list-date">
+              七月 2025
+            </span>
+            <span class="card-archive-list-count">239</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">239</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-07-08T15:04:30.709Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Fun</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

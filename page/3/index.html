@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>窄门</title><meta name="author" content="Fun"><meta name="copyright" content="Fun"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="窄门">
+<meta property="og:url" content="https://fang-tech.github.io/page/3/index.html">
+<meta property="og:site_name" content="窄门">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fang-tech.github.io/img/butterfly-icon.png">
+<meta property="article:author" content="Fun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang-tech.github.io/img/butterfly-icon.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://fang-tech.github.io/page/3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '窄门',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">窄门</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">窄门</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/15.%20%E6%B4%BB%E5%8A%A8%E6%8A%BD%E5%A5%96%E6%B5%81%E7%A8%8B%E5%AE%9E%E7%8E%B0/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.836Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">实现了什么 这节课主要实现了活动抽奖的下单的整个流程   为活动抽奖的下单装配了责任链, 用于过滤活动下单动作 活动的库存时间校验 活动sku库存   为下单这个操作实现了操作的事务一致性, 以及幂等性  学到了什么如何保证一个多部份组成的订单是事务一致的聚合对象 通过将多部份组合成一整个整体- 聚合对象 - 订单 我们通过操作和管理, 并通过这个对象进行数据库操作, 保证了成员数据一致性  事务上的一致性 我们已经传进来了一个订单聚合对象  分库分表上的一致性 为用户创建路由键 通过这个路由键, 我们能保证对于一个用户, 他的订单相关的操作都会被路由到同一个数据库中操作, 这样我们就能更方便得保证事务一致性 而不需要分布式的事务一致性, 分布式的事务一致性的保证是安全度更低, 效率更低的方法    编程式事务 : TransactionTemplate TransactionTemplate 是Spring提供用于事务管理的Bean, 比声明式的(@Transactional) 更加地灵活, 颗粒度更小   这个Bean是怎么保证事务一致性的  1234567891011121...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/14.DDD%E6%80%BB%E7%BB%93/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.834Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">充血模型什么是充血模型充血模型和贫血模型的区别充血模型的优势值对象与实体对象DTOVO抽象类仓储层六边形</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/14.%20%E6%8A%BD%E5%A5%96%E6%B4%BB%E5%8A%A8%E8%AE%A2%E5%8D%95%E6%B5%81%E7%A8%8B%E8%AE%BE%E8%AE%A1/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.833Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">这节做了什么 这节主要是创建了活动抽奖的主要框架, 这个框架和strategy那边的框架其实类似   创建各个实体类 创建值对象 活动状态值对象 订单状态值对象   创建聚合对象 活动仓储层 服务层 : 我们主要在这个位置实现业务逻辑 单一功能接口IRaffleOrder : 创建订单接口 AbstractRaffleActivity : 用于定义活动抽奖的过程 RaffleActivityService extends AbstractRaffleActivityService : 实现抽奖的过程中的各个组件    学到了什么DDD架构下的接口等的编排 接口定义单一职责的功能  抽象类定义某些复杂的过程 继承抽象类的服务类实现抽象类中的各个组件  DDD中的各种类别的类VO对象 Value Object 值对象   与VO对象相对的就是实体对象, 这两者的核心区别是 VO对象没有唯一ID, 里面包含了很多通用的信息, 一般来说就是一个枚举类, 相等判断基于所有的值 不同的Entity即使值相同, 但是唯一ID不同, 也是不一样的实体, 但是但对于VO对象来说就算不是, 相等判断...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/12.%20%E4%B8%8D%E8%B6%85%E5%8D%96%E5%BA%93%E5%AD%98%E8%A7%84%E5%88%99%E5%AE%9E%E7%8E%B0/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.832Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">需求说明我们现在需要实现库存的扣减, 同时为了加速, 我们需要将这个扣减的过程放到redis中进行, 并通过锁机制保证不超卖. 同时实现异步的定时地执行数据库中数据更新(延时队列 + 定时任务) 业务流程 Before  将所有奖品的库存数据装配至redis缓存中  一条删减信息在业务中经过的流程redis中删减 -&gt; 删减成功 -&gt; 是否超卖 -&gt; 没有超卖 -&gt; 延迟队列 -&gt; 定时任务数据库修改数据   Redis的作用 缓存 将库存的信息加载进内存中, 让用户面向的数据实际上是redis缓存中的数据, 这样由磁盘IO变为内存IO, 加快了处理速度 同时减小了数据库的负载, 不用频繁地获取和释放连接   加锁兜底 对已经执行过获取的奖品在缓存中进行加锁记录(strategyId_awardId_surplus), 这样无论发生了什么会导致数据异常的情况, 我们都不会发生超卖事件. 已经出现过的surplus剩余数量我们都会记录下来, 哪怕数据错误恢复, 多加了库存数量, 我们在访问到这个库存数量的时候, 也会因为这个库存数量我们已经加过锁, 所...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/11.%20%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F%E4%B8%B2%E8%81%94%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99%20&amp;&amp;%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.830Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">需求分析 在上一节实现了规则树模型的结构的设计, 这节我们在数据库中加上相关的关于规则树的配置的信息, rule_tree, rule_tree_node, rule_tree_node_line三个库表,    通过从其中查到的信息构建规则树 重构抽奖过程, 去掉filter的部分  重构的流程 : 在drawio的图中有详细的描述对于设计模式的总结建造者模式 Builder说明相较于构造模式是更灵活的一种创建一个新对象的方式, 我们能任意选择该类的字段进行创建一个新的对象, 而不再是需要传入全部的参数, 或者只能按照我们有的构造方法创建新的对象 疑惑但是其实这样的过程等同于使用setter在无参创建以后赋值, 这个设计模式主要是为了简化这个创建然后set的过程吗 责任链说明 执行的功能和switch case语句相似, 相当于我们构建一个case组, 并在其中选择性的break(也就是接管), 不break就会进入到下一个case(也就是放行) 我们会顺次执行链中的事件节点, 并在当前节点判断我们是需要在这个节点就返回结果(TAKE_OVER), 还是放行进入到下一个节点继续...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/10.%20%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.829Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">需求分析 情景 : 我们原先有rule_lock这个计数锁的抽奖中规则, 现在我们需要加上对于库存的核对, 如果从库存中获取失败, 我们直接返回幸运奖 使用原先框架的不足, 我们无法动态灵活地配置多种规则流程比如if (A -&gt; TAKE_OVER) -&gt; B else (A -&gt; ALLOW) -&gt; C这种动态且灵活的规则过滤流程  解决方法 通过决策树实现, 从根节点到叶子节点就是一条完整的规则过滤链 我们让树的能到达左节点的前提是上一个节点是ALLOW, 达到右节点的前提是TAKE_OVER(暂时这个章节是这样, 因为还涉及RuleLimitType的值的问题)  </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/1.%20%E4%BD%BF%E7%94%A8%E8%84%9A%E6%89%8B%E6%9E%B6%E5%88%9B%E5%BB%BA%E5%B7%A5%E7%A8%8B%E5%92%8Cpush%E4%BB%A3%E7%A0%81/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.827Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">配置环境 jdk 1.8 Maven 3.x - xfg使用的是3.8.6  创建工程 创建仓库并推送至远程仓库测试在1-xfg-app中启动Application, 看是否在8091端口启动成功 </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-2-%E5%89%A9%E4%BD%99%E5%8A%9F%E8%83%BD/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.784Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">ai-agent-2-剩余功能在完成预热以后, 我们就正式进入到用户直接面向的核心功能: 对话和定时任务 aiAgentChat对话分成流式对话和普通对话两种 普通对话-aiAgentChat方法获取到完整的AI的回答以后再给出返回  获取所有的client的ID  123List&lt;Long&gt; aiClientIds = repository.queryAiClientIdsByAiAgentId(aiAgentId);String content = &quot;&quot;;   根据clientId取出来对应的client Bean对象, 链式调用这个agent对应的client们, 渐进式提问 这里传入的advisor的参数, CHAT_MEMORY_CONVERSATION_ID_KEY是用于标识这次对话的ID, 这个ID是用来区分上下文的, 不同的对话有着不同的ID不同的上下文 param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100)) 这个参数的作用是将对话历史记录的数量限制在100条    12345678910for (Lo...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-1/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.782Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">ai-agent-1-preheat解析接着上篇对于Controller的解析, 我们现在需要深入到service-controller中的domain层的具体实现, 来看详细看业务的实现 按照实际业务流程-preheat -&gt; ragupload -&gt; chat -&gt; task的顺序解析 这篇主要解析preheat方法(也是实现最复杂的一个) preheat解析 AiAgentPreheatService中的preheat  123456public void preheat(Long aiClientId) throws Exception &#123;    StrategyHandler&lt;AiAgentEngineStarterEntity, DefaultArmoryStrategyFactory.DynamicContext, String&gt; handler = defaultArmoryStrategyFactory.strategyHandler();    handler.apply(AiAgentEngineStarterEnti...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/middle_ware/Redis/%E9%9B%86%E7%BE%A4/%E5%93%A8%E5%85%B5/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:03:04.774Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></span></div><div class="content">哨兵机制为什么要有哨兵机制在主从集群下, 如果主节点挂了就不能执行写操作, 这个时候就需要手动将从服务器切换成主服务器 SLAVEOF NO ONE同时在从服务器中指定新的主服务器为主服务器, 同时还要通知上游的客户端, 将Redis的主服务器的IP切换成新的主服务器的IP为了解决这个繁琐麻烦的过程, Redis通过哨兵机制, 用一个节点来检测主节点, 如果主节点挂了, 就选举从节点中的一个为新的主节点, 实现主从故障转移 哨兵机制是怎么工作的哨兵节点主要做三件事  监控 : 哨兵节点节点是怎么监控节点的, 是怎么判断主节点已经故障了 选主 : 哨兵节点是根据什么规则选择一个新的节点作为主节点的 通知 : 哨兵节点是怎么把新的主节点的相关信息通知给从节点和客户端的  监控 怎么监控节点的?  哨兵节点会每隔1s向所有的主从节点发送PING命令, 节点收到PING命令以后会返回一个响应给哨兵节点  如果主从节点不响应的时间超过了down-after-milliseconds, 单位是毫秒, 这个哨兵节点就会将节点标记为 [主观下线]有主观下线也有客观下线, 之所以针对主节点设计主观...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/2/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#content-inner">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#content-inner">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/#content-inner">24</a><a class="extend next" rel="next" href="/page/4/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fun</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">239</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">27</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/3-%E5%8A%A8%E6%80%81%E9%99%90%E6%B5%81/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.870Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/wrench/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/1-DCC/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.868Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%9C%AA%E7%90%86%E8%A7%A3%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.857Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/deployment/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.856Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/package-management/" style="font-size: 1.1em; color: #999">package-management</a> <a href="/tags/ES6/" style="font-size: 1.1em; color: #999">ES6</a> <a href="/tags/Servlet/" style="font-size: 1.1em; color: #999">Servlet</a> <a href="/tags/backend/" style="font-size: 1.26em; color: #999fa8">backend</a> <a href="/tags/frontend/" style="font-size: 1.34em; color: #99a3b0">frontend</a> <a href="/tags/HTML/" style="font-size: 1.1em; color: #999">HTML</a> <a href="/tags/Listener/" style="font-size: 1.1em; color: #999">Listener</a> <a href="/tags/Java/" style="font-size: 1.5em; color: #99a9bf">Java</a> <a href="/tags/JavaWeb/" style="font-size: 1.42em; color: #99a6b7">JavaWeb</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 1.1em; color: #999">设计模式</a> <a href="/tags/HTTP/" style="font-size: 1.1em; color: #999">HTTP</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/JDBC/" style="font-size: 1.1em; color: #999">JDBC</a> <a href="/tags/Tomcat/" style="font-size: 1.1em; color: #999">Tomcat</a> <a href="/tags/Maven/" style="font-size: 1.1em; color: #999">Maven</a> <a href="/tags/build-tool/" style="font-size: 1.1em; color: #999">build-tool</a> <a href="/tags/Spring/" style="font-size: 1.18em; color: #999ca1">Spring</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/protocol/" style="font-size: 1.1em; color: #999">protocol</a> <a href="/tags/Filter/" style="font-size: 1.1em; color: #999">Filter</a> <a href="/tags/XML/" style="font-size: 1.1em; color: #999">XML</a> <a href="/tags/Deployment/" style="font-size: 1.1em; color: #999">Deployment</a> <a href="/tags/Ajax/" style="font-size: 1.1em; color: #999">Ajax</a> <a href="/tags/%E5%90%AB%E6%9C%89%E5%85%AB%E8%82%A1%E5%86%85%E5%AE%B9/" style="font-size: 1.18em; color: #999ca1">含有八股内容</a> <a href="/tags/async/" style="font-size: 1.1em; color: #999">async</a> <a href="/tags/JS/" style="font-size: 1.18em; color: #999ca1">JS</a> <a href="/tags/session/" style="font-size: 1.1em; color: #999">session</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/07/">
+            <span class="card-archive-list-date">
+              七月 2025
+            </span>
+            <span class="card-archive-list-count">239</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">239</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-07-08T15:04:30.709Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Fun</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
