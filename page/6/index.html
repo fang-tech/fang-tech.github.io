@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>走难</title><meta name="author" content="Func"><meta name="copyright" content="Func"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Func的个人博客">
+<meta property="og:type" content="website">
+<meta property="og:title" content="走难">
+<meta property="og:url" content="https://fang-tech.github.io/page/6/index.html">
+<meta property="og:site_name" content="走难">
+<meta property="og:description" content="Func的个人博客">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg">
+<meta property="article:author" content="Func">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="https://raw.githubusercontent.com/fang-tech/Pic/main/img/pngtree-round-logo-with-mountains-and-water-vector-png-image_7031662.png"><link rel="canonical" href="https://fang-tech.github.io/page/6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '走难',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">走难</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">走难</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E7%A1%AC%E4%BB%B6%E7%BB%93%E6%9E%84/2.2%20%E4%BC%AA%E5%85%B1%E4%BA%AB/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.503Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">伪共享分析伪共享问题有两个不同核心的线程1和2, 他们分别要修改物理内存中相邻的变量A和B, 因为A和B在物理内存中是相邻的, 而CPU加载的最小单元是Cache, 这两个变量会被读取到同一个Cache Line中  这个修改过程会是  线程1: 从内存中读取Cache Line, 变成E状态 修改A变量, AB所在的Cache Line变成M状态   线程2: 读取Cache Line, 因为线程所在1的CPU Cache中有这个Cache Line, 并且状态是M 将线程1的Cache Line写回到内存中 线程2从内存中读取最新的A和B(但其实线程2会用到的B并没有被修改), 变成E状态 线程1变成I状态 线程2修改Cache Line中的B, 变成M状态    我们会发现在这种情况下Cache Line直接失效了, 每次都需要从内存中读取数据, 修改以后需要将数据直接写回到内存中 如果线程1和线程2交替执行, 我们的Cache 命中率高达0% 解决伪共享问题很简单地我们让两个变量不要在同一个cache line中就好了, 解决思路就是padding, 我们用冗余的变量直接...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E7%A1%AC%E4%BB%B6%E7%BB%93%E6%9E%84/2.1.%20CPU%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.501Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">CPU Cache CPU Cache指的是靠近cpu的SRAM芯片, 电路简单, 访问速度非常快, 同时靠近CPU, 读取速度远快于主存(内存DRAM)   CPU Cache的出现主要是为了解决CPU和主存之间的速度不匹配这一问题  解决上面所述的 “内存墙” 问题, 最核心的思路就是减少对内存的访问次数, 这也是CPU Cache生效的关键   CPU Cache是怎么减少内存的访问次数 在有了CPU Cache以后, 访问数据会按照  : L1 缓存 -&gt; L2 缓存 -&gt; L3 缓存 -&gt; 主存 -&gt; 硬盘的顺序, 只有当前层没有, 我们才会访问下一层, 直到获取到我们需要的数据   我们要减少主存的访问次数, 也就是保证我们能在CPU高速缓存中获取到我们需要的数据 局部性原理 时间局部性 : 最近访问过的数据很可能会被再次访问 空间局部性 : 访问过某个数据以后, 其附近的数据也很可能会被访问 Cache每次读取都会将整个数据块(Cache Line)一次性加载, 利用空间局部性原理   预读技术 根据访问模式, 预测将要使用的数据, 提前将数...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E7%A1%AC%E4%BB%B6%E7%BB%93%E6%9E%84/1.%20CPU%E6%98%AF%E6%80%8E%E4%B9%88%E6%89%A7%E8%A1%8C%E7%A8%8B%E5%BA%8F%E7%9A%84/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.500Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">OS硬件结构中央处理器 (CPU : Central Processing Unit)位数 常见的cpu有32位和64位的cpu, 这里的位数指的是cpu的带宽 即cpu一次能计算多少字节的数据 32bit : 一次可以计算4字节 64位 : 一次可以计算8字节   cpu的位宽越大, 一次性能计算的数据量就能越大   那么如果一个32位的CPU只能计算32位的数据吗   一个32位的CPU可以计算大于32位的数据 32位指的是寄存器宽度为32为位, 数据总线位32位, 一次可以处理32位的数字 可以通过多周期分段算法, 将一个数字分成多个32的片段, 就像串联式的加法器一样实现拓展     这里的32位的数据指的是最后运算结果不能超过32位还是参与运算的数字不能超过32位   CPU单次运算中操作数的位宽上限时32位 操作数长度限制32位 寄存器宽度限制32位, 超过32位的数据无法一次性处理, 需要拆分为多次计算    为什么使用寄存器 已经有了内存了, 为什么我们还需要寄存器存储CPU数据   用途上的区别  寄存器 : 临时存放CPU直接处理的数据和指令, 强调快速访问 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.497Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">OS什么是系统调用 ? 操作系统为了用户态的程序能过够调用操作系统提供的内核态级别的子功能而创建的接口   凡是与系统态级别的资源有关的操作, 都必须通过系统调用方式向操作系统提出服务请求 文件管理 进程控制 内存管理    系统调用的分类 ? 设备管理: 完成设备 (输入输出设备和外部存储设备等) 的请求或释放, 以及设备启动等功能 文件管理: 完成对文件的CRUD 进程管理: 进程的创建, 撤销, 阻塞, 唤醒, 进程间的通信等功能 内存管理: 完成内存的分配, 回收以及获取作业占用内存区大小及地址等功能  系统调用的过程了解吗 ? 用户态的程序发起系统调用, 因为系统调用中涉及到一些特权指令 (只能由操作系统内核态才能运行的指令), 用户态程序权限不足, 因此会中断执行, 也就是Trap (Trap是一种中断) 中断发生以后, 当前CPU执行的程序会中断, 跳转到中断处理程序. 内核程序开始执行, 也就是开始处理系统调用 当系统调用处理完毕以后, 操作系统再调用特权指令切换回用户态 (iret, sysret eret), 恢复用户态的上下文, 继续执行用户态程序  </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E5%86%85%E6%A0%B8/%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.496Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">OS什么是用户态和内核态 这个概念是以进程访问资源的特点为依据进行的划分, 将进程在操作系统上的运行分为两个级别, 是为了安全和管理而设计   用户态(User Mode) : 用户态运行的程序能直接读取用户程序的数据, 拥有较低的权限. 不能直接访问内核数据和程序 操作系统在执行用户程序时, 主要工作在用户态, 只有在执行没有权限完成的任务的时候才会切换到内核态 访客模式   内核态(Kernel Mode) : 内核态运行的进程几乎可以访问计算机中的任何资源, 不受控制, 拥有非常高的权限 可以访问任何有效的地址 管理员模式    为什么要区分内核态和用户态 安全性 : 内核程序和用户程序的运行环境分隔, 有助于防止用户程序对系统造成不可修复的破坏, 会对系统的正常运行造成灾难性的影响. 这些危险指令智能在内核态运行, 这些只能由操作系统内核执行的指令也被叫做 特权指令   稳定性 : 应用程序错误只会影响到该程序本身, 而不会导致整个系统崩坏  用户态和内核态是如何切换的 系统调用 : 用户态进程 主动 要求切换到内核态的一种方式, 主要是为了使用内核态才能做的事情, 比如...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/3.5%20%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.493Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">页面置换算法页面置换 swap在发生缺页中断以后, 如果这个时候物理内存已经申请满了, 我们就会触发页面置换, 我们将不常用的页置换到硬盘中, 从而空出申请需要的内存, 这里有个问题是我们怎么选出来不常用的页面呢? 页面置换算法这就是页面置换算法做得事 最佳页面置换算法我们计算出来现在被使用的物理页中, 需要经过最长时间才会迎来下一次使用的页, 然后将这个页置换出去 这个算法是一个理想的算法, 因为我们是无法得知某个页下一次使用的时间 这个算法也是效率最高的算法, 所以常用来衡量页面置换算法, 页面置换算法离最佳页面置换算法越近, 效率越高 FIFO先进先出页面置换算法, 维护一个全局队列, 最先被被使用的页, 最先被淘汰 LRU最近最久未使用置换算法 使用LRU维护全局链表, 每次淘汰最久不被使用的页 但是这个实现方法存在着每次访问页都需要更新链表, 成本高, 所以同样不常被作为页面置换算法来实现 CLOCK时钟页面置换算法就是用来解决上面LRU的问题的 我们维护一个所有物理页的环形队列, 让一个指针开始的时候指向某个页面, 然后在需要页面置换的时候,  沿环形队列扫描, 如果...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/3.4%20%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E9%A2%84%E8%AF%BB%E5%A4%B1%E6%95%88%E5%92%8C%E7%BC%93%E5%AD%98%E6%B1%A1%E6%9F%93%E7%9A%84%E9%97%AE%E9%A2%98/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.492Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">内存管理-如何避免预读失效和缓存污染的问题其实这两个问题都是在问如何改进LRU算法 Redis通过实现LFU算法来避免缓存污染而导致缓存命中率下降的问题 MySQL和Linux操作系统通过改进LRU算法来避免预读失效和缓存污染 Linux和MySQL的缓存机制Linux的page cache和MySQL的Buffer Pool缓存的基本数据单位都是页 Linux的缓存在应用程序读取文件的数据的时候, Linux操作系统会对读取的文件数据进行缓存, 缓存在文件系统的Page Cache中 MySQL的缓存读取的数据时, 如果数据存在于Buffer Pool 中时, 客户端会直接读取缓存中的数据, 否则从磁盘中读取 修改数据的时候, 首先修改Buffer Pool中的数据, 然后将页设置为脏页, 最后由后台线程将脏页写入到磁盘中 解决预读失效什么是预读机制Linux操作系统为基于Page Cache的读缓存机制提供预读机制  应用程序只想读取磁盘文件A的offset为0 ~ 3KB范围内的数据, 但是磁盘的基本读写单位时block(4KB), 所以操作系统至少会读取0~4KB的内容 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/3.3%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%86%85%E5%AD%98%E6%BB%A1%E4%BA%86,%20%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.491Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">内存管理-内存满了会发生什么内存分配的过程 在CPU第一次访问虚拟地址的时候, 发现这个虚拟内存没有映射到实际的物理内存, 这个时候就会触发缺页中断, 将中断交给缺页中断函数处理 中断函数判断是否有空闲的物理内存 有则直接分配内存, 并建立物理内存和虚拟内存之间的映射关系 没有则会开始回收内存的工作   后台内存回收 : 唤醒kswapd内核线程来回收内存, 这个过程是 异步 的 直接内存回收 : 后台异步回收内存跟不上进程内存申请的速度, 就会直接开始回收, 这个回收的过程是同步的, 也就是会阻塞进程的运行 直接内存回收后, 空闲的物理内存仍然无法满足这次的物理内存的申请, 就会触发 OOM 机制, OOM Killer 机制会根据算法选择一个占用物理内存较高的进程, 并将其杀死, 直到释放足够的内存, 这个时候内存分配函数也会返回失败, 同时在释放的过程中申请内存的进程如果分数过高, 也可能被杀掉   可回收的内存类型主要是两类内存  文件页 : 内核缓存的磁盘数据和内核缓存的文件数据都叫做文件页. 将文件页释放是件安全风险很低的事情, 大不了以后再从磁盘中读取就是了. 回收...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/3.2%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-malloc%E6%98%AF%E6%80%8E%E4%B9%88%E5%88%86%E9%85%8D%E5%86%85%E5%AD%98%E7%9A%84/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.490Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">内存管理-malloc是怎么分配内存的Linux中进程的内存分布长什么样子在32位的系统中, 用户空间是3GB, 内核空间是1GB 在64位的系统中, 两个空间各为128T 用户内存空间从低到高分别是6种不同的内存段   代码段 : 用于存储可执行的二进制代码 数据段 : 已初始化的静态变量和全局变量 BSS段 : 未初始化的静态变量和全局变量 堆段 : 动态分配的内存, 从低地址向高地址增长 文件映射段 : 动态库, 共享内存等, 从低向高增长 栈段 : 局部变量的和函数调用的上下文等, 大小是固定的, 一般是8MB  其中堆段和文件映射段的内存是动态分配的. malloc是怎么分配内存的malloc分配的内存的时候会根据分配的内存的大小, 选择调用不同的系统调用分配内存  brk() : 在分配的内存 &lt; 128KB的时候, 在堆区分配内存 会将堆顶指针上移指定大小 但是这个时候分配的并不是物理内存, 而是虚拟内存, 也就是这个时候这个只是移动了堆顶指针, 并没有映射到物理内存, 只有在第一次通过这个虚拟地址在页表上查到查找, 发现这个页没有在物理内存中的时候, 通过缺...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Computer_Science/Operating-System/%E6%80%BB%E7%BB%93/" title="无标题">无标题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-08T15:02:57.486Z" title="发表于 2025-07-08 23:02:57">2025-07-08</time></span></div><div class="content">磁盘调度算法和读者写者问题其中的核心问题都有  对于饥饿情况的考虑 (公平性)   </div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/5/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#content-inner">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/#content-inner">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/#content-inner">14</a><a class="extend next" rel="next" href="/page/7/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Func</div><div class="author-info-description">Func的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/8.%20%E6%8A%BD%E5%A5%96%E4%B8%AD%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.854Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.853Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.847Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+      <i class="fas fa-angle-right"></i></a>
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">18</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/DataBase/"><span class="card-category-list-name">DataBase</span><span class="card-category-list-count">1</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/DataBase/MyBatis/"><span class="card-category-list-name">MyBatis</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/"><span class="card-category-list-name">Java进阶</span><span class="card-category-list-count">11</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="card-category-list-name">JUC并发编程</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JVM/"><span class="card-category-list-name">JVM</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/"><span class="card-category-list-name">Java集合框架</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">1</span></a></li></ul></li></ul></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/happens-before/" style="font-size: 1.1em; color: #999">happens-before</a> <a href="/tags/DDD/" style="font-size: 1.5em; color: #99a9bf">DDD</a> <a href="/tags/%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA/" style="font-size: 1.1em; color: #999">运行时数据区</a> <a href="/tags/%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" style="font-size: 1.1em; color: #999">应用场景</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" style="font-size: 1.1em; color: #999">虚拟内存</a> <a href="/tags/RequestMapping/" style="font-size: 1.1em; color: #999">RequestMapping</a> <a href="/tags/Deployment/" style="font-size: 1.1em; color: #999">Deployment</a> <a href="/tags/JDBC/" style="font-size: 1.5em; color: #99a9bf">JDBC</a> <a href="/tags/SpringBoot/" style="font-size: 1.5em; color: #99a9bf">SpringBoot</a> <a href="/tags/Starter/" style="font-size: 1.1em; color: #999">Starter</a> <a href="/tags/%E7%8A%B6%E6%80%81%E7%A0%81/" style="font-size: 1.1em; color: #999">状态码</a> <a href="/tags/%E5%8A%A8%E6%80%81SQL/" style="font-size: 1.1em; color: #999">动态SQL</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 1.1em; color: #999">索引</a> <a href="/tags/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/" style="font-size: 1.1em; color: #999">可靠传输</a> <a href="/tags/%E5%8C%85%E8%A3%85%E7%B1%BB/" style="font-size: 1.1em; color: #999">包装类</a> <a href="/tags/%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/" style="font-size: 1.1em; color: #999">删除策略</a> <a href="/tags/JDK/" style="font-size: 1.1em; color: #999">JDK</a> <a href="/tags/%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">缓存机制</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 1.1em; color: #999">Java基础</a> <a href="/tags/%E5%90%8C%E6%AD%A5%E9%94%81/" style="font-size: 1.1em; color: #999">同步锁</a> <a href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81/" style="font-size: 1.1em; color: #999">轻量级锁</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 1.1em; color: #999">并发</a> <a href="/tags/JS/" style="font-size: 1.5em; color: #99a9bf">JS</a> <a href="/tags/Bean%E8%A3%85%E9%85%8D/" style="font-size: 1.1em; color: #999">Bean装配</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C/" style="font-size: 1.1em; color: #999">数据库操作</a> <a href="/tags/Hash/" style="font-size: 1.1em; color: #999">Hash</a> <a href="/tags/%E8%AE%BF%E9%97%AE%E6%A0%87%E5%BF%97/" style="font-size: 1.1em; color: #999">访问标志</a> <a href="/tags/%E8%B4%AB%E8%A1%80%E6%A8%A1%E5%9E%8B/" style="font-size: 1.1em; color: #999">贫血模型</a> <a href="/tags/AOF/" style="font-size: 1.5em; color: #99a9bf">AOF</a> <a href="/tags/CGLIB%E4%BB%A3%E7%90%86/" style="font-size: 1.1em; color: #999">CGLIB代理</a> <a href="/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" style="font-size: 1.1em; color: #999">上下文切换</a> <a href="/tags/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" style="font-size: 1.1em; color: #999">配置管理</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 1.1em; color: #999">缓存</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 1.1em; color: #999">引用计数</a> <a href="/tags/%E6%B5%81%E5%BC%8F%E5%AF%B9%E8%AF%9D/" style="font-size: 1.1em; color: #999">流式对话</a> <a href="/tags/Spring/" style="font-size: 1.5em; color: #99a9bf">Spring</a> <a href="/tags/%E5%8F%AF%E8%A7%81%E6%80%A7/" style="font-size: 1.5em; color: #99a9bf">可见性</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81/" style="font-size: 1.1em; color: #999">进程状态</a> <a href="/tags/%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 1.1em; color: #999">缓存一致性</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/07/">
+            <span class="card-archive-list-date">
+              七月 2025
+            </span>
+            <span class="card-archive-list-count">131</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">131</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">236.8k</div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-07-09T13:48:16.773Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Func</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  },
+  processSubtitle: (content, extraContents = []) => {
+    if (true) {
+      const sub = ["走暗路，耕瘦田，进窄门"].slice()
+
+      if (extraContents.length > 0) {
+        sub.unshift(...extraContents)
+      }
+
+      if (typeof content === 'string') {
+        sub.unshift(content)
+      } else if (Array.isArray(content)) {
+        sub.unshift(...content)
+      }
+
+      sub.length > 0 && typedJSFn.init(sub)
+    } else {
+      document.getElementById('subtitle').textContent = typeof content === 'string' ? content :
+        (Array.isArray(content) && content.length > 0 ? content[0] : '')
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  typedJSFn.processSubtitle(["走暗路，耕瘦田，进窄门"])
+}
+typedJSFn.run(subtitleType)</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

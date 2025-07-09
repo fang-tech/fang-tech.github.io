@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>走难</title><meta name="author" content="Func"><meta name="copyright" content="Func"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Func的个人博客">
+<meta property="og:type" content="website">
+<meta property="og:title" content="走难">
+<meta property="og:url" content="https://fang-tech.github.io/page/10/index.html">
+<meta property="og:site_name" content="走难">
+<meta property="og:description" content="Func的个人博客">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg">
+<meta property="article:author" content="Func">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="https://raw.githubusercontent.com/fang-tech/Pic/main/img/pngtree-round-logo-with-mountains-and-water-vector-png-image_7031662.png"><link rel="canonical" href="https://fang-tech.github.io/page/10/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '走难',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">走难</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">走难</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/3_synchronized/" title="Synchronized关键字详解 - Java同步机制核心">Synchronized关键字详解 - Java同步机制核心</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">JUC并发编程</a></span></div><div class="content">Synchronized关键字大厂问题Synchronized可以作用在哪里? 分别通过对象锁和类锁进行举例。 Synchronized本质上是通过什么保证线程安全的? 分三个方面回答：加锁和释放锁的原理，可重入原理，保证可见性原理。 Synchronized由什么样的缺陷? Java Lock是怎么弥补这些缺陷的。 Synchronized和Lock的对比，和选择? Synchronized在使用时有何注意事项? Synchronized修饰的方法在抛出异常时,会释放锁吗? 多个线程等待同一个Synchronized锁的时候，JVM如何选择下一个获取锁的线程? Synchronized使得同时只有一个线程可以执行，性能比较差，有什么提升的方法? 我想更加灵活的控制锁的释放和获取(现在释放锁和获取锁的时机都被规定死了)，怎么办? 什么是锁的升级和降级? 什么是JVM里的偏斜锁、轻量级锁、重量级锁? 不同的JDK中对Synchronized有何优化? Synchronized的使用 一把锁同时只能被一个线程获取, 没有获得锁得线程只能等待 每个实例都对应自己的一把锁(this), ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/2_volatile/" title="volatile关键字深度解析 - 可见性与有序性保证">volatile关键字深度解析 - 可见性与有序性保证</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">JUC并发编程</a></span></div><div class="content">volatile关键字大厂的问题volatile关键字的作用是什么? volatile能保证原子性吗? 之前32位机器上共享的long和double变量的为什么要用volatile? 现在64位机器上是否也要设置呢? i++为什么不能保证原子性? volatile是如何实现可见性的? 内存屏障。 volatile是如何实现有序性的? happens-before等 说下volatile的应用场景? volatile关键字的作用防止指令重排序&#x2F;实现有序性最典型的例子就是双重检查锁定模式中, 需要对对象的实例加上volatile关键字的问题 1234567891011121314151617public class Singleton &#123;    public static volatile Singleton singleton;    /**     * 构造函数私有，禁止外部实例化     */    private Singleton() &#123;&#125;;    public static Singleton getInstance() &#123...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/1_JVM%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" title="JVM类加载机制详解 - 从字节码到内存的完整过程">JVM类加载机制详解 - 从字节码到内存的完整过程</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JVM/">JVM</a></span></div><div class="content">JVM的类加载机制JVM怎么识别出来是class格式的文件123456700000000: cafe babe 0000 0034 0022 0700 0201 0019  .......4.&quot;......00000010: 636f 6d2f 636d 6f77 6572 2f6a 6176 615f  com/cmower/java_00000020: 6465 6d6f 2f54 6573 7407 0004 0100 106a  demo/Test......j00000030: 6176 612f 6c61 6e67 2f4f 626a 6563 7401  ava/lang/Object.00000040: 0006 3c69 6e69 743e 0100 0328 2956 0100  ..&lt;init&gt;...()V..00000050: 0443 6f64 650a 0003 0009 0c00 0500 0601  .Code...........00000060: 000f 4c69 6e65 4e75 6d62 6572 5461 626...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/2_Java%E7%B1%BB%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/" title="Java类文件结构详解 - 字节码格式与解析">Java类文件结构详解 - 字节码格式与解析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JVM/">JVM</a></span></div><div class="content">Java类文件结构一个简单的例子12345678public class Main &#123;    private int m;    private String[][] str;    public int inc() &#123;        return m + 1;    &#125;&#125;   反编译以后的结果  123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566Classfile /G:/Desktop/just4learn/src/main/java/com/func/JVM/Main.class  Last modified 2025年3月31日; size 315 bytes  SHA-256 checksum 542e6bc916453b34e2baebf6d02c704a8984922a0a7e42ebc902d174266d1109  Compile...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/6_%E6%B7%B1%E5%A6%82%E7%90%86%E8%A7%A3%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA/" title="JVM运行时数据区详解 - 内存结构与分配机制">JVM运行时数据区详解 - 内存结构与分配机制</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JVM/">JVM</a></span></div><div class="content">JVM运行时数据区程序计数器每个线程都有自己的私有的PC(Program Counter),  线程执行的是非本地方法, PC指向下一条将要运行的指令(准确来说是, 在执行指令的时候, PC指向下一条将要运行的指令, 在其他任意时刻, 指向的是下一条要运行的指令) 线程执行的是本地方法的时候, PC的值是undefined, 因为本地方法不是在JVM中运行的, 往往是通过C&#x2F;C++实现 虚拟机栈这个在深入理解栈帧里面有详细说明 本地方法栈区别于虚拟机栈, 本地方法栈为虚拟机使用到的本地方法服务 堆堆区是所有线程共享的一块区域, 用来存储对象(静态变量在堆中) Java中的几乎所有对象都是在堆中存储的  为什么不是所有?  现代JVM默认开启逃逸分析, 如果某些方法中的对象或者引用没有在方法之外被使用过(也就是没有逃逸), 这个时候就会将对象存储在虚拟机栈中的局部变量空间 堆区最容易出现的错误就是OOM(Out of Memory), 有两种表现形式  OutOfMemoryError : GC Overhead Limit Exceed: 当JVM花太长时间执行垃圾回收...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/7_%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/" title="JVM垃圾回收机制深入解析 - GC算法与原理详解">JVM垃圾回收机制深入解析 - GC算法与原理详解</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JVM/">JVM</a></span></div><div class="content">深入理解JVM中的垃圾回收机制判断一个对象是否可以被回收引用计数法给对象添加一个引用计数器, 当对象增加一个引用的时候计数器加1, 引用失效的时候计数器减1, 当计数器等于0的时候该对象可回收 但是这个方法无法解决两个对象循环引用的情况, 这种情况两个对象的引用计数器永远不为0 也正是这个致命的原因, Java不使用引用计数法 可达性分析算法从GC Roots为起始点进行搜索, 能够达到的对象都是存活的, 不可达的对象回收, 更具体地说, GC Roots实际上是现在可用的需要用的引用的集合, 通过这些引用我们就能达到我们目前需要使用的所有对象, 从而判定出来不可达的对象就是不可用的, 需要回收的 GC Roots一般包含以下内容  虚拟机栈中引用的对象 本地方法栈中引用的对象 方法区中类静态属性引用的对象 方法区中常量引用的对象  引用类型强引用被强引用关联的对象不会被回收 使用new一个新对象的方式创建强引用 1Object obj = new Object();  软引用被软引用关联的对象只有在内存不够的情况下才会被回收 使用SoftReference类来创建软引用 123...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/JVM/" title="JVM基础 - JDK、JRE、JVM关系详解">JVM基础 - JDK、JRE、JVM关系详解</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JVM/">JVM</a></span></div><div class="content">JVM, JDK, JRE之间的关系JDK Java Development Kit : Java开发工具包   里面包含了JRE, 有开发工具包括编译工具(javac.exe), 打包工具(jar.exe)等工具  JRE Java Runtime Environment : Java运行环境   是JDK的子集, JRE提供了库, Java虚拟机, 和其他组件  JVM Java Virtual Machine : Java虚拟机   一个虚拟出来的计算机, 负责把Java程序生成的字节码文件, 解释成具体系统平台上的机器指令  Client模式, Server模式 JVM的不同启动模式   Client模式, 启动速度更快, 用于运行GUI交互程序A JIT的编译阈值较高, 倾向于解释运行 编译优化的程度更低, 更适合于注重启动性能而非长期运行性能   Server模式, 启动速度慢, 但是运行起来更快. 用于运行服务器后台程序 JIT的编译阈值更低, 倾向于编译运行,  编译优化的程度更高, 能执行更全面的优化, 比如方法内联, 循环展开, 逃逸分析等 因为执行了更多的编...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Spring/Spring%20AI/AI%E6%A6%82%E5%BF%B5/" title="Spring AI - 人工智能核心概念解析">Spring AI - 人工智能核心概念解析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Spring/">Spring</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Spring/Spring-AI/">Spring AI</a></span></div><div class="content">Models我们按照输入和输出的内容, 将模型分成四大类  Prompt 基于自然语言输入, 用于知道AI模型生成特定的内容  用户设定的规则 输出的格式 不同角色的不同输入  创建高效的提示词, 包括建立请求的上下文并将其中的各个部分替换成特定用户的输入的值 Tell me a &#123;adjective&#125; joke about &#123;content&#125; EmbeddingEmbedding的工作原理是将文本, 图像, 视频转换成浮点数向量 通过计算两段文本向量之间的数值距离, 应用程序可以衡量两个向量也就是两个内容之间的相似度 常用于实现RAG (Retieval Augmented Generation: 检索增强生成)   Structured Output简单来说就是对于怎么让AI的输出按照固定的格式的技术 Bring Your Data &amp; APIs to the AI Model Prompt Stuffing : 将数据嵌入到提供给模型的提示中, 典型的应用之一就是RAG Tool Calling: 工具调用, 允许AI使用外部...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/ArrayList/" title="ArrayList源码深度解析 - 动态数组实现原理">ArrayList源码深度解析 - 动态数组实现原理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/">Java集合框架</a></span></div><div class="content">ArrayList创建ArrayListArrayList(int initialCapacity)12345678910public ArrayList(int initialCapacity) &#123;        if (initialCapacity &gt; 0) &#123;            this.elementData = new Object[initialCapacity];        &#125; else if (initialCapacity == 0) &#123;            this.elementData = EMPTY_ELEMENTDATA;        &#125; else &#123;            throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+                                               initialCapacity);        &#125;    &#12...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/HashMap/" title="HashMap源码解析 - 数据结构与核心算法详解">HashMap源码解析 - 数据结构与核心算法详解</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/">Java进阶</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/">Java集合框架</a></span></div><div class="content">HashMaphash方法原理hash(Object key)1234static final int hash(Object key) &#123;    int h;    return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);&#125;  这段代码就是计算存进来的元素的hash值的函数 123public V put(K key, V value) &#123;    return putVal(hash(key), key, value, false, true);&#125;  这个函数将key Object的hashcode异或hashcode逻辑右移16得到最终的hash值 如果要通过这个hash值计算出来桶的位置, 则通过(n - 1) &amp; hash, 这样就是hash值对n取余后的结果, 因为在数组长度是2的n次方的时候, 取余运算和与运算的结果是一样的(因为在长度是2的n次方的时候, length - 1后会除了第n位全是1, 就能达到取余的效果) HashMap中...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/9/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#content-inner">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/#content-inner">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/#content-inner">14</a><a class="extend next" rel="next" href="/page/11/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Func</div><div class="author-info-description">Func的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/8.%20%E6%8A%BD%E5%A5%96%E4%B8%AD%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.854Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.853Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.847Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+      <i class="fas fa-angle-right"></i></a>
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">18</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/DataBase/"><span class="card-category-list-name">DataBase</span><span class="card-category-list-count">1</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/DataBase/MyBatis/"><span class="card-category-list-name">MyBatis</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/"><span class="card-category-list-name">Java进阶</span><span class="card-category-list-count">11</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JUC%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="card-category-list-name">JUC并发编程</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/JVM/"><span class="card-category-list-name">JVM</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/"><span class="card-category-list-name">Java集合框架</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E8%BF%9B%E9%98%B6/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">1</span></a></li></ul></li></ul></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/happens-before/" style="font-size: 1.1em; color: #999">happens-before</a> <a href="/tags/DDD/" style="font-size: 1.5em; color: #99a9bf">DDD</a> <a href="/tags/%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA/" style="font-size: 1.1em; color: #999">运行时数据区</a> <a href="/tags/%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" style="font-size: 1.1em; color: #999">应用场景</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" style="font-size: 1.1em; color: #999">虚拟内存</a> <a href="/tags/RequestMapping/" style="font-size: 1.1em; color: #999">RequestMapping</a> <a href="/tags/Deployment/" style="font-size: 1.1em; color: #999">Deployment</a> <a href="/tags/JDBC/" style="font-size: 1.5em; color: #99a9bf">JDBC</a> <a href="/tags/SpringBoot/" style="font-size: 1.5em; color: #99a9bf">SpringBoot</a> <a href="/tags/Starter/" style="font-size: 1.1em; color: #999">Starter</a> <a href="/tags/%E7%8A%B6%E6%80%81%E7%A0%81/" style="font-size: 1.1em; color: #999">状态码</a> <a href="/tags/%E5%8A%A8%E6%80%81SQL/" style="font-size: 1.1em; color: #999">动态SQL</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 1.1em; color: #999">索引</a> <a href="/tags/%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/" style="font-size: 1.1em; color: #999">可靠传输</a> <a href="/tags/%E5%8C%85%E8%A3%85%E7%B1%BB/" style="font-size: 1.1em; color: #999">包装类</a> <a href="/tags/%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/" style="font-size: 1.1em; color: #999">删除策略</a> <a href="/tags/JDK/" style="font-size: 1.1em; color: #999">JDK</a> <a href="/tags/%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">缓存机制</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 1.1em; color: #999">Java基础</a> <a href="/tags/%E5%90%8C%E6%AD%A5%E9%94%81/" style="font-size: 1.1em; color: #999">同步锁</a> <a href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81/" style="font-size: 1.1em; color: #999">轻量级锁</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 1.1em; color: #999">并发</a> <a href="/tags/JS/" style="font-size: 1.5em; color: #99a9bf">JS</a> <a href="/tags/Bean%E8%A3%85%E9%85%8D/" style="font-size: 1.1em; color: #999">Bean装配</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C/" style="font-size: 1.1em; color: #999">数据库操作</a> <a href="/tags/Hash/" style="font-size: 1.1em; color: #999">Hash</a> <a href="/tags/%E8%AE%BF%E9%97%AE%E6%A0%87%E5%BF%97/" style="font-size: 1.1em; color: #999">访问标志</a> <a href="/tags/%E8%B4%AB%E8%A1%80%E6%A8%A1%E5%9E%8B/" style="font-size: 1.1em; color: #999">贫血模型</a> <a href="/tags/AOF/" style="font-size: 1.5em; color: #99a9bf">AOF</a> <a href="/tags/CGLIB%E4%BB%A3%E7%90%86/" style="font-size: 1.1em; color: #999">CGLIB代理</a> <a href="/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" style="font-size: 1.1em; color: #999">上下文切换</a> <a href="/tags/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" style="font-size: 1.1em; color: #999">配置管理</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 1.1em; color: #999">缓存</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 1.1em; color: #999">引用计数</a> <a href="/tags/%E6%B5%81%E5%BC%8F%E5%AF%B9%E8%AF%9D/" style="font-size: 1.1em; color: #999">流式对话</a> <a href="/tags/Spring/" style="font-size: 1.5em; color: #99a9bf">Spring</a> <a href="/tags/%E5%8F%AF%E8%A7%81%E6%80%A7/" style="font-size: 1.5em; color: #99a9bf">可见性</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81/" style="font-size: 1.1em; color: #999">进程状态</a> <a href="/tags/%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 1.1em; color: #999">缓存一致性</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/07/">
+            <span class="card-archive-list-date">
+              七月 2025
+            </span>
+            <span class="card-archive-list-count">131</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">131</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">236.8k</div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-07-09T13:48:16.773Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Func</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  },
+  processSubtitle: (content, extraContents = []) => {
+    if (true) {
+      const sub = ["走暗路，耕瘦田，进窄门"].slice()
+
+      if (extraContents.length > 0) {
+        sub.unshift(...extraContents)
+      }
+
+      if (typeof content === 'string') {
+        sub.unshift(content)
+      } else if (Array.isArray(content)) {
+        sub.unshift(...content)
+      }
+
+      sub.length > 0 && typedJSFn.init(sub)
+    } else {
+      document.getElementById('subtitle').textContent = typeof content === 'string' ? content :
+        (Array.isArray(content) && content.length > 0 ? content[0] : '')
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  typedJSFn.processSubtitle(["走暗路，耕瘦田，进窄门"])
+}
+typedJSFn.run(subtitleType)</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

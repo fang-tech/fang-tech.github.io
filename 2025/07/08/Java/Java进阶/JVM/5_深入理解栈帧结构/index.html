@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>走难 | 走难</title><meta name="author" content="Func"><meta name="copyright" content="Func"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="栈帧内存结构局部变量表存储方法的参数和局部变量, 由基本数据类型和对象引用(每个方法都有一个特殊的指针this, 也就是每个方法的最小的局部变量的数量是1个)构成 在编译的时候, 局部变量表的最大容量就已经确定了, 通过方法的Code属性的Maximum Local variables.  同时局部变量的容量最小单位是slot(槽位), 一个槽位可以容纳32bit(4byte)的数据类型, 也就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="走难">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/5_%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E6%A0%88%E5%B8%A7%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="走难">
+<meta property="og:description" content="栈帧内存结构局部变量表存储方法的参数和局部变量, 由基本数据类型和对象引用(每个方法都有一个特殊的指针this, 也就是每个方法的最小的局部变量的数量是1个)构成 在编译的时候, 局部变量表的最大容量就已经确定了, 通过方法的Code属性的Maximum Local variables.  同时局部变量的容量最小单位是slot(槽位), 一个槽位可以容纳32bit(4byte)的数据类型, 也就是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg">
+<meta property="article:published_time" content="2025-07-08T15:03:01.335Z">
+<meta property="article:modified_time" content="2025-05-15T16:36:51.446Z">
+<meta property="article:author" content="Func">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "url": "https://fang-tech.github.io/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/5_%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E6%A0%88%E5%B8%A7%E7%BB%93%E6%9E%84/",
+  "image": "https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg",
+  "datePublished": "2025-07-08T15:03:01.335Z",
+  "dateModified": "2025-05-15T16:36:51.446Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Func",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://raw.githubusercontent.com/fang-tech/Pic/main/img/pngtree-round-logo-with-mountains-and-water-vector-png-image_7031662.png"><link rel="canonical" href="https://fang-tech.github.io/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/5_%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E6%A0%88%E5%B8%A7%E7%BB%93%E6%9E%84/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '走难',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">走难</span></a><a class="nav-page-title" href="/"><span class="site-name">走难</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">无标题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-08T15:03:01.335Z" title="发表于 2025-07-08 23:03:01">2025-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-15T16:36:51.446Z" title="更新于 2025-05-16 00:36:51">2025-05-16</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="栈帧内存结构"><a href="#栈帧内存结构" class="headerlink" title="栈帧内存结构"></a>栈帧内存结构</h1><h2 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h2><p><strong>存储方法的参数和局部变量, 由基本数据类型和对象引用(每个方法都有一个特殊的指针this, 也就是每个方法的最小的局部变量的数量是1个)构成</strong></p>
+<p>在<strong>编译的时候, 局部变量表的最大容量就已经确定</strong>了, 通过方法的Code属性的<code>Maximum Local variables. </code></p>
+<p>同时局部变量的<strong>容量最小单位是slot(槽位),</strong> 一个槽位可以容纳<code>32bit(4byte)</code>的数据类型, 也就是一个<code>double(64bit)</code>类型的变量, 占用两个slot</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">slot</span><span class="params">(<span class="type">int</span> age)</span>&#123;</span><br><span class="line">    <span class="type">double</span> <span class="variable">d</span> <span class="operator">=</span> <span class="number">10.0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法的局部变量表大小是4</p>
+<p>同时<strong>局部变量的数量是会在运行的时候发生变化的(因为变量会在运行的时候随着作用域被创建和销毁)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    &#123; <span class="comment">// 注释中的是代码运行到这一行的时候, 局部变量表的大小</span></span><br><span class="line">        <span class="comment">// 1</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">        <span class="comment">// 2</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 1</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 1</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">age</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">        <span class="comment">// 2</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h2><p><strong>栈结构, 用于存储数据和和中间计算结果</strong></p>
+<p>和局部变量表一样, <strong>操作数栈的最大大小在编译的时候也被确定了</strong>, 在方法的Code属性中 <code>Maximum stack size</code>, <strong>因为操作数的占用的槽位是确定的, 字节码指令的栈效应是可预测的</strong>, 也就能计算出来这个方法需要用到的最大的操作数栈深度</p>
+<p>当一个方法开始执行的时候, 操作数栈是空的, 在运行的时候, 随着指令的运行, 会不断向操作数栈中压入数据和取出数据执行操作</p>
+<h2 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h2><p><strong>关联到方法所属了类的常量池, 支持多态方法的核心机制</strong></p>
+<p><strong>每个栈帧都包含了一个指向运行时常量池中该栈帧所属方法的引用, 持有这个引用的目的时为了支持方法调用过程中的动态链接</strong></p>
+<ul>
+<li>方法区是JVM运行时内存区域, 属于逻辑定义</li>
+<li>运行时常量池时方法区的一部分, 用于存放编译期间生成的各种字面量个符号引用-在类加载后进入运行时常量池</li>
+</ul>
+<p>从字节码的角度来看, 多态地调用方法是完全一样的, 但是最后调用的方法不一样</p>
+<p><code>man.sayHello()</code>（第 10 行）和 <code>woman.sayHello()</code>（第 12 行）对应的字节码都是<code>invokevirtual #6 &lt;com/.../DynamicLinking$Human.sayHello</code></p>
+<p>关键在于<code>invokevirtual</code>指令入手, 这个指令在运行的时候解析过程可以分成以下几步</p>
+<ol>
+<li>找到操作数栈顶的元素所指向的对象的实际类型, 记作C</li>
+<li>找到以后, 进行访问权限校验, 通过则返回这个方法的直接引用, 否则<code>java.lang.IllegalAccessError</code></li>
+<li>否则按照继承关系向上找C的父类</li>
+<li>如果始终没有找到合适的方法, 抛出<code>java.lang.AbstractMethodError</code></li>
+</ol>
+<h2 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h2><p><strong>记录方法结束后控制流应该返回的位置</strong></p>
+<p>方法执行以后有两种方式退出</p>
+<ul>
+<li>正常退出, 有可能将返回值传递给上层方法的调用者, 方法是否有返回值和返回值的类型根据返回的字节码指令来定 <code>ireturn </code>用于返回 <code>int </code>类型，<code>return </code>用于 <code>void </code>方法；还有其他的一些，<code>lreturn </code>用于 <code>long </code>型，<code>freturn </code>用于 <code>float</code>，<code>dreturn </code>用于 <code>double</code>，<code>areturn </code>用于引用类型。</li>
+<li>异常退出, 如果没有得到妥善的处理, 这种时候不会给上层的调用者提供返回值</li>
+</ul>
+<p>方法正常退出的时候, PC计数器的值会作为返回地址, 栈帧中很可能会保存这个计数器的值, 异常退出时则不会</p>
+<p>方法退出以后就是将当前活动栈帧出栈, 然后</p>
+<ul>
+<li>恢复上层方法的局部变量表和操作数栈</li>
+<li>把返回值压入调用者栈帧的操作数栈中</li>
+<li>调整PC计数器的值, 找到下一条要执行的指令</li>
+</ul>
+<h2 id="附加信息"><a href="#附加信息" class="headerlink" title="附加信息"></a>附加信息</h2><p>虚拟机规范允许具体的虚拟机实现增加一些规范里没有描述的信息到栈帧中, 例如与调试相关的信息, 这部分信息完全取决于具体的虚拟机的实现. 实际开发中, 一般会把动态链接, 方法返回地址与附加信息归为一类, 称为栈帧信息</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io">Func</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/5_%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E6%A0%88%E5%B8%A7%E7%BB%93%E6%9E%84/">https://fang-tech.github.io/2025/07/08/Java/Java进阶/JVM/5_深入理解栈帧结构/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://fang-tech.github.io" target="_blank">走难</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/8_%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2"></div></div></div></a><a class="pagination-related  no-desc" href="/2025/07/08/Java/Java%E8%BF%9B%E9%98%B6/JVM/4_%E5%AD%97%E8%8A%82%E7%A0%81%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2"></div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Func</div><div class="author-info-description">Func的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%88%E5%B8%A7%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">栈帧内存结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8"><span class="toc-number">1.1.</span> <span class="toc-text">局部变量表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88"><span class="toc-number">1.2.</span> <span class="toc-text">操作数栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5"><span class="toc-number">1.3.</span> <span class="toc-text">动态链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80"><span class="toc-number">1.4.</span> <span class="toc-text">方法返回地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%8A%A0%E4%BF%A1%E6%81%AF"><span class="toc-number">1.5.</span> <span class="toc-text">附加信息</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/8.%20%E6%8A%BD%E5%A5%96%E4%B8%AD%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.854Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.853Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.847Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Func</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23li4bXLe7MUGkzYiL',
+      clientSecret: '6e07175d5780251b166904c518448940a5214fb1',
+      repo: 'fang-tech.github.io',
+      owner: 'fang-tech',
+      admin: ['fang-tech'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'fcd4f689016ffa88061bbf73baf4590e'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

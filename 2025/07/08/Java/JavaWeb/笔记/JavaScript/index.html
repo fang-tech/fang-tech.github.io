@@ -1,0 +1,1856 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>走难 | 走难</title><meta name="author" content="Func"><meta name="copyright" content="Func"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="JavaScript1. JS的特性 JS是一门解释性的语言 JS是弱类型的语言 句尾;可加可不加 JS并不算是面对对象的语言  2. 数据类型和运算符数据类型 数字类型 Number 字符串类型 String 布尔类型 boolean 引用类型 Object 函数类型 function 未命名的类型 var 可以通过 typeof判断数据类型  运算符 &#x3D;&#x3D; 与 &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="走难">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/JavaScript/index.html">
+<meta property="og:site_name" content="走难">
+<meta property="og:description" content="JavaScript1. JS的特性 JS是一门解释性的语言 JS是弱类型的语言 句尾;可加可不加 JS并不算是面对对象的语言  2. 数据类型和运算符数据类型 数字类型 Number 字符串类型 String 布尔类型 boolean 引用类型 Object 函数类型 function 未命名的类型 var 可以通过 typeof判断数据类型  运算符 &#x3D;&#x3D; 与 &#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg">
+<meta property="article:published_time" content="2025-07-08T15:03:00.755Z">
+<meta property="article:modified_time" content="2024-12-22T08:23:44.524Z">
+<meta property="article:author" content="Func">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="frontend">
+<meta property="article:tag" content="JavaWeb">
+<meta property="article:tag" content="JS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "url": "https://fang-tech.github.io/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/JavaScript/",
+  "image": "https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg",
+  "datePublished": "2025-07-08T15:03:00.755Z",
+  "dateModified": "2024-12-22T08:23:44.524Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Func",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://raw.githubusercontent.com/fang-tech/Pic/main/img/pngtree-round-logo-with-mountains-and-water-vector-png-image_7031662.png"><link rel="canonical" href="https://fang-tech.github.io/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/JavaScript/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '走难',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">走难</span></a><a class="nav-page-title" href="/"><span class="site-name">走难</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">无标题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-08T15:03:00.755Z" title="发表于 2025-07-08 23:03:00">2025-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-22T08:23:44.524Z" title="更新于 2024-12-22 16:23:44">2024-12-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">9.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>38分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h1><h2 id="1-JS的特性"><a href="#1-JS的特性" class="headerlink" title="1. JS的特性"></a>1. JS的特性</h2><ul>
+<li>JS是一门解释性的语言</li>
+<li>JS是弱类型的语言</li>
+<li>句尾;可加可不加</li>
+<li>JS并不算是面对对象的语言</li>
+</ul>
+<h2 id="2-数据类型和运算符"><a href="#2-数据类型和运算符" class="headerlink" title="2. 数据类型和运算符"></a>2. 数据类型和运算符</h2><h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ol>
+<li>数字类型 Number</li>
+<li>字符串类型 String</li>
+<li>布尔类型 boolean</li>
+<li>引用类型 Object</li>
+<li>函数类型 function</li>
+<li>未命名的类型 var</li>
+<li>可以通过 typeof判断数据类型</li>
+</ol>
+<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><ol>
+<li><p>&#x3D;&#x3D; 与 &#x3D;&#x3D;&#x3D;</p>
+<p>前者在进行判断的时候, 如果两边的变量类型不一致, 会进行对齐转换处理, 后在进行判断</p>
+<p>而&#x3D;&#x3D;&#x3D;, 如果类型不一致, 直接回返回false</p>
+</li>
+</ol>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><blockquote>
+<p>变量具有的特性</p>
+</blockquote>
+<ul>
+<li>var类型的变量可以再次声明</li>
+<li>所有类型的变量可以被多次赋予不同类型的值</li>
+<li>因为是弱类型, 所以如果变量声明但是未赋值是undefine类型</li>
+<li>如果给变量赋值null, 数据类型是Object</li>
+<li>声明变量的时候, <strong>不能指定类型</strong></li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
+<p>声明变量的时候, <strong>不能指定类型</strong></p>
+</blockquote>
+<h2 id="3-JS的流程控制和函数"><a href="#3-JS的流程控制和函数" class="headerlink" title="3. JS的流程控制和函数"></a>3. JS的流程控制和函数</h2><h3 id="3-1-分支结构"><a href="#3-1-分支结构" class="headerlink" title="3.1 分支结构"></a>3.1 分支结构</h3><p>和Java一样</p>
+<h3 id="3-2-循环结构"><a href="#3-2-循环结构" class="headerlink" title="3.2 循环结构"></a>3.2 循环结构</h3><blockquote>
+<p>for循环</p>
+</blockquote>
+<ul>
+<li>和Java一致</li>
+</ul>
+<blockquote>
+<p>foreach循环</p>
+</blockquote>
+<ul>
+<li>返回的是数组的索引</li>
+<li>使用in而不是:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>];</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&quot;&lt;ul&gt;&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> index <span class="keyword">in</span> arr) &#123;</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&quot;&lt;li&gt;&quot;</span>+arr[index]+<span class="string">&quot;&lt;/li&gt;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&quot;&lt;/ul&gt;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-函数声明"><a href="#3-3-函数声明" class="headerlink" title="3.3 函数声明"></a>3.3 函数声明</h3><ul>
+<li>函数声明的时候需要function关键字</li>
+<li>参数列表不需要表明参数类型</li>
+<li>直接return就行, 没有返回限制</li>
+<li>调用函数的时候实参数量和形参数量可以不一致, 但是多出来的部分不生效</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一种声明方式</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sum</span> (<span class="params">a, b</span>) &#123;</span><br><span class="line"><span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> s = <span class="title function_">sum</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(s);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二种声明方式</span></span><br><span class="line"><span class="keyword">var</span> add = <span class="keyword">function</span> (<span class="params">a, b</span>) &#123;</span><br><span class="line"><span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">1</span>,<span class="number">23</span>));</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-JS的对象和JSON"><a href="#4-JS的对象和JSON" class="headerlink" title="4. JS的对象和JSON"></a>4. JS的对象和JSON</h2><h3 id="4-1-对象"><a href="#4-1-对象" class="headerlink" title="4.1 对象"></a>4.1 对象</h3><blockquote>
+<p>声明对象的两种方式</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 第一种方式</span></span><br><span class="line"><span class="keyword">var</span> person = <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line"></span><br><span class="line">person.<span class="property">name</span> = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">person.<span class="property">age</span> = <span class="number">20</span>;</span><br><span class="line">person.<span class="property">arr</span> = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line">person.<span class="property">func</span> = <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">age</span> + <span class="string">&quot; years, &quot;</span> + <span class="variable language_">this</span>.<span class="property">name</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> index <span class="keyword">in</span> <span class="variable language_">this</span>.<span class="property">arr</span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">arr</span>[index]);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">person.<span class="title function_">func</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二种方式</span></span><br><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line"><span class="string">&quot;name&quot;</span> : <span class="string">&quot;funfs&quot;</span>,</span><br><span class="line"><span class="string">&quot;foods&quot;</span> : [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person.<span class="property">foods</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第二种方式更像是JSON风格的</li>
+</ul>
+<h3 id="4-2-JSON格式"><a href="#4-2-JSON格式" class="headerlink" title="4.2 JSON格式"></a>4.2 JSON格式</h3><blockquote>
+<p>全程 JavaScript Object Notation, JS对象简谱, 因为容易转换为对象, 所以常被用于数据传输</p>
+</blockquote>
+<ul>
+<li>JSON.parse : 将JSON格式字符串转化为Object对象</li>
+<li>JSON.stringify : 将Object对象转化为JSON格式字符串</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> personStr = <span class="string">&#x27;&#123;&quot;name&quot;:&quot;...&quot;, &quot;age&quot;:123, &quot;girlFriend&quot;:&#123;&quot;name&quot;:&quot;ghg&quot;, &quot;age&quot;:12&#125;, &quot;foods&quot;:[1,2,3,4]&#125;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(personStr);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">typeof</span> personStr);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> person = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(personStr);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">typeof</span> person);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person.<span class="property">name</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line"><span class="string">&quot;name&quot;</span>:<span class="string">&quot;ssb&quot;</span>,</span><br><span class="line"><span class="string">&quot;foods&quot;</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> personStr = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(person);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(personStr); <span class="comment">// &#123;&quot;name&quot;:&quot;ssb&quot;,&quot;foods&quot;:[1,2,3,4]&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="4-3-JS常见对象"><a href="#4-3-JS常见对象" class="headerlink" title="4.3 JS常见对象"></a>4.3 JS常见对象</h3><h4 id="4-3-1-数组"><a href="#4-3-1-数组" class="headerlink" title="4.3.1 数组"></a>4.3.1 数组</h4><blockquote>
+<p>创建数组的四种方式</p>
+</blockquote>
+<ul>
+<li>new Array()                                                   创建空数组</li>
+<li>new Array(5)                                                 创建数组时给定长度</li>
+<li>new Array(ele1,ele2,ele3,… … ,elen);          创建数组时指定元素值</li>
+<li>[ele1,ele2,ele3,… … ,elen];                           相当于第三种语法的简写</li>
+</ul>
+<blockquote>
+<p>数组的常见API</p>
+</blockquote>
+<ul>
+<li>在JS中,数组属于Object类型,其长度是可以变化的,更像JAVA中的集合</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-concat-array.html">concat()</a></td>
+<td align="left">连接两个或更多的数组，并返回结果。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-copywithin.html">copyWithin()</a></td>
+<td align="left">从数组的指定位置拷贝元素到数组的另一个指定位置中。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-entries.html">entries()</a></td>
+<td align="left">返回数组的可迭代对象。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-every.html">every()</a></td>
+<td align="left">检测数值元素的每个元素是否都符合条件。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-fill.html">fill()</a></td>
+<td align="left">使用一个固定值来填充数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-filter.html">filter()</a></td>
+<td align="left">检测数值元素，并返回符合条件所有元素的数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-find.html">find()</a></td>
+<td align="left">返回符合传入测试（函数）条件的数组元素。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-findindex.html">findIndex()</a></td>
+<td align="left">返回符合传入测试（函数）条件的数组元素索引。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-foreach.html">forEach()</a></td>
+<td align="left">数组每个元素都执行一次回调函数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-from.html">from()</a></td>
+<td align="left">通过给定的对象中创建一个数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-includes.html">includes()</a></td>
+<td align="left">判断一个数组是否包含一个指定的值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-indexof-array.html">indexOf()</a></td>
+<td align="left">搜索数组中的元素，并返回它所在的位置。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-isarray.html">isArray()</a></td>
+<td align="left">判断对象是否为数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-join.html">join()</a></td>
+<td align="left">把数组的所有元素放入一个字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-keys.html">keys()</a></td>
+<td align="left">返回数组的可迭代对象，包含原始数组的键(key)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-lastindexof-array.html">lastIndexOf()</a></td>
+<td align="left">搜索数组中的元素，并返回它最后出现的位置。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-map.html">map()</a></td>
+<td align="left">通过指定函数处理数组的每个元素，并返回处理后的数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-pop.html">pop()</a></td>
+<td align="left">删除数组的最后一个元素并返回删除的元素。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-push.html">push()</a></td>
+<td align="left">向数组的末尾添加一个或更多元素，并返回新的长度。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-reduce.html">reduce()</a></td>
+<td align="left">将数组元素计算为一个值（从左到右）。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-reduceright.html">reduceRight()</a></td>
+<td align="left">将数组元素计算为一个值（从右到左）。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-reverse.html">reverse()</a></td>
+<td align="left">反转数组的元素顺序。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-shift.html">shift()</a></td>
+<td align="left">删除并返回数组的第一个元素。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-slice-array.html">slice()</a></td>
+<td align="left">选取数组的一部分，并返回一个新数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-some.html">some()</a></td>
+<td align="left">检测数组元素中是否有元素符合指定条件。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-sort.html">sort()</a></td>
+<td align="left">对数组的元素进行排序。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-splice.html">splice()</a></td>
+<td align="left">从数组中添加或删除元素。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tostring-array.html">toString()</a></td>
+<td align="left">把数组转换为字符串，并返回结果。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-unshift.html">unshift()</a></td>
+<td align="left">向数组的开头添加一个或更多元素，并返回新的长度。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-valueof-array.html">valueOf()</a></td>
+<td align="left">返回数组对象的原始值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-of-array.html">Array.of()</a></td>
+<td align="left">将一组值转换为数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-at-array.html">Array.at()</a></td>
+<td align="left">用于接收一个整数值并返回该索引对应的元素，允许正数和负数。负整数从数组中的最后一个元素开始倒数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-flat-array.html">Array.flat()</a></td>
+<td align="left">创建一个新数组，这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-flatmap-array.html">Array.flatMap()</a></td>
+<td align="left">使用映射函数映射每个元素，然后将结果压缩成一个新数组。</td>
+</tr>
+</tbody></table>
+<h4 id="4-3-2-Boolean对象"><a href="#4-3-2-Boolean对象" class="headerlink" title="4.3.2 Boolean对象"></a>4.3.2 Boolean对象</h4><blockquote>
+<p>boolean对象的方法比较简单</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tostring-boolean.html">toString()</a></td>
+<td align="left">把布尔值转换为字符串，并返回结果。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-valueof-boolean.html">valueOf()</a></td>
+<td align="left">返回 Boolean 对象的原始值。</td>
+</tr>
+</tbody></table>
+<h4 id="4-3-3-Date对象"><a href="#4-3-3-Date对象" class="headerlink" title="4.3.3 Date对象"></a>4.3.3 Date对象</h4><blockquote>
+<p>和JAVA中的Date类比较类似</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getdate.html">getDate()</a></td>
+<td align="left">从 Date 对象返回一个月中的某一天 (1 ~ 31)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getday.html">getDay()</a></td>
+<td align="left">从 Date 对象返回一周中的某一天 (0 ~ 6)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getfullyear.html">getFullYear()</a></td>
+<td align="left">从 Date 对象以四位数字返回年份。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-gethours.html">getHours()</a></td>
+<td align="left">返回 Date 对象的小时 (0 ~ 23)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getmilliseconds.html">getMilliseconds()</a></td>
+<td align="left">返回 Date 对象的毫秒(0 ~ 999)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getminutes.html">getMinutes()</a></td>
+<td align="left">返回 Date 对象的分钟 (0 ~ 59)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getmonth.html">getMonth()</a></td>
+<td align="left">从 Date 对象返回月份 (0 ~ 11)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getseconds.html">getSeconds()</a></td>
+<td align="left">返回 Date 对象的秒数 (0 ~ 59)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-gettime.html">getTime()</a></td>
+<td align="left">返回 1970 年 1 月 1 日至今的毫秒数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-gettimezoneoffset.html">getTimezoneOffset()</a></td>
+<td align="left">返回本地时间与格林威治标准时间 (GMT) 的分钟差。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutcdate.html">getUTCDate()</a></td>
+<td align="left">根据世界时从 Date 对象返回月中的一天 (1 ~ 31)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutcday.html">getUTCDay()</a></td>
+<td align="left">根据世界时从 Date 对象返回周中的一天 (0 ~ 6)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutcfullyear.html">getUTCFullYear()</a></td>
+<td align="left">根据世界时从 Date 对象返回四位数的年份。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutchours.html">getUTCHours()</a></td>
+<td align="left">根据世界时返回 Date 对象的小时 (0 ~ 23)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutcmilliseconds.html">getUTCMilliseconds()</a></td>
+<td align="left">根据世界时返回 Date 对象的毫秒(0 ~ 999)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutcminutes.html">getUTCMinutes()</a></td>
+<td align="left">根据世界时返回 Date 对象的分钟 (0 ~ 59)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutcmonth.html">getUTCMonth()</a></td>
+<td align="left">根据世界时从 Date 对象返回月份 (0 ~ 11)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getutcseconds.html">getUTCSeconds()</a></td>
+<td align="left">根据世界时返回 Date 对象的秒钟 (0 ~ 59)。</td>
+</tr>
+<tr>
+<td align="left">getYear()</td>
+<td align="left">已废弃。 请使用 getFullYear() 方法代替。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-parse.html">parse()</a></td>
+<td align="left">返回1970年1月1日午夜到指定日期（字符串）的毫秒数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setdate.html">setDate()</a></td>
+<td align="left">设置 Date 对象中月的某一天 (1 ~ 31)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setfullyear.html">setFullYear()</a></td>
+<td align="left">设置 Date 对象中的年份（四位数字）。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-sethours.html">setHours()</a></td>
+<td align="left">设置 Date 对象中的小时 (0 ~ 23)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setmilliseconds.html">setMilliseconds()</a></td>
+<td align="left">设置 Date 对象中的毫秒 (0 ~ 999)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setminutes.html">setMinutes()</a></td>
+<td align="left">设置 Date 对象中的分钟 (0 ~ 59)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setmonth.html">setMonth()</a></td>
+<td align="left">设置 Date 对象中月份 (0 ~ 11)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setseconds.html">setSeconds()</a></td>
+<td align="left">设置 Date 对象中的秒钟 (0 ~ 59)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-settime.html">setTime()</a></td>
+<td align="left">setTime() 方法以毫秒设置 Date 对象。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setutcdate.html">setUTCDate()</a></td>
+<td align="left">根据世界时设置 Date 对象中月份的一天 (1 ~ 31)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setutcfullyear.html">setUTCFullYear()</a></td>
+<td align="left">根据世界时设置 Date 对象中的年份（四位数字）。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setutchours.html">setUTCHours()</a></td>
+<td align="left">根据世界时设置 Date 对象中的小时 (0 ~ 23)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setutcmilliseconds.html">setUTCMilliseconds()</a></td>
+<td align="left">根据世界时设置 Date 对象中的毫秒 (0 ~ 999)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setutcminutes.html">setUTCMinutes()</a></td>
+<td align="left">根据世界时设置 Date 对象中的分钟 (0 ~ 59)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setutcmonth.html">setUTCMonth()</a></td>
+<td align="left">根据世界时设置 Date 对象中的月份 (0 ~ 11)。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-setutcseconds.html">setUTCSeconds()</a></td>
+<td align="left">setUTCSeconds() 方法用于根据世界时 (UTC) 设置指定时间的秒字段。</td>
+</tr>
+<tr>
+<td align="left">setYear()</td>
+<td align="left">已废弃。请使用 setFullYear() 方法代替。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-todatestring.html">toDateString()</a></td>
+<td align="left">把 Date 对象的日期部分转换为字符串。</td>
+</tr>
+<tr>
+<td align="left">toGMTString()</td>
+<td align="left">已废弃。请使用 toUTCString() 方法代替。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-toisostring.html">toISOString()</a></td>
+<td align="left">使用 ISO 标准返回字符串的日期格式。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tojson.html">toJSON()</a></td>
+<td align="left">以 JSON 数据格式返回日期字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tolocaledatestring.html">toLocaleDateString()</a></td>
+<td align="left">根据本地时间格式，把 Date 对象的日期部分转换为字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tolocaletimestring.html">toLocaleTimeString()</a></td>
+<td align="left">根据本地时间格式，把 Date 对象的时间部分转换为字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tolocalestring.html">toLocaleString()</a></td>
+<td align="left">根据本地时间格式，把 Date 对象转换为字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tostring-date.html">toString()</a></td>
+<td align="left">把 Date 对象转换为字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-totimestring.html">toTimeString()</a></td>
+<td align="left">把 Date 对象的时间部分转换为字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-toutcstring.html">toUTCString()</a></td>
+<td align="left">根据世界时，把 Date 对象转换为字符串。实例：<code>var today = new Date(); var UTCstring = today.toUTCString();</code></td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-utc.html">UTC()</a></td>
+<td align="left">根据世界时返回 1970 年 1 月 1 日 到指定日期的毫秒数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-valueof-date.html">valueOf()</a></td>
+<td align="left">返回 Date 对象的原始值。</td>
+</tr>
+</tbody></table>
+<h4 id="4-3-4-Math"><a href="#4-3-4-Math" class="headerlink" title="4.3.4 Math"></a>4.3.4 Math</h4><blockquote>
+<p> 和JAVA中的Math类比较类似</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-abs.html">abs(x)</a></td>
+<td align="left">返回 x 的绝对值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-acos.html">acos(x)</a></td>
+<td align="left">返回 x 的反余弦值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-asin.html">asin(x)</a></td>
+<td align="left">返回 x 的反正弦值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-atan.html">atan(x)</a></td>
+<td align="left">以介于 -PI&#x2F;2 与 PI&#x2F;2 弧度之间的数值来返回 x 的反正切值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-atan2.html">atan2(y,x)</a></td>
+<td align="left">返回从 x 轴到点 (x,y) 的角度（介于 -PI&#x2F;2 与 PI&#x2F;2 弧度之间）。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-ceil.html">ceil(x)</a></td>
+<td align="left">对数进行上舍入。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-cos.html">cos(x)</a></td>
+<td align="left">返回数的余弦。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-exp.html">exp(x)</a></td>
+<td align="left">返回 Ex 的指数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-floor.html">floor(x)</a></td>
+<td align="left">对 x 进行下舍入。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-log.html">log(x)</a></td>
+<td align="left">返回数的自然对数（底为e）。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-max.html">max(x,y,z,…,n)</a></td>
+<td align="left">返回 x,y,z,…,n 中的最高值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-min.html">min(x,y,z,…,n)</a></td>
+<td align="left">返回 x,y,z,…,n中的最低值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-pow.html">pow(x,y)</a></td>
+<td align="left">返回 x 的 y 次幂。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-random.html">random()</a></td>
+<td align="left">返回 0 ~ 1 之间的随机数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-round.html">round(x)</a></td>
+<td align="left">四舍五入。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-sin.html">sin(x)</a></td>
+<td align="left">返回数的正弦。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-sqrt.html">sqrt(x)</a></td>
+<td align="left">返回数的平方根。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tan.html">tan(x)</a></td>
+<td align="left">返回角的正切。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tanh.html">tanh(x)</a></td>
+<td align="left">返回一个数的双曲正切函数值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-trunc.html">trunc(x)</a></td>
+<td align="left">将数字的小数部分去掉，只保留整数部分。</td>
+</tr>
+</tbody></table>
+<h4 id="4-3-5-Number"><a href="#4-3-5-Number" class="headerlink" title="4.3.5 Number"></a>4.3.5 Number</h4><blockquote>
+<p>Number中准备了一些基础的数据处理函数</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-isfinite-number.html">isFinite</a></td>
+<td align="left">检测指定参数是否为无穷大。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-isinteger-number.html">isInteger</a></td>
+<td align="left">检测指定参数是否为整数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-isnan-number.html">isNaN</a></td>
+<td align="left">检测指定参数是否为 NaN。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-issafeInteger-number.html">isSafeInteger</a></td>
+<td align="left">检测指定参数是否为安全整数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-toexponential.html">toExponential(x)</a></td>
+<td align="left">把对象的值转换为指数计数法。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tofixed.html">toFixed(x)</a></td>
+<td align="left">把数字转换为字符串，结果的小数点后有指定位数的数字。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tolocalestring-number.html">toLocaleString(locales, options)</a></td>
+<td align="left">返回数字在特定语言环境下的表示字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-toprecision.html">toPrecision(x)</a></td>
+<td align="left">把数字格式化为指定的长度。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tostring-number.html">toString()</a></td>
+<td align="left">把数字转换为字符串，使用指定的基数。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-valueof-number.html">valueOf()</a></td>
+<td align="left">返回一个 Number 对象的基本数字值。</td>
+</tr>
+</tbody></table>
+<h4 id="4-3-6-String"><a href="#4-3-6-String" class="headerlink" title="4.3.6 String"></a>4.3.6 String</h4><blockquote>
+<p>和JAVA中的String类似</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-charat.html">charAt()</a></td>
+<td align="left">返回在指定位置的字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-charcodeat.html">charCodeAt()</a></td>
+<td align="left">返回在指定的位置的字符的 Unicode 编码。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-concat-string.html">concat()</a></td>
+<td align="left">连接两个或更多字符串，并返回新的字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-endswith.html">endsWith()</a></td>
+<td align="left">判断当前字符串是否是以指定的子字符串结尾的（区分大小写）。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-fromcharcode.html">fromCharCode()</a></td>
+<td align="left">将 Unicode 编码转为字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-indexof.html">indexOf()</a></td>
+<td align="left">返回某个指定的字符串值在字符串中首次出现的位置。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-string-includes.html">includes()</a></td>
+<td align="left">查找字符串中是否包含指定的子字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-lastindexof.html">lastIndexOf()</a></td>
+<td align="left">从后向前搜索字符串，并从起始位置（0）开始计算返回字符串最后出现的位置。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-match.html">match()</a></td>
+<td align="left">查找找到一个或多个正则表达式的匹配。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-repeat.html">repeat()</a></td>
+<td align="left">复制字符串指定次数，并将它们连接在一起返回。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-replace.html">replace()</a></td>
+<td align="left">在字符串中查找匹配的子串，并替换与正则表达式匹配的子串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-replaceall.html">replaceAll()</a></td>
+<td align="left">在字符串中查找匹配的子串，并替换与正则表达式匹配的所有子串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-search.html">search()</a></td>
+<td align="left">查找与正则表达式相匹配的值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-slice-string.html">slice()</a></td>
+<td align="left">提取字符串的片断，并在新的字符串中返回被提取的部分。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-split.html">split()</a></td>
+<td align="left">把字符串分割为字符串数组。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-startswith.html">startsWith()</a></td>
+<td align="left">查看字符串是否以指定的子字符串开头。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-substr.html">substr()</a></td>
+<td align="left">从起始索引号提取字符串中指定数目的字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-substring.html">substring()</a></td>
+<td align="left">提取字符串中两个指定的索引号之间的字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tolowercase.html">toLowerCase()</a></td>
+<td align="left">把字符串转换为小写。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-touppercase.html">toUpperCase()</a></td>
+<td align="left">把字符串转换为大写。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-trim.html">trim()</a></td>
+<td align="left">去除字符串两边的空白。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tolocalelowercase.html">toLocaleLowerCase()</a></td>
+<td align="left">根据本地主机的语言环境把字符串转换为小写。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tolocaleuppercase.html">toLocaleUpperCase()</a></td>
+<td align="left">根据本地主机的语言环境把字符串转换为大写。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-valueof-string.html">valueOf()</a></td>
+<td align="left">返回某个字符串对象的原始值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-tostring.html">toString()</a><br></td>
+<td align="left">返回一个字符串。</td>
+</tr>
+</tbody></table>
+<h2 id="5-事件的绑定"><a href="#5-事件的绑定" class="headerlink" title="5. 事件的绑定"></a>5. 事件的绑定</h2><h3 id="5-1-绑定事件的作用"><a href="#5-1-绑定事件的作用" class="headerlink" title="5.1 绑定事件的作用"></a>5.1 绑定事件的作用</h3><blockquote>
+<p>用于捕捉用户的操作, 并对之做出响应, 可通过定义函数, 并绑定操作实现</p>
+</blockquote>
+<h3 id="5-2-常见事件"><a href="#5-2-常见事件" class="headerlink" title="5.2 常见事件"></a>5.2 常见事件</h3><blockquote>
+<p>鼠标事件</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">属性</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onclick.html">onclick</a></td>
+<td align="left">当用户点击某个对象时调用的事件句柄。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-oncontextmenu.html">oncontextmenu</a></td>
+<td align="left">在用户点击鼠标右键打开上下文菜单时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-ondblclick.html">ondblclick</a></td>
+<td align="left">当用户双击某个对象时调用的事件句柄。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onmousedown.html">onmousedown</a></td>
+<td align="left">鼠标按钮被按下。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onmouseenter.html">onmouseenter</a></td>
+<td align="left">当鼠标指针移动到元素上时触发。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onmouseleave.html">onmouseleave</a></td>
+<td align="left">当鼠标指针移出元素时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onmousemove.html">onmousemove</a></td>
+<td align="left">鼠标被移动。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onmouseover.html">onmouseover</a></td>
+<td align="left">鼠标移到某元素之上。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onmouseout.html">onmouseout</a></td>
+<td align="left">鼠标从某元素移开。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onmouseup.html">onmouseup</a></td>
+<td align="left">鼠标按键被松开。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>键盘事件</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">属性</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onkeydown.html">onkeydown</a></td>
+<td align="left">某个键盘按键被按下。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onkeypress.html">onkeypress</a></td>
+<td align="left">某个键盘按键被按下并松开。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onkeyup.html">onkeyup</a></td>
+<td align="left">某个键盘按键被松开。</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>表单事件</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">属性</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onblur.html">onblur</a></td>
+<td align="left">元素失去焦点时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onchange.html">onchange</a></td>
+<td align="left">该事件在表单元素的内容改变时触发( &lt;input&gt;, &lt;keygen&gt;, &lt;select&gt;, 和 &lt;textarea&gt;)</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onfocus.html">onfocus</a></td>
+<td align="left">元素获取焦点时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onfocusin.html">onfocusin</a></td>
+<td align="left">元素即将获取焦点时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onfocusout.html">onfocusout</a></td>
+<td align="left">元素即将失去焦点时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-oninput.html">oninput</a></td>
+<td align="left">元素获取用户输入时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onreset.html">onreset</a></td>
+<td align="left">表单重置时触发</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onsearch.html">onsearch</a></td>
+<td align="left">用户向搜索域输入文本时触发 ( &lt;input&#x3D;”search”&gt;)</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onselect.html">onselect</a></td>
+<td align="left">用户选取文本时触发 ( &lt;input&gt; 和 &lt;textarea&gt;)</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/event-onsubmit.html">onsubmit</a></td>
+<td align="left">表单提交时触发</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-事件的绑定"><a href="#5-3-事件的绑定" class="headerlink" title="5.3 事件的绑定"></a>5.3 事件的绑定</h3><blockquote>
+<p>常规的绑定与触发</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">testDown1</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;键盘按键被按下了&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">testDown2</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;键盘按键被按下了2&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">downAndPress</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;某个按键被按下了并松开&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">up</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;按键被松开&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">loseFocus</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;即将失去焦点&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">lostFocus</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;失去焦点&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">change</span>(<span class="params">input</span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;表单内容被改变&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(input.<span class="property">value</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> </span></span><br><span class="line"><span class="tag">           <span class="attr">onblur</span>=<span class="string">&quot;lostFocus()&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">onfocusout</span>=<span class="string">&quot;loseFocus()&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">onkeydown</span>=<span class="string">&quot;testDown1(), testDown2()&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">onkeypress</span>=<span class="string">&quot;downAndPress()&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">onkeyup</span>=<span class="string">&quot;up()&quot;</span></span></span><br><span class="line"><span class="tag">           <span class="attr">onchange</span>=<span class="string">&quot;change(this)&quot;</span></span></span><br><span class="line"><span class="tag">           &gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>特点</p>
+</blockquote>
+<ul>
+<li><p>一个事件能绑定多个函数</p>
+</li>
+<li><p>一个函数能被多个事件同时绑定</p>
+</li>
+<li><p>可以传递this对象, 代表当前元素</p>
+</li>
+<li><p>即将失去焦点和失去焦点的两个事件的区别是前者会有事件冒泡 : 事件从最内层的目标元素向上传播到最外层的父元素</p>
+<blockquote>
+<p>通过DOM编程绑定</p>
+</blockquote>
+</li>
+<li><p>通过指定ID找到元素, 再对应事件绑定触发事件</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="property">onload</span>=<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line"><span class="keyword">var</span> in1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;in1&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM编程绑定事件</span></span><br><span class="line">in1.<span class="property">onchange</span>=change;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">change</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(event.<span class="property">target</span>.<span class="property">value</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;表单内容被改变&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">id</span>=<span class="string">&quot;in1&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="5-4-事件的触发"><a href="#5-4-事件的触发" class="headerlink" title="5.4 事件的触发"></a>5.4 事件的触发</h3><blockquote>
+<p>行为触发 : 就是最开始演示的如何绑定事件的方式, 发生行为时触发</p>
+</blockquote>
+<blockquote>
+<p>DOM编程触发</p>
+</blockquote>
+<ul>
+<li>通过代码触发, 执行某些行为的时候相当于触发了某些事件</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 页面加载完毕事件, 加载完毕后加载事件</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="property">onload</span>=<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line"><span class="keyword">var</span> in1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;in1&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM编程绑定事件</span></span><br><span class="line">in1.<span class="property">onchange</span>=change;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> btn1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;btn1&quot;</span>);</span><br><span class="line"></span><br><span class="line">btn1.<span class="property">onclick</span>=<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;pressed&quot;</span>);</span><br><span class="line">in1.<span class="title function_">onchange</span>();</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">change</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(event.<span class="property">target</span>.<span class="property">value</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;表单内容被改变&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-BOM编程"><a href="#6-BOM编程" class="headerlink" title="6. BOM编程"></a>6. BOM编程</h2><h3 id="6-1-什么是BOM"><a href="#6-1-什么是BOM" class="headerlink" title="6.1 什么是BOM"></a>6.1 什么是BOM</h3><ul>
+<li>BOM是Browser Object Model的简写, 是浏览器对象模型</li>
+<li>将浏览器抽象为一个对象, 从而可以得到这个对象的行为和属性</li>
+<li>BOM是一系列对象的集合, 是访问, 控制, 修改浏览器的属性和方法</li>
+<li>简单来说, BOM提供了可以控制和查看浏览器的一系列API</li>
+<li>BOM编程的对象结构<ul>
+<li>window 顶层对象, 代表整个浏览器窗口<ul>
+<li><p>location对象 window对象的属性之一,代表浏览器的地址栏</p>
+</li>
+<li><p>history对象 window对象的属性之一,代表浏览器的访问历史</p>
+</li>
+<li><p>screen对象 window对象的属性之一,代表屏幕</p>
+</li>
+<li><p>navigator对象 window对象的属性之一,代表浏览器软件本身</p>
+</li>
+<li><p>document对象 window对象的属性之一,代表浏览器窗口目前解析的html文档</p>
+</li>
+<li><p>console对象 window对象的属性之一,代表浏览器开发者工具的控制台</p>
+</li>
+<li><p>localStorage对象 window对象的属性之一,代表浏览器的本地数据持久化存储</p>
+</li>
+<li><p>sessionStorage对象 window对象的属性之一,代表浏览器的本地数据会话级存储</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-window对象的常见属性"><a href="#6-2-window对象的常见属性" class="headerlink" title="6.2 window对象的常见属性"></a>6.2 window对象的常见属性</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-closed.html">closed</a></td>
+<td>返回窗口是否已被关闭。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-defaultstatus.html">defaultStatus</a></td>
+<td>设置或返回窗口状态栏中的默认文本。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/dom-obj-document.html">document</a></td>
+<td>对 Document 对象的只读引用。(请参阅<a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/dom-obj-document.html">对象</a>)</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-frames.html">frames</a></td>
+<td>返回窗口中所有命名的框架。该集合是 Window 对象的数组，每个 Window 对象在窗口中含有一个框架。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-history.html">history</a></td>
+<td>对 History 对象的只读引用。请参数 <a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-history.html">History 对象</a>。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-innerheight.html">innerHeight</a></td>
+<td>返回窗口的文档显示区的高度。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-innerheight.html">innerWidth</a></td>
+<td>返回窗口的文档显示区的宽度。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-localstorage.html">localStorage</a></td>
+<td>在浏览器中存储 key&#x2F;value 对。没有过期时间。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-length.html">length</a></td>
+<td>设置或返回窗口中的框架数量。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-location.html">location</a></td>
+<td>用于窗口或框架的 Location 对象。请参阅 <a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-location.html">Location 对象</a>。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-name.html">name</a></td>
+<td>设置或返回窗口的名称。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-navigator.html">navigator</a></td>
+<td>对 Navigator 对象的只读引用。请参数 <a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-navigator.html">Navigator 对象</a>。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-opener.html">opener</a></td>
+<td>返回对创建此窗口的窗口的引用。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-outerheight.html">outerHeight</a></td>
+<td>返回窗口的外部高度，包含工具条与滚动条。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-outerheight.html">outerWidth</a></td>
+<td>返回窗口的外部宽度，包含工具条与滚动条。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-pagexoffset.html">pageXOffset</a></td>
+<td>设置或返回当前页面相对于窗口显示区左上角的 X 位置。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-pagexoffset.html">pageYOffset</a></td>
+<td>设置或返回当前页面相对于窗口显示区左上角的 Y 位置。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-parent.html">parent</a></td>
+<td>返回父窗口。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-screen.html">screen</a></td>
+<td>对 Screen 对象的只读引用。请参数 <a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/obj-screen.html">Screen 对象</a>。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-screenleft.html">screenLeft</a></td>
+<td>返回相对于屏幕窗口的x坐标</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-screenleft.html">screenTop</a></td>
+<td>返回相对于屏幕窗口的y坐标</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-screenx.html">screenX</a></td>
+<td>返回相对于屏幕窗口的x坐标</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-sessionstorage.html">sessionStorage</a></td>
+<td>在浏览器中存储 key&#x2F;value 对。 在关闭窗口或标签页之后将会删除这些数据。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-screenx.html">screenY</a></td>
+<td>返回相对于屏幕窗口的y坐标</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-self.html">self</a></td>
+<td>返回对当前窗口的引用。等价于 Window 属性。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-status.html">status</a></td>
+<td>设置窗口状态栏的文本。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/prop-win-top.html">top</a></td>
+<td>返回最顶层的父窗口。</td>
+</tr>
+</tbody></table>
+<h3 id="6-3-window对象的常见方法-了解"><a href="#6-3-window对象的常见方法-了解" class="headerlink" title="6.3 window对象的常见方法(了解)"></a>6.3 window对象的常见方法(了解)</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-alert.html">alert()</a></td>
+<td>显示带有一段消息和一个确认按钮的警告框。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-atob.html">atob()</a></td>
+<td>解码一个 base-64 编码的字符串。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-btoa.html">btoa()</a></td>
+<td>创建一个 base-64 编码的字符串。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-blur.html">blur()</a></td>
+<td>把键盘焦点从顶层窗口移开。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-clearinterval.html">clearInterval()</a></td>
+<td>取消由 setInterval() 设置的 timeout。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-cleartimeout.html">clearTimeout()</a></td>
+<td>取消由 setTimeout() 方法设置的 timeout。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-close.html">close()</a></td>
+<td>关闭浏览器窗口。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-confirm.html">confirm()</a></td>
+<td>显示带有一段消息以及确认按钮和取消按钮的对话框。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-createpopup.html">createPopup()</a></td>
+<td>创建一个 pop-up 窗口。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-focus.html">focus()</a></td>
+<td>把键盘焦点给予一个窗口。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-getselection.html">getSelection</a>()</td>
+<td>返回一个 Selection 对象，表示用户选择的文本范围或光标的当前位置。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-getcomputedstyle.html">getComputedStyle()</a></td>
+<td>获取指定元素的 CSS 样式。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-matchmedia.html">matchMedia()</a></td>
+<td>该方法用来检查 media query 语句，它返回一个 MediaQueryList对象。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-moveby.html">moveBy()</a></td>
+<td>可相对窗口的当前坐标把它移动指定的像素。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-moveto.html">moveTo()</a></td>
+<td>把窗口的左上角移动到一个指定的坐标。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-open.html">open()</a></td>
+<td>打开一个新的浏览器窗口或查找一个已命名的窗口。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-print.html">print()</a></td>
+<td>打印当前窗口的内容。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-prompt.html">prompt()</a></td>
+<td>显示可提示用户输入的对话框。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-resizeby.html">resizeBy()</a></td>
+<td>按照指定的像素调整窗口的大小。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-resizeto.html">resizeTo()</a></td>
+<td>把窗口的大小调整到指定的宽度和高度。</td>
+</tr>
+<tr>
+<td>scroll()</td>
+<td>已废弃。 该方法已经使用了 <a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-scrollto.html">scrollTo()</a> 方法来替代。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-scrollby.html">scrollBy()</a></td>
+<td>按照指定的像素值来滚动内容。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-scrollto.html">scrollTo()</a></td>
+<td>把内容滚动到指定的坐标。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-setinterval.html">setInterval()</a></td>
+<td>按照指定的周期（以毫秒计）来调用函数或计算表达式。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-settimeout.html">setTimeout()</a></td>
+<td>在指定的毫秒数后调用函数或计算表达式。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-stop.html">stop()</a></td>
+<td>停止页面载入。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/met-win-postmessage.html">postMessage()</a></td>
+<td>安全地实现跨源通信。</td>
+</tr>
+</tbody></table>
+<h3 id="6-4-通过BOM编程控制浏览器行为演示"><a href="#6-4-通过BOM编程控制浏览器行为演示" class="headerlink" title="6.4 通过BOM编程控制浏览器行为演示"></a>6.4 通过BOM编程控制浏览器行为演示</h3><blockquote>
+<p>三种弹窗方式</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">testAlert</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">alert</span>(<span class="string">&quot;提示信息&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">testConfirm</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="comment">// 确认框</span></span><br><span class="line"><span class="keyword">var</span> con = <span class="title function_">confirm</span>(<span class="string">&quot;确认要删除吗&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (con) &#123;</span><br><span class="line"><span class="title function_">alert</span>(<span class="string">&quot;删除成功&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="title function_">alert</span>(<span class="string">&quot;取消成功&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">testPrompt</span>(<span class="params"></span>) &#123;</span><br><span class="line"><span class="comment">// 信息输入对话框</span></span><br><span class="line"><span class="keyword">var</span> res = <span class="title function_">prompt</span>(<span class="string">&quot;请输入信息&quot;</span>);</span><br><span class="line"><span class="title function_">alert</span>(<span class="string">&quot;你输入的是:&quot;</span> + res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>页面跳转</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">goAtguigu</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> flag = <span class="title function_">confirm</span>(<span class="string">&quot;即将跳转到尚硅谷官网, 你会丢失当前页面的信息, 确定吗&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">if</span> (flag) &#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 通过BOM编程地址栏URL切换</span></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span>=<span class="string">&quot;http://www.atguigu.com&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn1&quot;</span> <span class="attr">value</span>=<span class="string">&quot;跳转到尚硅谷官网&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;goAtguigu()&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-5-通过BOM编程实现会话级和持久级数据存储"><a href="#6-5-通过BOM编程实现会话级和持久级数据存储" class="headerlink" title="6.5 通过BOM编程实现会话级和持久级数据存储"></a>6.5 通过BOM编程实现会话级和持久级数据存储</h3><ul>
+<li>会话级数据 : 内存型数据, 是浏览器在内存上临时存储的数据, 浏览器关闭后, 就会失去</li>
+<li>持久级数据 : 磁盘型数据, 会一直保存, 浏览器关闭后, 仍然存在</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">saveItem</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">window</span>.<span class="property">sessionStorage</span>.<span class="title function_">setItem</span>(<span class="string">&quot;sessionMsg&quot;</span>, <span class="string">&quot;sessionValue&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">window</span>.<span class="property">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&quot;localMsg&quot;</span>, <span class="string">&quot;localItem&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;saved&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">removeItem</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">window</span>.<span class="property">sessionStorage</span>.<span class="title function_">removeItem</span>(<span class="string">&quot;sessionMsg&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">window</span>.<span class="property">localStorage</span>.<span class="title function_">removeItem</span>(<span class="string">&quot;localMsg&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Deleted&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">readItem</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;read&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;session : &quot;</span> + <span class="variable language_">sessionStorage</span>.<span class="title function_">getItem</span>(<span class="string">&quot;sessionMsg&quot;</span>));</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;local : &quot;</span> + <span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&quot;localMsg&quot;</span>));</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;saveItem()&quot;</span>&gt;</span>存储<span class="tag">&lt;/<span class="name">button</span>&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;removeItem()&quot;</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;readItem()&quot;</span>&gt;</span>读取<span class="tag">&lt;/<span class="name">button</span>&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="7-DOM编程"><a href="#7-DOM编程" class="headerlink" title="7. DOM编程"></a>7. DOM编程</h2><h3 id="7-1-DOM编程简介"><a href="#7-1-DOM编程简介" class="headerlink" title="7.1 DOM编程简介"></a>7.1 DOM编程简介</h3><ul>
+<li>DOM指的就是BOM中的document对象, 通过这个对象, 我们能获取到传进来的html文本中的各个结点</li>
+<li>JS可以根据HTML的结构树, 生成document的节点树, 从而实现对页面中的各个节点的精准操控</li>
+</ul>
+<h3 id="7-2-获取页面元素的几种方式"><a href="#7-2-获取页面元素的几种方式" class="headerlink" title="7.2 获取页面元素的几种方式"></a>7.2 获取页面元素的几种方式</h3><h4 id="7-2-1-在整个文档范围内查找元素结点"><a href="#7-2-1-在整个文档范围内查找元素结点" class="headerlink" title="7.2.1 在整个文档范围内查找元素结点"></a>7.2.1 在整个文档范围内查找元素结点</h4><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>API</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>根据id值查询</td>
+<td>document.getElementById(“id值”)</td>
+<td>一个具体的元素节</td>
+</tr>
+<tr>
+<td>根据标签名查询</td>
+<td>document.getElementsByTagName(“标签名”)</td>
+<td>元素节点数组</td>
+</tr>
+<tr>
+<td>根据name属性值查询</td>
+<td>document.getElementsByName(“name值”)</td>
+<td>元素节点数组</td>
+</tr>
+<tr>
+<td>根据类名查询</td>
+<td>document.getElementsByClassName(“类名”)</td>
+<td>元素节点数组</td>
+</tr>
+</tbody></table>
+<h4 id="7-2-2-在具体元素节点范围内查找子节点"><a href="#7-2-2-在具体元素节点范围内查找子节点" class="headerlink" title="7.2.2 在具体元素节点范围内查找子节点"></a>7.2.2 在具体元素节点范围内查找子节点</h4><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>API</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查找子标签</td>
+<td>element.children</td>
+<td>返回子标签数组</td>
+</tr>
+<tr>
+<td>查找第一个子标签</td>
+<td>element.firstElementChild</td>
+<td>标签对象</td>
+</tr>
+<tr>
+<td>查找最后一个子标签</td>
+<td>element.lastElementChild</td>
+<td>节点对象</td>
+</tr>
+</tbody></table>
+<h4 id="7-2-3-查找指定子元素节点的父节点"><a href="#7-2-3-查找指定子元素节点的父节点" class="headerlink" title="7.2.3 查找指定子元素节点的父节点"></a>7.2.3 查找指定子元素节点的父节点</h4><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>API</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查找指定元素节点的父标签</td>
+<td>element.parentElement</td>
+<td>标签对象</td>
+</tr>
+</tbody></table>
+<h4 id="7-2-4-查找指定元素节点的兄弟节点"><a href="#7-2-4-查找指定元素节点的兄弟节点" class="headerlink" title="7.2.4  查找指定元素节点的兄弟节点"></a>7.2.4  查找指定元素节点的兄弟节点</h4><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>API</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查找前一个兄弟标签</td>
+<td>node.previousElementSibling</td>
+<td>标签对象</td>
+</tr>
+<tr>
+<td>查找后一个兄弟标签</td>
+<td>node.nextElementSibling</td>
+<td>标签对象</td>
+</tr>
+</tbody></table>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 获取元素-直接获取</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">fun1</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> ele1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;username&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(ele1);</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">fun2</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> ele1 = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&quot;input&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> ele1) &#123;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(ele1[i])</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">fun3</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> ele1 = <span class="variable language_">document</span>.<span class="title function_">getElementsByName</span>(<span class="string">&quot;aaa&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> ele1) &#123;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(ele1[i])</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">fun4</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> ele1 = <span class="variable language_">document</span>.<span class="title function_">getElementsByClassName</span>(<span class="string">&quot;b&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> ele1) &#123;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(ele1[i])</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">fun5</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 获取父元素的所有子元素</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> div01 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;div01&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> child = div01.<span class="property">children</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> child) &#123;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(child[i])</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 获取第一个子元素</span></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(div01.<span class="property">firstElementChild</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 获取最后一个子元素</span></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(div01.<span class="property">lastElementChild</span>)</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">fun6</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 通过子元素获取父元素</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> child = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;username&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> f = child.<span class="property">parentElement</span></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(f)</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">fun7</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 获取子元素的兄弟元素</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> child = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;username&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(child.<span class="property">previousElementSibling</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(child.<span class="property">nextElementSibling</span>)</span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;div01&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">class</span>=<span class="string">&quot;a&quot;</span> <span class="attr">id</span>=<span class="string">&quot;username&quot;</span> <span class="attr">name</span>=<span class="string">&quot;aaa&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">class</span>=<span class="string">&quot;b&quot;</span> <span class="attr">id</span>=<span class="string">&quot;password&quot;</span> <span class="attr">name</span>=<span class="string">&quot;aaa&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">class</span>=<span class="string">&quot;a&quot;</span> <span class="attr">id</span>=<span class="string">&quot;email&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">class</span>=<span class="string">&quot;b&quot;</span> <span class="attr">id</span>=<span class="string">&quot;address&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">class</span>=<span class="string">&quot;a&quot;</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;通过父元素获取子元素&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;fun5()&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn05&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;通过子元素获取父元素&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;fun6()&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn06&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;通过当前元素获取兄弟元素&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;fun7()&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn07&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;根据id获取指定元素&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;fun1()&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn01&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;根据标签名获取多个元素&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;fun2()&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn02&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;根据name属性值获取多个元素&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;fun3()&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn03&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> <span class="attr">value</span>=<span class="string">&quot;根据class属性值获得多个元素&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;fun4()&quot;</span> <span class="attr">id</span>=<span class="string">&quot;btn04&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-操作元素属性值"><a href="#7-3-操作元素属性值" class="headerlink" title="7.3 操作元素属性值"></a>7.3 操作元素属性值</h3><h4 id="7-3-1-属性操作"><a href="#7-3-1-属性操作" class="headerlink" title="7.3.1 属性操作"></a>7.3.1 属性操作</h4><ul>
+<li>读取属性值 &#x3D;&gt; 元素对象.属性名</li>
+<li>修改属性值 &#x3D;&gt; 元素对象.属性名 &#x3D; 新的属性值</li>
+</ul>
+<h4 id="7-3-2-内部文本操作"><a href="#7-3-2-内部文本操作" class="headerlink" title="7.3.2 内部文本操作"></a>7.3.2 内部文本操作</h4><ul>
+<li>获取或者设置标签体的文本内容 &#x3D;&gt; element.innerText</li>
+<li>获取或者设置标签体的内容 &#x3D;&gt; element.innerHTML</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">changeAttribute</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 操作属性</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> in1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;in1&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(in1.<span class="property">type</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(in1.<span class="property">value</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">in1.<span class="property">type</span> = <span class="string">&quot;button&quot;</span></span></span><br><span class="line"><span class="language-javascript">in1.<span class="property">value</span> = <span class="string">&quot;hi&quot;</span></span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">changeStyle</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 操作元素的样式</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> in1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;in1&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">in1.<span class="property">style</span>.<span class="property">color</span> = <span class="string">&quot;green&quot;</span></span></span><br><span class="line"><span class="language-javascript">in1.<span class="property">style</span>.<span class="property">fontSize</span> = <span class="string">&quot;45px&quot;</span></span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">changeText</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 修改文本</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> div1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;div01&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(div1.<span class="property">innerText</span>)</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">console</span>.<span class="title function_">log</span>(div1.<span class="property">innerHTML</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">div1.<span class="property">innerHTML</span> = <span class="string">&quot;&lt;h1&gt;hi&lt;/h1&gt;&quot;</span></span></span><br><span class="line"><span class="language-javascript">&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;in1&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">value</span>=<span class="string">&quot;hello&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;div01&quot;</span>&gt;</span></span><br><span class="line">hello</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;changeAttribute()&quot;</span>&gt;</span>操作属性<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;changeStyle()&quot;</span>&gt;</span>操作样式<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;changeText()&quot;</span>&gt;</span>操作文本<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="7-4-增删元素"><a href="#7-4-增删元素" class="headerlink" title="7.4 增删元素"></a>7.4 增删元素</h3><h4 id="7-4-1-对页面的元素进行增删操作"><a href="#7-4-1-对页面的元素进行增删操作" class="headerlink" title="7.4.1 对页面的元素进行增删操作"></a>7.4.1 对页面的元素进行增删操作</h4><table>
+<thead>
+<tr>
+<th>API</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>document.createElement(“标签名”)</td>
+<td>创建元素节点并返回，但不会自动添加到文档中</td>
+</tr>
+<tr>
+<td>document.createTextNode(“文本值”)</td>
+<td>创建文本节点并返回，但不会自动添加到文档中</td>
+</tr>
+<tr>
+<td>element.appendChild(ele)</td>
+<td>将ele添加到element所有子节点后面</td>
+</tr>
+<tr>
+<td>parentEle.insertBefore(newEle,targetEle)</td>
+<td>将newEle插入到targetEle前面</td>
+</tr>
+<tr>
+<td>parentEle.replaceChild(newEle, oldEle)</td>
+<td>用新节点替换原有的旧子节点</td>
+</tr>
+<tr>
+<td>element.remove()</td>
+<td>删除某个标签</td>
+</tr>
+</tbody></table>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">addCs</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 添加元素</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> csli = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;li&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">csli.<span class="property">id</span> = <span class="string">&quot;cs&quot;</span></span></span><br><span class="line"><span class="language-javascript">csli.<span class="property">innerText</span> = <span class="string">&quot;长沙&quot;</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="comment">// 将元素添加到父元素末尾</span></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> cityul = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;city&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        cityul.<span class="title function_">appendChild</span>(csli)</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">addCsBeforeSz</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 在某个元素前面追加子元素</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 添加元素</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> csli = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;li&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        csli.<span class="property">id</span> = <span class="string">&quot;cs&quot;</span></span></span><br><span class="line"><span class="language-javascript">        csli.<span class="property">innerText</span> = <span class="string">&quot;长沙&quot;</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 在指定元素前面添加元素</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> cityul = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;city&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> szli = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;sz&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        cityul.<span class="title function_">insertBefore</span>(csli,szli)</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">replaceSz</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 在某个元素前面追加子元素</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> csli = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;li&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        csli.<span class="property">id</span> = <span class="string">&quot;cs&quot;</span></span></span><br><span class="line"><span class="language-javascript">        csli.<span class="property">innerText</span> = <span class="string">&quot;长沙&quot;</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 替换子元素</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> cityul = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;city&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> szli = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;sz&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        cityul.<span class="title function_">replaceChild</span>(csli,szli)</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">removeSz</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 删除子元素</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> cityul = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;city&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> szli = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;sz&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">        cityul.<span class="title function_">removeChild</span>(szli)</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">clearCity</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 清空所有</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> cityul = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;city&quot;</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        cityul.<span class="property">innerHTML</span> = <span class="string">&quot;&quot;</span></span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">&quot;city&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">&quot;bj&quot;</span>&gt;</span>北京<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">&quot;sh&quot;</span>&gt;</span>上海<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">&quot;sz&quot;</span>&gt;</span>深圳<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">id</span>=<span class="string">&quot;gz&quot;</span>&gt;</span>广州<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 目标1 在城市列表的最后添加一个子标签  &lt;li id=&quot;cs&quot;&gt;长沙&lt;/li&gt;  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;addCs()&quot;</span>&gt;</span>增加长沙<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 目标2 在城市列表的深圳前添加一个子标签  &lt;li id=&quot;cs&quot;&gt;长沙&lt;/li&gt;  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;addCsBeforeSz()&quot;</span>&gt;</span>在深圳前插入长沙<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 目标3  将城市列表的深圳替换为  &lt;li id=&quot;cs&quot;&gt;长沙&lt;/li&gt;  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;replaceSz()&quot;</span>&gt;</span>替换深圳<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 目标4  将城市列表删除深圳  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;removeSz()&quot;</span>&gt;</span>删除深圳<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 目标5  清空城市列表  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;clearCity()&quot;</span>&gt;</span>清空<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="8-正则表达式"><a href="#8-正则表达式" class="headerlink" title="8. 正则表达式"></a>8. 正则表达式</h2><h3 id="8-1-正则表达式简介"><a href="#8-1-正则表达式简介" class="headerlink" title="8.1 正则表达式简介"></a>8.1 正则表达式简介</h3><blockquote>
+<p>用于匹配字符串以执行检索, 验证, 替换等操作, 执行逻辑是匹配定义格式的字符串</p>
+</blockquote>
+<ul>
+<li>语法</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> patt=<span class="keyword">new</span> <span class="title class_">RegExp</span>(pattern,modifiers);</span><br><span class="line">或者更简单的方式:</span><br><span class="line"><span class="keyword">var</span> patt=<span class="regexp">/pattern/m</span>odifiers; </span><br><span class="line"><span class="comment">// pattern :定义的匹配格式, modifiers :定义的修饰符</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>修饰符</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">修饰符</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/js/jsref-regexp-i.html">i</a></td>
+<td align="left">执行对大小写不敏感的匹配。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/js/jsref-regexp-g.html">g</a></td>
+<td align="left">执行全局匹配（查找所有匹配而非在找到第一个匹配后停止）。</td>
+</tr>
+<tr>
+<td align="left">m</td>
+<td align="left">执行多行匹配。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>方括号</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">表达式</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[<a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-charset.html">abc]</a></td>
+<td align="left">查找方括号之间的任何字符。</td>
+</tr>
+<tr>
+<td align="left">[<a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-charset-not.html">^abc]</a></td>
+<td align="left">查找任何不在方括号之间的字符。</td>
+</tr>
+<tr>
+<td align="left">[0-9]</td>
+<td align="left">查找任何从 0 至 9 的数字。</td>
+</tr>
+<tr>
+<td align="left">[a-z]</td>
+<td align="left">查找任何从小写 a 到小写 z 的字符。</td>
+</tr>
+<tr>
+<td align="left">[A-Z]</td>
+<td align="left">查找任何从大写 A 到大写 Z 的字符。</td>
+</tr>
+<tr>
+<td align="left">[A-z]</td>
+<td align="left">查找任何从大写 A 到小写 z 的字符。</td>
+</tr>
+<tr>
+<td align="left">[adgk]</td>
+<td align="left">查找给定集合内的任何字符。</td>
+</tr>
+<tr>
+<td align="left">[^adgk]</td>
+<td align="left">查找给定集合外的任何字符。</td>
+</tr>
+<tr>
+<td align="left">(red|blue|green)</td>
+<td align="left">查找任何指定的选项。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>元字符</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">元字符</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-dot.html">.</a></td>
+<td align="left">查找单个字符，除了换行和行结束符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-wordchar.html">\w</a></td>
+<td align="left">查找数字、字母及下划线。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-wordchar-non.html">\W</a></td>
+<td align="left">查找非单词字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-digit.html">\d</a></td>
+<td align="left">查找数字。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-digit-non.html">\D</a></td>
+<td align="left">查找非数字字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-whitespace.html">\s</a></td>
+<td align="left">查找空白字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-whitespace-non.html">\S</a></td>
+<td align="left">查找非空白字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-begin.html">\b</a></td>
+<td align="left">匹配单词边界。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-begin-not.html">\B</a></td>
+<td align="left">匹配非单词边界。</td>
+</tr>
+<tr>
+<td align="left">\0</td>
+<td align="left">查找 NULL 字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-newline.html">\n</a></td>
+<td align="left">查找换行符。</td>
+</tr>
+<tr>
+<td align="left">\f</td>
+<td align="left">查找换页符。</td>
+</tr>
+<tr>
+<td align="left">\r</td>
+<td align="left">查找回车符。</td>
+</tr>
+<tr>
+<td align="left">\t</td>
+<td align="left">查找制表符。</td>
+</tr>
+<tr>
+<td align="left">\v</td>
+<td align="left">查找垂直制表符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-octal.html">\xxx</a></td>
+<td align="left">查找以八进制数 xxx 规定的字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-hex.html">\xdd</a></td>
+<td align="left">查找以十六进制数 dd 规定的字符。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-unicode-hex.html">\uxxxx</a></td>
+<td align="left">查找以十六进制数 xxxx 规定的 Unicode 字符。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>量词</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">量词</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-onemore.html">n+</a></td>
+<td align="left">匹配任何包含至少一个 n 的字符串。例如，&#x2F;a+&#x2F; 匹配 “candy” 中的 “a”，”caaaaaaandy” 中所有的 “a”。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-zeromore.html">n*</a></td>
+<td align="left">匹配任何包含零个或多个 n 的字符串。例如，&#x2F;bo*&#x2F; 匹配 “A ghost booooed” 中的 “boooo”，”A bird warbled” 中的 “b”，但是不匹配 “A goat grunted”。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-zeroone.html">n?</a></td>
+<td align="left">匹配任何包含零个或一个 n 的字符串。例如，&#x2F;e?le?&#x2F; 匹配 “angel” 中的 “el”，”angle” 中的 “le”。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-nx.html">n{X}</a></td>
+<td align="left">匹配包含 X 个 n 的序列的字符串。例如，&#x2F;a{2}&#x2F; 不匹配 “candy,” 中的 “a”，但是匹配 “caandy,” 中的两个 “a”，且匹配 “caaandy.” 中的前两个 “a”。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-nxcomma.html">n{X,}</a></td>
+<td align="left">X 是一个正整数。前面的模式 n 连续出现至少 X 次时匹配。例如，&#x2F;a{2,}&#x2F; 不匹配 “candy” 中的 “a”，但是匹配 “caandy” 和 “caaaaaaandy.” 中所有的 “a”。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-nxy.html">n{X,Y}</a></td>
+<td align="left">X 和 Y 为正整数。前面的模式 n 连续出现至少 X 次，至多 Y 次时匹配。例如，&#x2F;a{1,3}&#x2F; 不匹配 “cndy”，匹配 “candy,” 中的 “a”，”caandy,” 中的两个 “a”，匹配 “caaaaaaandy” 中的前面三个 “a”。注意，当匹配 “caaaaaaandy” 时，即使原始字符串拥有更多的 “a”，匹配项也是 “aaa”。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-ndollar.html">n$</a></td>
+<td align="left">匹配任何结尾为 n 的字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-ncaret.html">^n</a></td>
+<td align="left">匹配任何开头为 n 的字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-nfollow.html">?&#x3D;n</a></td>
+<td align="left">匹配任何其后紧接指定字符串 n 的字符串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-nfollow-not.html">?!n</a></td>
+<td align="left">匹配任何其后没有紧接指定字符串 n 的字符串。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>RegExp对象方法</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-compile.html">compile</a></td>
+<td align="left">在 1.5 版本中已废弃。 编译正则表达式。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-exec-regexp.html">exec</a></td>
+<td align="left">检索字符串中指定的值。返回找到的值，并确定其位置。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-test-regexp.html">test</a></td>
+<td align="left">检索字符串中指定的值。返回 true 或 false。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/jsref/jsref-regexp-tostring.html">toString</a></td>
+<td align="left">返回正则表达式的字符串。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>支持正则的String的方法</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/js/jsref-search.html">search</a></td>
+<td align="left">检索与正则表达式相匹配的值。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/js/jsref-match.html">match</a></td>
+<td align="left">找到一个或多个正则表达式的匹配。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/js/jsref-replace.html">replace</a></td>
+<td align="left">替换与正则表达式匹配的子串。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.runoob.com/js/jsref-split.html">split</a></td>
+<td align="left">把字符串分割为字符串数组。</td>
+</tr>
+</tbody></table>
+<h3 id="8-2-正则表带式体验"><a href="#8-2-正则表带式体验" class="headerlink" title="8.2 正则表带式体验"></a>8.2 正则表带式体验</h3><h4 id="8-2-1-验证"><a href="#8-2-1-验证" class="headerlink" title="8.2.1 验证"></a>8.2.1 验证</h4><p><strong>注意</strong>：这里是使用<strong>正则表达式对象</strong>来<strong>调用</strong>方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个最简单的正则表达式对象</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/o/</span>;</span><br><span class="line"><span class="comment">// 创建一个字符串对象作为目标字符串</span></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">&#x27;Hello World!&#x27;</span>;</span><br><span class="line"><span class="comment">// 调用正则表达式对象的test()方法验证目标字符串是否满足我们指定的这个模式，返回结果true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;/o/.test(&#x27;Hello World!&#x27;)=&quot;</span>+reg.<span class="title function_">test</span>(str));</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-2-2-匹配"><a href="#8-2-2-匹配" class="headerlink" title="8.2.2 匹配"></a>8.2.2 匹配</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个最简单的正则表达式对象</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/o/</span>;</span><br><span class="line"><span class="comment">// 创建一个字符串对象作为目标字符串</span></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">&#x27;Hello World!&#x27;</span>;</span><br><span class="line"><span class="comment">// 在目标字符串中查找匹配的字符，返回匹配结果组成的数组</span></span><br><span class="line"><span class="keyword">var</span> resultArr = str.<span class="title function_">match</span>(reg);</span><br><span class="line"><span class="comment">// 数组长度为1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr.length=&quot;</span>+resultArr.<span class="property">length</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组内容是o</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr[0]=&quot;</span>+resultArr[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-2-3-替换"><a href="#8-2-3-替换" class="headerlink" title="8.2.3 替换"></a>8.2.3 替换</h4><p><strong>注意</strong>：这里是使用<strong>字符串对象</strong>来<strong>调用</strong>方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个最简单的正则表达式对象</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/o/</span>;</span><br><span class="line"><span class="comment">// 创建一个字符串对象作为目标字符串</span></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">&#x27;Hello World!&#x27;</span>;</span><br><span class="line"><span class="keyword">var</span> newStr = str.<span class="title function_">replace</span>(reg,<span class="string">&#x27;@&#x27;</span>);</span><br><span class="line"><span class="comment">// 只有第一个o被替换了，说明我们这个正则表达式只能匹配第一个满足的字符串</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;str.replace(reg)=&quot;</span>+newStr);<span class="comment">//Hell@ World!</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 原字符串并没有变化，只是返回了一个新字符串</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;str=&quot;</span>+str);<span class="comment">//str=Hello World!</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="8-2-4-全文查找"><a href="#8-2-4-全文查找" class="headerlink" title="8.2.4  全文查找"></a>8.2.4  全文查找</h4><p>如果不使用g对正则表达式对象进行修饰，则使用正则表达式进行查找时，仅返回第一个匹配；使用g后，返回所有匹配。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 目标字符串</span></span><br><span class="line"><span class="keyword">var</span> targetStr = <span class="string">&#x27;Hello World!&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 没有使用全局匹配的正则表达式</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/[A-Z]/</span>;</span><br><span class="line"><span class="comment">// 获取全部匹配</span></span><br><span class="line"><span class="keyword">var</span> resultArr = targetStr.<span class="title function_">match</span>(reg);</span><br><span class="line"><span class="comment">// 数组长度为1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr.length=&quot;</span>+resultArr.<span class="property">length</span>);</span><br><span class="line"><span class="comment">// 遍历数组，发现只能得到&#x27;H&#x27;</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; resultArr.<span class="property">length</span>; i++)&#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr[&quot;</span>+i+<span class="string">&quot;]=&quot;</span>+resultArr[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对比</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 目标字符串</span></span><br><span class="line"><span class="keyword">var</span> targetStr = <span class="string">&#x27;Hello World!&#x27;</span>;</span><br><span class="line"><span class="comment">// 使用了全局匹配的正则表达式</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/[A-Z]/g</span>;</span><br><span class="line"><span class="comment">// 获取全部匹配</span></span><br><span class="line"><span class="keyword">var</span> resultArr = targetStr.<span class="title function_">match</span>(reg);</span><br><span class="line"><span class="comment">// 数组长度为2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr.length=&quot;</span>+resultArr.<span class="property">length</span>);</span><br><span class="line"><span class="comment">// 遍历数组，发现可以获取到“H”和“W”</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; resultArr.<span class="property">length</span>; i++)&#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr[&quot;</span>+i+<span class="string">&quot;]=&quot;</span>+resultArr[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-2-5-忽略大小写"><a href="#8-2-5-忽略大小写" class="headerlink" title="8.2.5 忽略大小写"></a>8.2.5 忽略大小写</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//目标字符串</span></span><br><span class="line"><span class="keyword">var</span> targetStr = <span class="string">&#x27;Hello WORLD!&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//没有使用忽略大小写的正则表达式</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/o/g</span>;</span><br><span class="line"><span class="comment">//获取全部匹配</span></span><br><span class="line"><span class="keyword">var</span> resultArr = targetStr.<span class="title function_">match</span>(reg);</span><br><span class="line"><span class="comment">//数组长度为1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr.length=&quot;</span>+resultArr.<span class="property">length</span>);</span><br><span class="line"><span class="comment">//遍历数组，仅得到&#x27;o&#x27;</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; resultArr.<span class="property">length</span>; i++)&#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr[&quot;</span>+i+<span class="string">&quot;]=&quot;</span>+resultArr[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对比</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//目标字符串</span></span><br><span class="line"><span class="keyword">var</span> targetStr = <span class="string">&#x27;Hello WORLD!&#x27;</span>;</span><br><span class="line"><span class="comment">//使用了忽略大小写的正则表达式</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/o/gi</span>;</span><br><span class="line"><span class="comment">//获取全部匹配</span></span><br><span class="line"><span class="keyword">var</span> resultArr = targetStr.<span class="title function_">match</span>(reg);</span><br><span class="line"><span class="comment">//数组长度为2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr.length=&quot;</span>+resultArr.<span class="property">length</span>);</span><br><span class="line"><span class="comment">//遍历数组，得到&#x27;o&#x27;和&#x27;O&#x27;</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; resultArr.<span class="property">length</span>; i++)&#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;resultArr[&quot;</span>+i+<span class="string">&quot;]=&quot;</span>+resultArr[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-2-6-元字符使用"><a href="#8-2-6-元字符使用" class="headerlink" title="8.2.6 元字符使用"></a>8.2.6 元字符使用</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str01 = <span class="string">&#x27;I love Java&#x27;</span>;</span><br><span class="line"><span class="keyword">var</span> str02 = <span class="string">&#x27;Java love me&#x27;</span>;</span><br><span class="line"><span class="comment">// 匹配以Java开头</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/^Java/g</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;reg.test(str01)=&#x27;</span>+reg.<span class="title function_">test</span>(str01)); <span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;&lt;br /&gt;&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;reg.test(str02)=&#x27;</span>+reg.<span class="title function_">test</span>(str02)); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str01 = <span class="string">&#x27;I love Java&#x27;</span>;</span><br><span class="line"><span class="keyword">var</span> str02 = <span class="string">&#x27;Java love me&#x27;</span>;</span><br><span class="line"><span class="comment">// 匹配以Java结尾</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/Java$/g</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;reg.test(str01)=&#x27;</span>+reg.<span class="title function_">test</span>(str01)); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;&lt;br /&gt;&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;reg.test(str02)=&#x27;</span>+reg.<span class="title function_">test</span>(str02)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="8-2-7-字符集合的使用"><a href="#8-2-7-字符集合的使用" class="headerlink" title="8.2.7 字符集合的使用"></a>8.2.7 字符集合的使用</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//n位数字的正则</span></span><br><span class="line"><span class="keyword">var</span> targetStr=<span class="string">&quot;123456789&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> reg=<span class="regexp">/^[0-9]&#123;0,&#125;$/</span>;</span><br><span class="line"><span class="comment">//或者 ： var reg=/^\d*$/;</span></span><br><span class="line"><span class="keyword">var</span> b = reg.<span class="title function_">test</span>(targetStr);<span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//数字+字母+下划线，6-16位</span></span><br><span class="line"><span class="keyword">var</span> targetStr=<span class="string">&quot;HelloWorld&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> reg=<span class="regexp">/^[a-z0-9A-Z_]&#123;6,16&#125;$/</span>;</span><br><span class="line"><span class="keyword">var</span> b = reg.<span class="title function_">test</span>(targetStr);<span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-常用正则表达式"><a href="#8-3-常用正则表达式" class="headerlink" title="8.3  常用正则表达式"></a>8.3  常用正则表达式</h3><table>
+<thead>
+<tr>
+<th>需求</th>
+<th>正则表达式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户名</td>
+<td>&#x2F;^[a-zA-Z ][a-zA-Z-0-9]{5,9}$&#x2F;</td>
+</tr>
+<tr>
+<td>密码</td>
+<td>&#x2F;^[a-zA-Z0-9 _-@#&amp; *]{6,12}$&#x2F;</td>
+</tr>
+<tr>
+<td>前后空格</td>
+<td>&#x2F;^\s+|\s+$&#x2F;g</td>
+</tr>
+<tr>
+<td>电子邮箱</td>
+<td>&#x2F;^[a-zA-Z0-9 _.-]+@([a-zA-Z0-9-]+[.]{1})+[a-zA-Z]+$&#x2F;</td>
+</tr>
+</tbody></table>
+<ul>
+<li>解释说明<ul>
+<li>用户名: 首个字符需要是字母, 后面的字符有5-9个, 可以有字母和数字</li>
+<li>密码: 字符有字母数字, _ - @ # &amp; * , 6-12位的密码</li>
+<li>前后空格: 匹配任意数量的空白字符开头或者任意数量的空白字符结尾</li>
+<li>电子邮箱, 同上, 不做额外过多解释</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io">Func</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/JavaScript/">https://fang-tech.github.io/2025/07/08/Java/JavaWeb/笔记/JavaScript/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://fang-tech.github.io" target="_blank">走难</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/frontend/">frontend</a><a class="post-meta__tags" href="/tags/JavaWeb/">JavaWeb</a><a class="post-meta__tags" href="/tags/JS/">JS</a></div><div class="post-share"><div class="social-share" data-image="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/Servlet/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">Servlet1. Servlet简介 一个运行在tomcat这样的服务器软件容器中的程序, 能够接受响应请求, 协同调度功能, 响应数据的一个Web应用控制器 是运行在服务端(Tomcat)的Java小程序, 从代码层面来讲就是一系列的接口, 是sun公司定义访问动态资源的规范  2. Servlet开发流程 步骤1 : 先完成前端发送请求的form  123456789101112131415&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;    &lt;meta charset=&quot;UTF-8&quot;&gt;    &lt;title&gt;Title&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;form method=&quot;get&quot; action=&quot;userServlet&quot;&gt;    用户名:&lt;input type=&quot;text&quot; name=&quot;username&quo...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/HTTP/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">hijinint main ()  {| adadadadasdadasdasdasdas} HTTP协议hijinint main ()  {| adadadadasdadasdasdasdas} 1 HTTP简介![[images&#x2F;1681522638617.png]] ![[images&#x2F;1681522600239.png]]  HTTP 超文本传输协议 (HTTP-Hyper Text transfer protocol)，是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。它于1990年提出，经过十几年的使用与发展，得到不断地完善和扩展。它是一种详细规定了浏览器和万维网服务器之间互相通信的规则，通过因特网传送万维网文档的数据传送协议。客户端与服务端通信时传输的内容我们称之为报文。HTTP协议就是规定报文的格式。HTTP就是一个通信规则，这个规则规定了客户端发送给服务器的报文格式，也规定了服务器发送给客户端的报文格式。实际我们要学习的就是这两种报文。客户端发送给服务器的称为”请求报文“，服务器发送给客户端的称为”响应报...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/ES6/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">ES61. ES6的介绍 ECMAScript 6，简称ES6，是JavaScript语言的一次重大更新。它于2015年发布，是原来的ECMAScript标准的第六个版本。ES6带来了大量的新特性，包括箭头函数、模板字符串、let和const关键字、解构、默认参数值、模块系统等等，大大提升了JavaScript的开发体验。由于VUE3中大量使用了ES6的语法,所以ES6成为了学习VUE3的门槛之一 ES6对JavaScript的改进在以下几个方面：   更加简洁：ES6引入了一些新的语法，如箭头函数、类和模板字符串等，使代码更加简洁易懂。  更强大的功能：ES6引入了一些新的API、解构语法和迭代器等功能，从而使得JavaScript更加强大。  更好的适用性：ES6引入的模块化功能为JavaScript代码的组织和管理提供了更好的方式，不仅提高了程序的可维护性，还让JavaScript更方便地应用于大型的应用程序。    总的来说，ES6在提高JavaScript的核心语言特性和功能方面取得了很大的进展。由于ES6已经成为了JavaScript的标准，它的大多数新特性都已被现在...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/Ajax/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">Ajax1. Ajax概述 AJAX &#x3D; Asynchronous JavaScript and XML（异步的 JavaScript 和 XML）。  AJAX 不是新的编程语言，而是一种使用现有标准的新方法。  AJAX 最大的优点是在不重新加载整个页面的情况下，可以与服务器交换数据并更新部分网页内容。  AJAX 不需要任何浏览器插件，但需要用户允许 JavaScript 在浏览器上执行。  XMLHttpRequest 只是实现 Ajax 的一种方式。   ajax工作原理： ![[images&#x2F;image_bjXPJoLb6a-1690508517199.png]]  简单来说,我们之前发的请求通过类似  form表单标签,a标签 这种方式,现在通过 运行js代码动态决定什么时候发送什么样的请求 通过运行JS代码发送的请求浏览器可以不用跳转页面 ,我们可以在JS代码中决定是否要跳转页面 通过运行JS代码发送的请求,接收到返回结果后,我们可以将结果通过dom编程渲染到页面的某些元素上,实现局部更新  2 如何实现ajax请求 原生javascript方...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/CSS/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">CSScss的三种引入方式 行内式 直接将style放在对应的标签内部    1234567891011121314&lt;input type=&quot;button&quot; value=&quot;按钮&quot;        style=&quot;              display: block;              width: auto;              height: auto;              font-family: 隶书;              background-color: bisque;              border-radius: 5px;              border: 3px solid goldenrod;              color: brown;              font-size: 22px;              line-height: 30px;              &quot;       /&gt;   内嵌式 将行内式的style提...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/HTTP/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">hijinint main ()  {| adadadadasdadasdasdasdas} HTTP协议hijinint main ()  {| adadadadasdadasdasdasdas} 1 HTTP简介![[images&#x2F;1681522638617.png]] ![[images&#x2F;1681522600239.png]]  HTTP 超文本传输协议 (HTTP-Hyper Text transfer protocol)，是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。它于1990年提出，经过十几年的使用与发展，得到不断地完善和扩展。它是一种详细规定了浏览器和万维网服务器之间互相通信的规则，通过因特网传送万维网文档的数据传送协议。客户端与服务端通信时传输的内容我们称之为报文。HTTP协议就是规定报文的格式。HTTP就是一个通信规则，这个规则规定了客户端发送给服务器的报文格式，也规定了服务器发送给客户端的报文格式。实际我们要学习的就是这两种报文。客户端发送给服务器的称为”请求报文“，服务器发送给客户端的称为”响应报...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/HTML/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">HTML整体框架12345678910&lt;!DOCTYPE html&gt; 				-&gt; HTML5的文档声明&lt;html lang=&quot;en&quot;&gt;				-&gt; 根标签, 并说明语言是英语&lt;head&gt;							-&gt; 	头部标签    &lt;meta charset=&quot;UTF-8&quot;&gt;		-&gt; 用于指明字符编码    &lt;title&gt;Document&lt;/title&gt;		-&gt; 网页的标题&lt;/head&gt;							-&gt; 头部标签的结尾&lt;body&gt;							-&gt; 文档的内容    &lt;/body&gt;&lt;/html&gt;    HTML的常用标签标题标签 &amp; 段落标签 &amp;换行标签hr &#x3D;&gt; horizontal rule 水平线, br &#x3D;&gt; line break &#x3D;&gt; 换行 123456789101112131415161718192021222...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/JavaWeb/%E7%AC%94%E8%AE%B0/Tomcat/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">^Tomcat Tomcat1. Tomcat的作用 一个服务器软件, 用于部署一个完整的Web应用  2. Tomcat服务器2.1 简介 Tomcat是Apache 软件基金会（Apache Software Foundation）的Jakarta 项目中的一个核心项目，由Apache、Sun 和其他一些公司及个人共同开发而成。最新的Servlet 和JSP 规范总是能在Tomcat 中得到体现，因为Tomcat 技术先进、性能稳定，而且免费，因而深受Java 爱好者的喜爱并得到了部分软件开发商的认可，成为目前比较流行的Web 应用服务器。  2.2 安装 版本   版本：企业用的比较广泛的是8.0和9.0,目前比较新正式发布版本是Tomcat10.0, Tomcat11仍然处于测试阶段。 10和之前的版本使用的API接口不同, 所以8和9之间是可以移植的, 但是10和之前的无法相互移植, 虽然移植Tomcat是一件很蠢的事情 JAVAEE 版本和Servlet版本号对应关系 Jakarta EE Releases     SERVLET VERSION EE VERSION...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Func</div><div class="author-info-description">Func的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JavaScript"><span class="toc-number">1.</span> <span class="toc-text">JavaScript</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-JS%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">1. JS的特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">1.2.</span> <span class="toc-text">2. 数据类型和运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">1.2.2.</span> <span class="toc-text">运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">1.2.3.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.4.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-JS%E7%9A%84%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">3. JS的流程控制和函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%88%86%E6%94%AF%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 分支结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%BE%AA%E7%8E%AF%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 循环结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3 函数声明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-JS%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%92%8CJSON"><span class="toc-number">1.4.</span> <span class="toc-text">4. JS的对象和JSON</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-JSON%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 JSON格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.3.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-JS%E5%B8%B8%E8%A7%81%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.3 JS常见对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-1-%E6%95%B0%E7%BB%84"><span class="toc-number">1.4.4.1.</span> <span class="toc-text">4.3.1 数组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2-Boolean%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.4.4.2.</span> <span class="toc-text">4.3.2 Boolean对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-3-Date%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.4.4.3.</span> <span class="toc-text">4.3.3 Date对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-4-Math"><span class="toc-number">1.4.4.4.</span> <span class="toc-text">4.3.4 Math</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-5-Number"><span class="toc-number">1.4.4.5.</span> <span class="toc-text">4.3.5 Number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-6-String"><span class="toc-number">1.4.4.6.</span> <span class="toc-text">4.3.6 String</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%BA%8B%E4%BB%B6%E7%9A%84%E7%BB%91%E5%AE%9A"><span class="toc-number">1.5.</span> <span class="toc-text">5. 事件的绑定</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 绑定事件的作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%B8%B8%E8%A7%81%E4%BA%8B%E4%BB%B6"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 常见事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E4%BA%8B%E4%BB%B6%E7%9A%84%E7%BB%91%E5%AE%9A"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 事件的绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E4%BA%8B%E4%BB%B6%E7%9A%84%E8%A7%A6%E5%8F%91"><span class="toc-number">1.5.4.</span> <span class="toc-text">5.4 事件的触发</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-BOM%E7%BC%96%E7%A8%8B"><span class="toc-number">1.6.</span> <span class="toc-text">6. BOM编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E4%BB%80%E4%B9%88%E6%98%AFBOM"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1 什么是BOM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-window%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B8%B8%E8%A7%81%E5%B1%9E%E6%80%A7"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 window对象的常见属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-window%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95-%E4%BA%86%E8%A7%A3"><span class="toc-number">1.6.3.</span> <span class="toc-text">6.3 window对象的常见方法(了解)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E9%80%9A%E8%BF%87BOM%E7%BC%96%E7%A8%8B%E6%8E%A7%E5%88%B6%E6%B5%8F%E8%A7%88%E5%99%A8%E8%A1%8C%E4%B8%BA%E6%BC%94%E7%A4%BA"><span class="toc-number">1.6.4.</span> <span class="toc-text">6.4 通过BOM编程控制浏览器行为演示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-5-%E9%80%9A%E8%BF%87BOM%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E4%BC%9A%E8%AF%9D%E7%BA%A7%E5%92%8C%E6%8C%81%E4%B9%85%E7%BA%A7%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8"><span class="toc-number">1.6.5.</span> <span class="toc-text">6.5 通过BOM编程实现会话级和持久级数据存储</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-DOM%E7%BC%96%E7%A8%8B"><span class="toc-number">1.7.</span> <span class="toc-text">7. DOM编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-DOM%E7%BC%96%E7%A8%8B%E7%AE%80%E4%BB%8B"><span class="toc-number">1.7.1.</span> <span class="toc-text">7.1 DOM编程简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E8%8E%B7%E5%8F%96%E9%A1%B5%E9%9D%A2%E5%85%83%E7%B4%A0%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">1.7.2.</span> <span class="toc-text">7.2 获取页面元素的几种方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-1-%E5%9C%A8%E6%95%B4%E4%B8%AA%E6%96%87%E6%A1%A3%E8%8C%83%E5%9B%B4%E5%86%85%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%BB%93%E7%82%B9"><span class="toc-number">1.7.2.1.</span> <span class="toc-text">7.2.1 在整个文档范围内查找元素结点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-2-%E5%9C%A8%E5%85%B7%E4%BD%93%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9%E8%8C%83%E5%9B%B4%E5%86%85%E6%9F%A5%E6%89%BE%E5%AD%90%E8%8A%82%E7%82%B9"><span class="toc-number">1.7.2.2.</span> <span class="toc-text">7.2.2 在具体元素节点范围内查找子节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-3-%E6%9F%A5%E6%89%BE%E6%8C%87%E5%AE%9A%E5%AD%90%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9%E7%9A%84%E7%88%B6%E8%8A%82%E7%82%B9"><span class="toc-number">1.7.2.3.</span> <span class="toc-text">7.2.3 查找指定子元素节点的父节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-4-%E6%9F%A5%E6%89%BE%E6%8C%87%E5%AE%9A%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9%E7%9A%84%E5%85%84%E5%BC%9F%E8%8A%82%E7%82%B9"><span class="toc-number">1.7.2.4.</span> <span class="toc-text">7.2.4  查找指定元素节点的兄弟节点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E6%93%8D%E4%BD%9C%E5%85%83%E7%B4%A0%E5%B1%9E%E6%80%A7%E5%80%BC"><span class="toc-number">1.7.3.</span> <span class="toc-text">7.3 操作元素属性值</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-1-%E5%B1%9E%E6%80%A7%E6%93%8D%E4%BD%9C"><span class="toc-number">1.7.3.1.</span> <span class="toc-text">7.3.1 属性操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-2-%E5%86%85%E9%83%A8%E6%96%87%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-number">1.7.3.2.</span> <span class="toc-text">7.3.2 内部文本操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-%E5%A2%9E%E5%88%A0%E5%85%83%E7%B4%A0"><span class="toc-number">1.7.4.</span> <span class="toc-text">7.4 增删元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-4-1-%E5%AF%B9%E9%A1%B5%E9%9D%A2%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%9B%E8%A1%8C%E5%A2%9E%E5%88%A0%E6%93%8D%E4%BD%9C"><span class="toc-number">1.7.4.1.</span> <span class="toc-text">7.4.1 对页面的元素进行增删操作</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.8.</span> <span class="toc-text">8. 正则表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%80%E4%BB%8B"><span class="toc-number">1.8.1.</span> <span class="toc-text">8.1 正则表达式简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E6%AD%A3%E5%88%99%E8%A1%A8%E5%B8%A6%E5%BC%8F%E4%BD%93%E9%AA%8C"><span class="toc-number">1.8.2.</span> <span class="toc-text">8.2 正则表带式体验</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-1-%E9%AA%8C%E8%AF%81"><span class="toc-number">1.8.2.1.</span> <span class="toc-text">8.2.1 验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-2-%E5%8C%B9%E9%85%8D"><span class="toc-number">1.8.2.2.</span> <span class="toc-text">8.2.2 匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-3-%E6%9B%BF%E6%8D%A2"><span class="toc-number">1.8.2.3.</span> <span class="toc-text">8.2.3 替换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-4-%E5%85%A8%E6%96%87%E6%9F%A5%E6%89%BE"><span class="toc-number">1.8.2.4.</span> <span class="toc-text">8.2.4  全文查找</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-5-%E5%BF%BD%E7%95%A5%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="toc-number">1.8.2.5.</span> <span class="toc-text">8.2.5 忽略大小写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-6-%E5%85%83%E5%AD%97%E7%AC%A6%E4%BD%BF%E7%94%A8"><span class="toc-number">1.8.2.6.</span> <span class="toc-text">8.2.6 元字符使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-7-%E5%AD%97%E7%AC%A6%E9%9B%86%E5%90%88%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.8.2.7.</span> <span class="toc-text">8.2.7 字符集合的使用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E5%B8%B8%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.8.3.</span> <span class="toc-text">8.3  常用正则表达式</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/8.%20%E6%8A%BD%E5%A5%96%E4%B8%AD%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.854Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.853Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.847Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Func</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23li4bXLe7MUGkzYiL',
+      clientSecret: '6e07175d5780251b166904c518448940a5214fb1',
+      repo: 'fang-tech.github.io',
+      owner: 'fang-tech',
+      admin: ['fang-tech'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'bf60c45e87831730a54e7ee23dcde94a'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

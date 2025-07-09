@@ -1,0 +1,272 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>走难 | 走难</title><meta name="author" content="Func"><meta name="copyright" content="Func"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="需求说明 我们需要实现不同等级的人, 他能抽到的奖品种类是不一样的, 这里的分类法则在这里主要体现为已经抽了多少积分, 我们可以理解为, 抽了4000积分以后, 他有一个奖品范围A, 抽了5000积分以后有个新的奖品范围B, 类推  库表在strategy_rule库表的字段rule_model下有条数据是rule_weight, 这行数据的rule_value : 4000:102,103,10">
+<meta property="og:type" content="article">
+<meta property="og:title" content="走难">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="走难">
+<meta property="og:description" content="需求说明 我们需要实现不同等级的人, 他能抽到的奖品种类是不一样的, 这里的分类法则在这里主要体现为已经抽了多少积分, 我们可以理解为, 抽了4000积分以后, 他有一个奖品范围A, 抽了5000积分以后有个新的奖品范围B, 类推  库表在strategy_rule库表的字段rule_model下有条数据是rule_weight, 这行数据的rule_value : 4000:102,103,10">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg">
+<meta property="article:published_time" content="2025-07-08T15:03:04.852Z">
+<meta property="article:modified_time" content="2025-02-23T15:01:33.507Z">
+<meta property="article:author" content="Func">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "url": "https://fang-tech.github.io/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/",
+  "image": "https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg",
+  "datePublished": "2025-07-08T15:03:04.852Z",
+  "dateModified": "2025-02-23T15:01:33.507Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Func",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://raw.githubusercontent.com/fang-tech/Pic/main/img/pngtree-round-logo-with-mountains-and-water-vector-png-image_7031662.png"><link rel="canonical" href="https://fang-tech.github.io/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '走难',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">走难</span></a><a class="nav-page-title" href="/"><span class="site-name">走难</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">无标题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-23T15:01:33.507Z" title="更新于 2025-02-23 23:01:33">2025-02-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">948</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="需求说明"><a href="#需求说明" class="headerlink" title="需求说明"></a>需求说明</h1><blockquote>
+<p>我们需要实现不同等级的人, 他能抽到的奖品种类是不一样的, 这里的分类法则在这里主要体现为已经抽了多少积分, 我们可以理解为, 抽了4000积分以后, 他有一个奖品范围A, 抽了5000积分以后有个新的奖品范围B, 类推</p>
+</blockquote>
+<h1 id="库表"><a href="#库表" class="headerlink" title="库表"></a>库表</h1><p>在strategy_rule库表的字段rule_model下有条数据是rule_weight, 这行数据的rule_value : 4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109</p>
+<p>在strategy库表的字段rule_models下数据中记录了这个策略装载了哪些策略模式</p>
+<h1 id="实现流程"><a href="#实现流程" class="headerlink" title="实现流程"></a>实现流程</h1><h2 id="0-怎么实现在特定范围内进行抽奖"><a href="#0-怎么实现在特定范围内进行抽奖" class="headerlink" title="0. 怎么实现在特定范围内进行抽奖?"></a>0. 怎么实现在特定范围内进行抽奖?</h2><blockquote>
+<p>其实主思路很简单, 先查询获取所有的奖品实体类, 将奖品Id不在范围内的排除掉就好了</p>
+</blockquote>
+<h2 id="1-将原先的装配概率查找表的函数进一步抽象"><a href="#1-将原先的装配概率查找表的函数进一步抽象" class="headerlink" title="1. 将原先的装配概率查找表的函数进一步抽象"></a>1. 将原先的装配概率查找表的函数进一步抽象</h2><p><code>private void assembleLotteryStrategy(String key, List\&lt;StrategyAwardEntity&gt; strategyAwardEntities)</code></p>
+<blockquote>
+<p>这个函数的是我们从<code>public boolean assembleLotteryStrategy(Long strategyId)</code>中抽取出来的函数, 通过我们实现在特定范围内进行抽奖的思路, 我们需要将原先的根据strategyId查询到所有的StrategyAwardEntities装配概率查找表的函数后面的装配概率查找表的部分抽象出来, 这样我们就能根据strategyAwardEntities和key装配一个rateTable进Redis中</p>
+</blockquote>
+<ul>
+<li>实际的函数就是将原先的函数中的从第二步开始的步骤抽取成一个函数</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">assembleLotteryStrategy</span><span class="params">(String key, List&lt;StrategyAwardEntity&gt; strategyAwardEntities)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 获取最小的概率值</span></span><br><span class="line">    <span class="type">BigDecimal</span> <span class="variable">minAwardRate</span> <span class="operator">=</span> strategyAwardEntities.stream()</span><br><span class="line">            .map(StrategyAwardEntity::getAwardRate)</span><br><span class="line">            .min(BigDecimal::compareTo)</span><br><span class="line">            .orElse(BigDecimal.ZERO);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 概率值总和</span></span><br><span class="line">    <span class="type">BigDecimal</span> <span class="variable">totalAwardRate</span> <span class="operator">=</span> strategyAwardEntities.stream()</span><br><span class="line">            .map(StrategyAwardEntity::getAwardRate)</span><br><span class="line">            .reduce(BigDecimal.ZERO, BigDecimal::add);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 计算总共需要多少个格子, 也就是概率范围</span></span><br><span class="line">    <span class="type">BigDecimal</span> <span class="variable">rateRange</span> <span class="operator">=</span> totalAwardRate.divide(minAwardRate, <span class="number">0</span>, RoundingMode.CEILING);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 生成概率奖品查找表</span></span><br><span class="line">    List&lt;Integer&gt; strategyAwardSearchRateTable = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(rateRange.intValue());</span><br><span class="line">    <span class="keyword">for</span> (StrategyAwardEntity strategyAwardEntity : strategyAwardEntities) &#123;</span><br><span class="line">        <span class="type">Integer</span> <span class="variable">awardId</span> <span class="operator">=</span> strategyAwardEntity.getAwardId();</span><br><span class="line">        <span class="type">BigDecimal</span> <span class="variable">awardRate</span> <span class="operator">=</span> strategyAwardEntity.getAwardRate();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; rateRange.multiply(awardRate).setScale(<span class="number">0</span>, RoundingMode.CEILING).intValue(); i++) &#123;</span><br><span class="line">            strategyAwardSearchRateTable.add(awardId);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 将查找表乱序</span></span><br><span class="line">    Collections.shuffle(strategyAwardSearchRateTable);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 将查找表转化为Map集合</span></span><br><span class="line">    Map&lt;Integer, Integer&gt; shuffleStrategyAwardSearchRateTable = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; strategyAwardSearchRateTable.size(); i++) &#123;</span><br><span class="line">        shuffleStrategyAwardSearchRateTable.put(i, strategyAwardSearchRateTable.get(i));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 7, 将Map集合存入Redis中</span></span><br><span class="line">    repository.storeStrategyAwardRateTables(key, shuffleStrategyAwardSearchRateTable.size(), shuffleStrategyAwardSearchRateTable);</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-既能装配完整配置-也能装配权重配置的函数"><a href="#2-既能装配完整配置-也能装配权重配置的函数" class="headerlink" title="2. 既能装配完整配置, 也能装配权重配置的函数"></a>2. 既能装配完整配置, 也能装配权重配置的函数</h2><p><code>public boolean assembleLotteryStrategy(Long strategyId)</code></p>
+<p>通过这个函数我们需要实现原先的概率的装配也需要实现权重策略的装配</p>
+<ol>
+<li>我们同样需要装配原先的不包含权重的概率查找表, 这个时候的key就是strategy_id</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 查询配置信息</span></span><br><span class="line">List&lt;StrategyAwardEntity&gt; strategyAwardEntities = repository.queryStrategyAwardList(strategyId);</span><br><span class="line">assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>检查当前抽奖策略中有没有权重的配置, 如果没有则不进行配置</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2. 权重策略配置 - 适用于 rule_weight 权重规则配置</span></span><br><span class="line"><span class="type">StrategyEntity</span> <span class="variable">strategyEntity</span> <span class="operator">=</span>  repository.queryStrategyEntityByStrategyId(strategyId);</span><br><span class="line"><span class="type">String</span> <span class="variable">ruleWight</span> <span class="operator">=</span> strategyEntity.getRuleWeight();</span><br><span class="line"><span class="comment">// 如果没有权重策略的配置</span></span><br><span class="line"><span class="keyword">if</span> (<span class="literal">null</span> == ruleWight) <span class="keyword">return</span> <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>从StrategyRuleEntity中获取到将装配的权重进行了解析后的Map&lt;String, List&lt;Integer&gt;&gt;, 后面的List中存的就是这个权重策略对应的AwardId</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">StrategyRuleEntity</span> <span class="variable">strategyRuleEntity</span> <span class="operator">=</span> repository.queryStrategyRule(strategyId, ruleWight);</span><br><span class="line"><span class="keyword">if</span>(<span class="literal">null</span> == strategyRuleEntity) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">AppException</span>(ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getCode(), ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getInfo());</span><br><span class="line">&#125;</span><br><span class="line">Map&lt;String, List&lt;Integer&gt;&gt; ruleWeightValueMap = strategyRuleEntity.getRuleWeightValue();</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>遍历所有的key, 也就是遍历所有的配置方法, 创建新的策略奖品实体列表副本, 从其中删除不List中的AwardId, 再将这个新的副本传进前面抽象出来的方法中, 创建新的概率搜索表</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Set&lt;String&gt; keys = ruleWeightValueMap.keySet();</span><br><span class="line"><span class="keyword">for</span> (String key : keys) &#123;</span><br><span class="line">    List&lt;Integer&gt; ruleWeightValues = ruleWeightValueMap.get(key);</span><br><span class="line">    ArrayList&lt;StrategyAwardEntity&gt; strategyRuleEntitiesClone = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(strategyAwardEntities);</span><br><span class="line">    strategyRuleEntitiesClone.removeIf(entity-&gt; !ruleWeightValues.contains(entity.getAwardId()));</span><br><span class="line">    assembleLotteryStrategy(String.valueOf(strategyId).concat(<span class="string">&quot;_&quot;</span>).concat(key), strategyRuleEntitiesClone);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io">Func</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/">https://fang-tech.github.io/2025/07/08/Project/Big-Market/过程笔记/6. 权重装配处理/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://fang-tech.github.io" target="_blank">走难</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2"></div></div><div class="info-2"><div class="info-item-1">需求说明我们想实现黑名单这类的风控方法以及我们之前想实现的让用户在消费了一定量的积分以后会变更能抽中的奖品范围这类的抽奖的前置规则配置 库表中的修改 在strategy_rule表中rule_model是rule_blacklist的那行数据中, 修改rule_value中为具体的值100:user001,user002,user003 在award中的添加一个award_id是100的黑名单奖品, 这个奖品就是黑名单用户的积分保底  drawio 该章节关于逻辑和类的解释, 通过drawio诠释, 通过文字, 很难表述清楚复杂的交互逻辑和结构性  draw.io </div></div></div></a><a class="pagination-related  no-desc" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2"></div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Func</div><div class="author-info-description">Func的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9C%80%E6%B1%82%E8%AF%B4%E6%98%8E"><span class="toc-number">1.</span> <span class="toc-text">需求说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%93%E8%A1%A8"><span class="toc-number">2.</span> <span class="toc-text">库表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%B5%81%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">实现流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0-%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%9C%A8%E7%89%B9%E5%AE%9A%E8%8C%83%E5%9B%B4%E5%86%85%E8%BF%9B%E8%A1%8C%E6%8A%BD%E5%A5%96"><span class="toc-number">3.1.</span> <span class="toc-text">0. 怎么实现在特定范围内进行抽奖?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%B0%86%E5%8E%9F%E5%85%88%E7%9A%84%E8%A3%85%E9%85%8D%E6%A6%82%E7%8E%87%E6%9F%A5%E6%89%BE%E8%A1%A8%E7%9A%84%E5%87%BD%E6%95%B0%E8%BF%9B%E4%B8%80%E6%AD%A5%E6%8A%BD%E8%B1%A1"><span class="toc-number">3.2.</span> <span class="toc-text">1. 将原先的装配概率查找表的函数进一步抽象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%97%A2%E8%83%BD%E8%A3%85%E9%85%8D%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE-%E4%B9%9F%E8%83%BD%E8%A3%85%E9%85%8D%E6%9D%83%E9%87%8D%E9%85%8D%E7%BD%AE%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-number">3.3.</span> <span class="toc-text">2. 既能装配完整配置, 也能装配权重配置的函数</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/8.%20%E6%8A%BD%E5%A5%96%E4%B8%AD%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.854Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.853Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.847Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Func</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23li4bXLe7MUGkzYiL',
+      clientSecret: '6e07175d5780251b166904c518448940a5214fb1',
+      repo: 'fang-tech.github.io',
+      owner: 'fang-tech',
+      admin: ['fang-tech'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'c6a5357b9964b644f50062cdc1e3a2d7'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

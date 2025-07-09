@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>TCP四次挥手详解 - 连接断开过程与状态转换 | 走难</title><meta name="author" content="Func"><meta name="copyright" content="Func"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TCP连接断开TCP四次挥手的过程  客户端打算关闭连接, 客户端发送FIN报文, 进入FIN_WAIT_1状态 服务端接受到了FIN_WAIT_1报文, 进入CLOSED_WAIT状态, 回复ACK报文, 服务端接受到了ACK报文, 进入到FIN_WAIT_2状态 服务端发送FIN报文, 进入LAST_ACK状态 客户端接收到了FIN报文, 客户端发送ACK报文, 进入到TIME_WAIT状态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP四次挥手详解 - 连接断开过程与状态转换">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/index.html">
+<meta property="og:site_name" content="走难">
+<meta property="og:description" content="TCP连接断开TCP四次挥手的过程  客户端打算关闭连接, 客户端发送FIN报文, 进入FIN_WAIT_1状态 服务端接受到了FIN_WAIT_1报文, 进入CLOSED_WAIT状态, 回复ACK报文, 服务端接受到了ACK报文, 进入到FIN_WAIT_2状态 服务端发送FIN报文, 进入LAST_ACK状态 客户端接收到了FIN报文, 客户端发送ACK报文, 进入到TIME_WAIT状态">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg">
+<meta property="article:published_time" content="2025-07-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-08T15:45:21.409Z">
+<meta property="article:author" content="Func">
+<meta property="article:tag" content="TCP">
+<meta property="article:tag" content="网络协议">
+<meta property="article:tag" content="八股文">
+<meta property="article:tag" content="面试">
+<meta property="article:tag" content="四次挥手">
+<meta property="article:tag" content="ACK">
+<meta property="article:tag" content="FIN">
+<meta property="article:tag" content="连接断开">
+<meta property="article:tag" content="TIME_WAIT">
+<meta property="article:tag" content="状态转换">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "TCP四次挥手详解 - 连接断开过程与状态转换",
+  "url": "https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/",
+  "image": "https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg",
+  "datePublished": "2025-07-07T16:00:00.000Z",
+  "dateModified": "2025-07-08T15:45:21.409Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Func",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://raw.githubusercontent.com/fang-tech/Pic/main/img/pngtree-round-logo-with-mountains-and-water-vector-png-image_7031662.png"><link rel="canonical" href="https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'TCP四次挥手详解 - 连接断开过程与状态转换',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">走难</span></a><a class="nav-page-title" href="/"><span class="site-name">TCP四次挥手详解 - 连接断开过程与状态转换</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">TCP四次挥手详解 - 连接断开过程与状态转换</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-08T15:45:21.409Z" title="更新于 2025-07-08 23:45:21">2025-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">计算机科学</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/">TCP协议</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="TCP连接断开"><a href="#TCP连接断开" class="headerlink" title="TCP连接断开"></a>TCP连接断开</h2><h3 id="TCP四次挥手的过程"><a href="#TCP四次挥手的过程" class="headerlink" title="TCP四次挥手的过程"></a>TCP四次挥手的过程</h3><p><img src="https://cdn.xiaolincoding.com//mysql/other/format,png-20230309230614791.png"></p>
+<ul>
+<li>客户端打算关闭连接, 客户端发送<code>FIN</code>报文, 进入<code>FIN_WAIT_1</code>状态</li>
+<li>服务端接受到了<code>FIN_WAIT_1</code>报文, 进入<code>CLOSED_WAIT</code>状态, 回复<code>ACK</code>报文, 服务端接受到了<code>ACK</code>报文, 进入到<code>FIN_WAIT_2</code>状态</li>
+<li>服务端发送<code>FIN</code>报文, 进入<code>LAST_ACK</code>状态</li>
+<li>客户端接收到了<code>FIN</code>报文, 客户端发送<code>ACK</code>报文, 进入到<code>TIME_WAIT</code>状态</li>
+<li>服务端在收到<code>ACK</code>报文以后, 进入到<code>CLOSE</code>状态</li>
+<li>客户端在经过<code>2MSL</code>一段时间后, 自动进入到<code>CLOSE</code>状态</li>
+</ul>
+<p>主动关闭连接的, 才有TIME_WAIT状态</p>
+<h3 id="为什么挥手需要四次而不是三次"><a href="#为什么挥手需要四次而不是三次" class="headerlink" title="为什么挥手需要四次而不是三次?"></a>为什么挥手需要四次而不是三次?</h3><ul>
+<li>关闭连接的时候, 客户端向服务端发送FIN, 仅仅表示客户端不再发送数据了但是还能接收数据</li>
+<li>服务端接收到客户端的FIN报文时, 先回一个ACK报文, 而服务端可能还有数据需要处理和发送, 等服务端不再发送数据的时候, 才发送FIN报文给客户端表示同意关闭现在的连接</li>
+</ul>
+<p>但是也有三次, 在被动关闭方TCP挥手的过程中, 如果没有数据要发送, 并且没有开启TCP_QUICKACK(默认没有开启), 就会启用TCP延迟确认机制, 第二次和第三次挥手就会合并</p>
+<blockquote>
+<p>TCP延迟确认机制</p>
+</blockquote>
+<ul>
+<li>当有响应数据要发送的时候, ACK会和响应数据一起发送给对象</li>
+<li>当没有响应数据要发送的时候, ACK将会延迟一段时间, 等待是否有响应数据可以一起发送给对方</li>
+<li>如果在延迟等待发送ACK期间, 对方的第二个数据段又到达了, 就会立即发送ACK</li>
+</ul>
+<h3 id="第一次挥手丢失会发生什么"><a href="#第一次挥手丢失会发生什么" class="headerlink" title="第一次挥手丢失会发生什么"></a>第一次挥手丢失会发生什么</h3><p>主动方发送的<code>FIN</code>报文丢失, 主动方在发送报文以后就进入到了<code>FIN_WAIT_1</code>状态, 主动方会在超时时间内没有接收到ACK响应报文而触发超时重传</p>
+<p>超时时间会随着超时次数翻倍</p>
+<p>重发次数通过<code>tcp_orphan_retries</code>参数来控制</p>
+<h3 id="第二次挥手丢失会发生什么"><a href="#第二次挥手丢失会发生什么" class="headerlink" title="第二次挥手丢失会发生什么"></a>第二次挥手丢失会发生什么</h3><p>被动方接收到了发起方的<code>FIN</code>报文, 进入到<code>CLOSE_WAIT</code>状态</p>
+<p>但是ACK报文是不会重传的, 从发起方的角度来看, 就是自己的第一次挥手丢失了, 就会超时重传第一次挥手</p>
+<h3 id="第三次挥手丢失会发生什么"><a href="#第三次挥手丢失会发生什么" class="headerlink" title="第三次挥手丢失会发生什么"></a>第三次挥手丢失会发生什么</h3><p>发起方接收到ACK报文以后, 进入到<code> FIN_WAIT_2</code>状态, 需要接收到被动方发送的<code>FIN</code>报文才能进入到<code>TIME_WAIT</code>状态</p>
+<p>从客户端的角度来看就是一直没有接收到被动方发送的FIN报文, 一直在FIN_WAIT_状态, 从服务端的角度来看, 就是发送的FIN丢失了, 超时重传, 超过了设定的重试次数, 就会从服务端断开连接</p>
+<p>如果主动关闭方使用的关闭函数是<code>close()</code>函数, 它有一个<code>tcp_fin_timeout</code>的参数, 控制了在<code>FIN_WAIT_2</code>阶段的最长时间, 如果超过了这个时间, TCP连接会被强行关闭, 从客户端断开丽娜姐</p>
+<p>如果使用的是<code>shutdown()</code>函数, 那就是死等了</p>
+<h3 id="第四次挥手丢失会发生什么"><a href="#第四次挥手丢失会发生什么" class="headerlink" title="第四次挥手丢失会发生什么"></a>第四次挥手丢失会发生什么</h3><p>客户端在第三次挥手以后就会进入到TIME_WAIT阶段, 2MSL之后就会从客户端关闭连接</p>
+<ul>
+<li>服务端重传<code>FIN</code>报文的次数达到<code>tcp_orphan_retries</code>的最大重传次数的时候, 等待上次等待时间的两倍以后, 就会从服务端断开连接</li>
+<li>客户端进入到<code>TIME_WAIT</code>阶段以后, 开启2MSL的定时器, 如果收到<code>FIN</code>报文, 就会重置定时器, 定时器到了, 就从客户端关闭连接</li>
+</ul>
+<h3 id="为什么TIME-WAIT等待的时间是2MSL"><a href="#为什么TIME-WAIT等待的时间是2MSL" class="headerlink" title="为什么TIME_WAIT等待的时间是2MSL"></a>为什么TIME_WAIT等待的时间是2MSL</h3><p><code>MSL</code> : Maximum Segment Lifetime, 报文的最大生存时间, 任何报文在网络上存在的最长时间</p>
+<p>MSL与TTL的区别 : <strong>MSL的单位是时间, TTL是经过路由跳数</strong></p>
+<p><strong>TTL的值一般是64, Linux将MSL的值设置为30s, 意味着Linux认为数据经过64个路由器的时间不会超过30s, 如果超过了, 就认为报文已经消失在网络中了</strong></p>
+<p>TIME_WAIT等待2倍的MSL, 比较合理的解释是 : 网络中可能存在发送方发送过来的数据包(也就是第三次挥手的FIN包), 接收到这个包的最长可能时间是一个MSL, 然后接收到以后又会给对方响应, 这个最大可接受时间又是一个MSL</p>
+<p>相当于至少允许报文丢失一次, 如果ACK在一个MSL内丢失, 这样被动方重发的FIN会在第2个MSL内到达</p>
+<h3 id="为什么需要TIME-WAIT状态"><a href="#为什么需要TIME-WAIT状态" class="headerlink" title="为什么需要TIME_WAIT状态"></a>为什么需要TIME_WAIT状态</h3><p>TIME_WAIT是只有主动方才有的状态</p>
+<ul>
+<li>防止历史连接中的数据, 被后面相同的四元组连接错误接收<ul>
+<li>2MSL的时长能保证历史数据包都已经自然消失在网络中了</li>
+</ul>
+</li>
+<li>确保被动关闭连接的一方能正确关闭<ul>
+<li>等待足够的时间,  保证自己的ACK是能被对方收到的, 从而帮助其自然关闭</li>
+</ul>
+</li>
+</ul>
+<h3 id="TIME-WAIT过多有什么危害"><a href="#TIME-WAIT过多有什么危害" class="headerlink" title="TIME_WAIT过多有什么危害"></a>TIME_WAIT过多有什么危害</h3><ul>
+<li>占用系统资源, 比如文件描述符, 内存资源, CPU资源, 线程资源等, 简单来说就是在TIME_WAIT过多会导致资源得不到快速的释放</li>
+<li>占用端口资源, 端口资源是有限的, 一般范围是<code>32768 ~ 61000</code>, 可以通过修改net.ipv4.ip_local_port_range<ul>
+<li>如果客户端(主动发起关闭连接方)TIME_WAIT状态过多, 就没办法再向[目的IP, 目的PORT]一样的服务建立连接了, 因为四元组相同</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何优化TIME-WAIT"><a href="#如何优化TIME-WAIT" class="headerlink" title="如何优化TIME_WAIT"></a>如何优化TIME_WAIT</h3><p>优化的点在于TIME_WAIT会延缓资源释放的时间, 解决最短等待时间是<code>2MSL</code>的问题</p>
+<p><em>方式一 : net.ipv4.tcp_tw_reuse和tcp_timestamps</em></p>
+<p>开启<code>net.ipv4.tcp_te_reuse = 1</code>以后, 可以复用处于TIME_WAIT的socket为新的连接所用</p>
+<p><strong>tcp_twreuse功能只能是客户端(连接发起方), 因为开启了这个功能,  在调用connect()函数的时候, 内核会随机找出来一个time_wait状态超过1s的连接给新的连接复用</strong></p>
+<p>开启这个功能的一个前提是, 需要打开TCP对时间戳的支持</p>
+<p><code>net.ipv4.tcp_timestamps = 1(默认为1)</code><br>引入了时间戳, 就不需要通过等待2MSL来确保历史数据已经消失在网络中, 因为时间戳过期的数据包自然会被丢弃</p>
+<p><em>方式二: net.ipv4.tcp_max_tw_buckets</em></p>
+<p>这个值默认是18000. <strong>当系统中处于TIME_WAIT的连接一旦超过这个值, 系统无法为这些新关闭的连接分配TIME_WAIT状态的资源, 会直接关闭资源, 也就是向这些连接发送RST包而不是FIN包</strong></p>
+<p><em>方式三: 程序中使用SO_LINGER</em></p>
+<p>通过设置socket的选项, 来设置调用close关闭连接行为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">linger</span> <span class="title">so_linger</span>;</span></span><br><span class="line">so_linger.l_onoff = <span class="number">1</span>;</span><br><span class="line">so_linger.l_linger = <span class="number">0</span>;</span><br><span class="line">setsockopt(s, SOL_SOCKET, SO_LINGER, &amp;so_linger, <span class="keyword">sizeof</span>(so_linger));</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>l_onoff</code>为非0, 且<code>l_linger</code>的值为0, 调用<code>close</code>以后, 就会立刻发送一个<code>RST</code>报文给对端, 该TCP连接将跳过第四次挥手</p>
+<p>上面的三种方法其实都是在想办法跳过TIME_WAIT状态, 会发生乱七八糟的事情的, 毕竟它设计出来就是为了给下一个TCP连接一个纯净的环境</p>
+<p><strong>如果服务端要避免过多的TIME_WAIT状态的连接, 就永远不要主动断开连接, 让客户端去断开, 由分布在各处的用户端来承受TIME_WAIT</strong></p>
+<h3 id="服务器上出现大量的TIME-WAIT状态的原因有哪些"><a href="#服务器上出现大量的TIME-WAIT状态的原因有哪些" class="headerlink" title="服务器上出现大量的TIME_WAIT状态的原因有哪些"></a>服务器上出现大量的TIME_WAIT状态的原因有哪些</h3><p>出现大量的TIME_WAIT, 说明TCP连接被频繁关闭, 服务端主动断开了连接, 原因有三</p>
+<ul>
+<li>没有开启HTTP长连接</li>
+<li>HTTP长连接超时</li>
+<li>HTTP长连接中的请求数量超过最大值</li>
+</ul>
+<p><em>场景一 : 没有开启HTTP长连接</em></p>
+<p>客户端和服务端有任意一端发出的HTTP消息头部中的<code>Connection: close</code>, HTTP就不会使用长连接, 也就是每次TCP的连接都是走三次握手, 发送消息, 接收响应, 四次挥手这个流程</p>
+<p>无论是客户端还是服务端中的HTTP消息头部是<code>Connection: close</code>, 都会是<strong>服务端主动断开连接</strong></p>
+<p>解决方法也很简单, 让客户端和服务端都开启长连接就行了</p>
+<p><em>场景二: HTTP连接超时</em></p>
+<p>为了防止长连接一直占用系统资源, 长连接会有超时时间, 如果长连接超过超时时间都没有发起新的请求, 定时器的时间一道, 长连接就会被关闭</p>
+<p>这个时候解决方法主要是排查网络问题, 看什么原因导致客户端的请求服务端一直没有收到</p>
+<p><em>场景三: HTTP长连接中的请求数量超过最大值</em></p>
+<p>Web服务上一般会有个参数来定义一条HTTP长连接上最大能处理的连接数量, 当超过最大限制的时候, 就会主动关闭连接</p>
+<p>解决方法就是调高keepalive_requests参数就行</p>
+<h3 id="服务器出现大量的CLOSE-WAIT状态的原因有哪些"><a href="#服务器出现大量的CLOSE-WAIT状态的原因有哪些" class="headerlink" title="服务器出现大量的CLOSE_WAIT状态的原因有哪些"></a>服务器出现大量的CLOSE_WAIT状态的原因有哪些</h3><p><strong>服务端出现大量CLOSE_WAIT状态的连接的时候, 说明服务端的程序没有调用close函数关闭连接</strong></p>
+<p>一个普通的TCP服务端的流程</p>
+<ol>
+<li>创建服务端socket, bind绑定端口, listen端口</li>
+<li>将服务端socket注册到epoll</li>
+<li>epoll_wait等待连接到来, 连接到来的时候, 调用accept 从accept队列中获取已连接的socket</li>
+<li>将已连接的socket注册到epoll</li>
+<li>epoll_wait等待事件发生</li>
+<li>对方连接关闭的时候, 调用close</li>
+</ol>
+<p><strong>原因一</strong> : 第二步没有做, 没有将socket注册到epoll, 这样有新连接到来的时候, 服务端就没有办法感知这个事件, 也就无法获取到已经连接的socket, 那么也就没有办法对这个socket调用close了</p>
+<p>**原因二: ** 第三步没有做, 当新的连接到来的时候, 没有主动调用accept()获取到该连接的socket, 导致当有大量的客户端断开连接的时候, 服务端无法对该socket调用close()函数关闭连接</p>
+<p>**原因三: ** 第四步没有做, 通过accept获取到已经连接的socket以后, 没有注册到epoll, 导致后续收到FIN报文的时候, 没有办法感知这个事件</p>
+<p>**原因四: ** 在客户端关闭连接以后, 服务端因为代码逻辑问题, 没有执行close()函数</p>
+<p><strong>服务端出现大量的CLOSE_WAIT状态的连接的时候, 通常都是代码出现了问题导致服务端没办法调用close, 这个时候需要顺着一个TCP服务建立的过程逐步排查</strong></p>
+<h3 id="如果已经建立了连接-但是客户端突然出现故障了怎么办"><a href="#如果已经建立了连接-但是客户端突然出现故障了怎么办" class="headerlink" title="如果已经建立了连接, 但是客户端突然出现故障了怎么办?"></a>如果已经建立了连接, 但是客户端突然出现故障了怎么办?</h3><p>这里的情景是客户端断开了连接, 但是同时服务端也一直不给服务端发送请求, 这个时候服务端就永远无法感知到客户端宕机这个事件, 也就是服务端的TCP会一直处于<code>ESTABLISH</code>状态</p>
+<p>为了避免这个情况, TCP有对应的<strong>保活机制</strong></p>
+<p>定义一个时间段, 如果这个时间段内都没有任何连接相关的活动, TCP保活机制就会开始作用, 每隔一个时间段, 发送一个探测报文, 如果连续几个探测报文都没有得到响应, 则认为当前的TCP连接已经死亡了, 系统内科将错误信息通知给上层应用程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_keepalive_time=7200 // 保活时间, 如果超过这个时间TCP没有任何的连接相关活动就会触发保活机制</span><br><span class="line">net.ipv4.tcp_keepalive_intvl=75  // 每次检测间隔75s</span><br><span class="line">net.ipv4.tcp_keepalive_probes=9 // 9次无响应, 认为对方是不可达的, 中断本次连接</span><br></pre></td></tr></table></figure>
+
+<p>也就是在Linux系统中至少需要 7200 + 75*9 &#x3D; 7875秒 (2h11min15sec)才能发现一个死亡连接</p>
+<p>如果应用程序想使用TCP保活机制, 需要通过socket接口设置<code>SO_KEEPALIVE</code>选项才能够生效</p>
+<p>TCP的保活机制比较长, 我们其实也可以基于这个方式自己在Web服务中实现一个心跳机制</p>
+<h3 id="如果已经建立了连接-但是服务端的进程崩溃了会发生什么"><a href="#如果已经建立了连接-但是服务端的进程崩溃了会发生什么" class="headerlink" title="如果已经建立了连接, 但是服务端的进程崩溃了会发生什么"></a>如果已经建立了连接, 但是服务端的进程崩溃了会发生什么</h3><p>TCP的连接信息是由内核维护的, 所以当进程崩溃了以后, 内核需要回收该进程的所有TCP连接资源, 于是内核会发送第一次FIN挥手报文, 后续的挥手过程也是在内核中完成, 并不需要该进程参与</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io">Func</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/2_TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/">https://fang-tech.github.io/2025/07/08/Computer_Science/Computer_network/计网八股/2_TCP/2_TCP四次挥手/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://fang-tech.github.io" target="_blank">走难</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/TCP/">TCP</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a><a class="post-meta__tags" href="/tags/%E5%85%AB%E8%82%A1%E6%96%87/">八股文</a><a class="post-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a><a class="post-meta__tags" href="/tags/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/">四次挥手</a><a class="post-meta__tags" href="/tags/ACK/">ACK</a><a class="post-meta__tags" href="/tags/FIN/">FIN</a><a class="post-meta__tags" href="/tags/%E8%BF%9E%E6%8E%A5%E6%96%AD%E5%BC%80/">连接断开</a><a class="post-meta__tags" href="/tags/TIME-WAIT/">TIME_WAIT</a><a class="post-meta__tags" href="/tags/%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2/">状态转换</a></div><div class="post-share"><div class="social-share" data-image="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/08/hello-world/" title="Hello World"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Hello World</div></div><div class="info-2"><div class="info-item-1">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;  More info: Writing Run server1$ hexo server  More info: Server Generate static files1$ hexo generate  More info: Generating Deploy to remote sites1$ hexo deploy  More info: Deployment </div></div></div></a><a class="pagination-related" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/1_TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" title="TCP三次握手与四次挥手详解 - 连接建立与断开过程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">TCP三次握手与四次挥手详解 - 连接建立与断开过程</div></div><div class="info-2"><div class="info-item-1">TCP 三次握手与四次挥手常见面试题TCP基本认识TCP头格式有哪些内容  序列号 : 在建立连接时计算机生成的随机数作为初始值, 通过SYN包传给接收端主机, 每发送一次数据就会累加一次, 用于解决网络包乱序的问题  确认应答号 : 下一次期望收到的数据的序列号, 发送端收到这个确认应答以后, 可以认为在这个序列号之前的数据都已经被正常接受. 用来解决丢包问题  控制位 :  ACK : 该位置为1的时候, 确认应答字段变为有效, TCP规定除了最开始建立连接时的SYN包之外, 该位必须为1 RST : 该位置为1的时候, 表示TCP连接出现异常, 必须强行断开连接 SYN : 该位置为1的时候, 表示希望建立连接, 需要计算机生成随机值初始化序列号 FIN : 该位置为1的时候, 表示今后不会再有数据发送过来了, 希望断开连接. 当通信结束希望断开连接的时候, 通信双方的主机之间就可以相互交换FIN位为1 的TCP段    为什么需要TCP协议? TCP在哪一层IP层提供的服务是不可靠的, 不能保证网络包的交付, 不保证网络包的按序交付, 也不保证网络包中的数据的完整性 TC...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/2_TCP/1_TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" title="TCP三次握手与四次挥手详解 - 连接建立与断开过程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">TCP三次握手与四次挥手详解 - 连接建立与断开过程</div></div><div class="info-2"><div class="info-item-1">TCP 三次握手与四次挥手常见面试题TCP基本认识TCP头格式有哪些内容  序列号 : 在建立连接时计算机生成的随机数作为初始值, 通过SYN包传给接收端主机, 每发送一次数据就会累加一次, 用于解决网络包乱序的问题  确认应答号 : 下一次期望收到的数据的序列号, 发送端收到这个确认应答以后, 可以认为在这个序列号之前的数据都已经被正常接受. 用来解决丢包问题  控制位 :  ACK : 该位置为1的时候, 确认应答字段变为有效, TCP规定除了最开始建立连接时的SYN包之外, 该位必须为1 RST : 该位置为1的时候, 表示TCP连接出现异常, 必须强行断开连接 SYN : 该位置为1的时候, 表示希望建立连接, 需要计算机生成随机值初始化序列号 FIN : 该位置为1的时候, 表示今后不会再有数据发送过来了, 希望断开连接. 当通信结束希望断开连接的时候, 通信双方的主机之间就可以相互交换FIN位为1 的TCP段    为什么需要TCP协议? TCP在哪一层IP层提供的服务是不可靠的, 不能保证网络包的交付, 不保证网络包的按序交付, 也不保证网络包中的数据的完整性 TC...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Computer_Science/Computer_network/Chapter3-Transport-layer/" title="计算机网络传输层详解 - TCP与UDP协议原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">计算机网络传输层详解 - TCP与UDP协议原理</div></div><div class="info-2"><div class="info-item-1">传输层3.1 概述 提供的服务是什么 -&gt; 进程到进程之间逻辑上的message的通信 传输协议运行在端系统上 发送方 : 将报文会分解为若干报文段, 分段传输给网络层 接收方 : 将报文段重组为报文, 再提供给应用层   传输层怎么将网络层提供的不可靠服务加强, 最后能完成可靠的信息传输 复用和解复用 传输层协议的对比 : UDP, TCP 两个协议都提供了多路复用和解复用的服务 TCP 拥塞控制 流量控制 建立连接   UDP 没有额外的服务   都不提供的服务为 延迟保证 带宽保证      3.2 多路复用和解复用 复用的信息是IP, 网络物理链路, 网络带宽等资源, 实现方式简单来说就是通过port来区分  复用的实现 -&gt; socket封装信息与解封装  TCP实现复用的流程  复用 建立的socket维护了一个六元组, (socket值, 标识连接的四元组(源IP, 源port, 对方IP, 对方port), PID) 通过socket API发送message给目标主机的对应进程 socket API通过维护的六元组表, 查询到当前message应该如...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Computer_Science/Computer_network/%E8%AE%A1%E7%BD%91%E5%85%AB%E8%82%A1/1_HTTP/HTTP%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/" title="HTTP协议常见面试题汇总 - 状态码与请求响应详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">HTTP协议常见面试题汇总 - 状态码与请求响应详解</div></div><div class="info-2"><div class="info-item-1">HTTP常见面试题目HTTP基本概念HTTP 是一个在计算机世界里专门在「两点」之间「传输」文字、图片、音频、视频等「超文本」数据的「约定和规范」。 HTTP常见的状态码有哪些1xx类状态码属于提示信息, 基本遇不到 2xx类状态码表示服务器成功处理了客户端的请求  [200 OK] 是最常见的成功状态码, 表示一切正常, 非HEAD请求, 服务器返回的响应头都会有body数据 [204 No Content] 也是最常见的状态码, 和200 OK的区别是响应头没有数据 [206 Partial Content] 应用于HTTP分块下载或断点续传, 表示响应返回的body不是资源的全部, 而是其中的一部分  3xx类状态码表示客户端请求的资源发生了变动, 需要客户端重定向  [301 Moved Permanently] 永久重定向, 请求的资源已经不存在, 浏览器会自动重定向到新的服务器 [302 Found] 临时重定向, 请求的资源还在, 但是需要用另一个URL来 访问  301和302都会在响应头里面使用字段Location来指明接下来要跳转到的URL地址  [304 N...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Computer_Science/Operating-System/4.1%20%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86-%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86/" title="操作系统进程与线程基础 - 并发编程核心概念"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">操作系统进程与线程基础 - 并发编程核心概念</div></div><div class="info-2"><div class="info-item-1">进程线程基本知识进程 对于这种多个程序, 交替运行的想法就是操作系统管理多进程的最初的想法 对于一个支持多进程的操作系统, 它会在多个进程之间频繁切换, 每个进程执一段时间, 以此造成了多个程序并行执行的错觉但是实际上, 这些程序是并发执行的  并行和并发的区别    并发是一个处理器让多个任务交替运行, 同时执行多个任务, 是看似并行 并行是多个处理器分别处理多个任务, 是真正意义上的并行  进程的状态操作系统会切换任务, 在多个任务之间交替运行, 是一种, 运行-暂停-运行的工作状态, 那么在我们这个处理器恢复运行进程的时候, 需要恢复这个进程的状态   创建状态 : 进程在创建的时候的状态 就绪状态 : 可运行的状态, 只是目前被阻塞了, 处理器正在处理其他的进程, 随时能重新运行当前进程 运行状态 : 进程被调度以后, 就会由就绪状态进入到运行状态, 表示进程正在执行 结束状态 : 进程运行结束以后, 进程正在从操作系统中消失的时候的状态 阻塞状态 : 进程在等待某个外部事件的完成, 比如磁盘IO的时候, 会进入阻塞状态, 直到事件完成, 触发中断, 唤醒程序重新回到就绪...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Computer_Science/Operating-System/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/3.1%20%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9C%89%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" title="虚拟内存原理详解 - 内存管理核心机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">虚拟内存原理详解 - 内存管理核心机制</div></div><div class="info-2"><div class="info-item-1">内存管理-为什么要有虚拟内存如果没有虚拟内存如果没有虚拟内存, 也就意味着我们的程序需要直接和物理内存进行交互, 我们需要直接操作物理内存地址, 那么问题来了, 我们怎么保证我们的程序操作的物理内存地址, 别人的程序没有在操作, 这个物理地址是安全可直接操作的? 虚拟内存虚拟内存就是上面直接操作物理地址会导致的问题的解决方案, 操作系统在物理内存和程序之间提供一个抽象层, 我们将内存虚拟化, 我们让每个程序都看似拥有一整个内存空间, 可以访问可行的所有内存地址, 无关物理内存的大小, 物理内存的地址. 将虚拟内存和物理内存之间的映射交给操作系统管理 这样我们的程序就不需要再考虑这个内存地址是不是正在被其他的程序使用, 不需要再考虑其他的程序对自己内存的影响, 因为所有的程序都有自己的虚拟内存, 相互独立 在有了虚拟内存以后, 我们访问一个内存地址的过程会变成  CPU 携带虚拟地址 -&gt; MMU -&gt; 访问到物理地址    那么操作系统是怎么管理虚拟地址和物理地址之间的关系?  主要通过内存分段和内存分页两种方式 内存分段内存分段的理念是基于程序是有若干个逻辑分段组成...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/DataBase/MyBatis/Mybatis/" title="MyBatis框架详解 - ORM映射与SQL操作"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">MyBatis框架详解 - ORM映射与SQL操作</div></div><div class="info-2"><div class="info-item-1">MyBatis1. HelloWord - 第一个程序 创建mybatis-config.xml 配置文件, 用于加载mybatis配置  12345678910111213141516171819202122232425&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;&lt;!DOCTYPE configuration        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;&lt;configuration&gt;    &lt;settings&gt;        &lt;setting name=&quot;logImpl&quot; value=&quot;STDOUT_LOGGING&quot; /&gt;    &lt;/settings&gt;    &lt;environments d...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Func</div><div class="author-info-description">Func的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E8%BF%9E%E6%8E%A5%E6%96%AD%E5%BC%80"><span class="toc-number">1.</span> <span class="toc-text">TCP连接断开</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">TCP四次挥手的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8C%A5%E6%89%8B%E9%9C%80%E8%A6%81%E5%9B%9B%E6%AC%A1%E8%80%8C%E4%B8%8D%E6%98%AF%E4%B8%89%E6%AC%A1"><span class="toc-number">1.2.</span> <span class="toc-text">为什么挥手需要四次而不是三次?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.3.</span> <span class="toc-text">第一次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.4.</span> <span class="toc-text">第二次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.</span> <span class="toc-text">第三次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E4%B8%A2%E5%A4%B1%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.6.</span> <span class="toc-text">第四次挥手丢失会发生什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88TIME-WAIT%E7%AD%89%E5%BE%85%E7%9A%84%E6%97%B6%E9%97%B4%E6%98%AF2MSL"><span class="toc-number">1.7.</span> <span class="toc-text">为什么TIME_WAIT等待的时间是2MSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81TIME-WAIT%E7%8A%B6%E6%80%81"><span class="toc-number">1.8.</span> <span class="toc-text">为什么需要TIME_WAIT状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TIME-WAIT%E8%BF%87%E5%A4%9A%E6%9C%89%E4%BB%80%E4%B9%88%E5%8D%B1%E5%AE%B3"><span class="toc-number">1.9.</span> <span class="toc-text">TIME_WAIT过多有什么危害</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96TIME-WAIT"><span class="toc-number">1.10.</span> <span class="toc-text">如何优化TIME_WAIT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E5%87%BA%E7%8E%B0%E5%A4%A7%E9%87%8F%E7%9A%84TIME-WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-number">1.11.</span> <span class="toc-text">服务器上出现大量的TIME_WAIT状态的原因有哪些</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%87%BA%E7%8E%B0%E5%A4%A7%E9%87%8F%E7%9A%84CLOSE-WAIT%E7%8A%B6%E6%80%81%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-number">1.12.</span> <span class="toc-text">服务器出现大量的CLOSE_WAIT状态的原因有哪些</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%B7%B2%E7%BB%8F%E5%BB%BA%E7%AB%8B%E4%BA%86%E8%BF%9E%E6%8E%A5-%E4%BD%86%E6%98%AF%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AA%81%E7%84%B6%E5%87%BA%E7%8E%B0%E6%95%85%E9%9A%9C%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-number">1.13.</span> <span class="toc-text">如果已经建立了连接, 但是客户端突然出现故障了怎么办?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%B7%B2%E7%BB%8F%E5%BB%BA%E7%AB%8B%E4%BA%86%E8%BF%9E%E6%8E%A5-%E4%BD%86%E6%98%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%B4%A9%E6%BA%83%E4%BA%86%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88"><span class="toc-number">1.14.</span> <span class="toc-text">如果已经建立了连接, 但是服务端的进程崩溃了会发生什么</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/8.%20%E6%8A%BD%E5%A5%96%E4%B8%AD%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.854Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.853Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.847Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Func</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23li4bXLe7MUGkzYiL',
+      clientSecret: '6e07175d5780251b166904c518448940a5214fb1',
+      repo: 'fang-tech.github.io',
+      owner: 'fang-tech',
+      admin: ['fang-tech'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'f3d940e3bf1a6d42000e3790cd59b0f6'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

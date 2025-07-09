@@ -1,0 +1,480 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AI-Agent项目解析01 - 架构概览和Controller层分析 | 走难</title><meta name="author" content="Func"><meta name="copyright" content="Func"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ai-agent-0自上而下的阅读, 优先理解整个业务框架, 可以看作是对于业务建模的逆推 Controller文件夹位置: trigger-http 比起细读每个controller的实现细节, 这部分在最开始阅读的时候, 我更倾向于关注更宏观的controller实现的功能, 避免在最开始的时候迷失在细节里面, 因为很多要想理解很多细节往往依托于对于整个业务框架的理解 通过大致理解每个cont">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI-Agent项目解析01 - 架构概览和Controller层分析">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-0/index.html">
+<meta property="og:site_name" content="走难">
+<meta property="og:description" content="ai-agent-0自上而下的阅读, 优先理解整个业务框架, 可以看作是对于业务建模的逆推 Controller文件夹位置: trigger-http 比起细读每个controller的实现细节, 这部分在最开始阅读的时候, 我更倾向于关注更宏观的controller实现的功能, 避免在最开始的时候迷失在细节里面, 因为很多要想理解很多细节往往依托于对于整个业务框架的理解 通过大致理解每个cont">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg">
+<meta property="article:published_time" content="2025-07-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-08T15:25:05.368Z">
+<meta property="article:author" content="Func">
+<meta property="article:tag" content="Spring AI">
+<meta property="article:tag" content="Controller">
+<meta property="article:tag" content="DDD">
+<meta property="article:tag" content="AI-Agent">
+<meta property="article:tag" content="架构分析">
+<meta property="article:tag" content="业务建模">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AI-Agent项目解析01 - 架构概览和Controller层分析",
+  "url": "https://fang-tech.github.io/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-0/",
+  "image": "https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg",
+  "datePublished": "2025-07-07T16:00:00.000Z",
+  "dateModified": "2025-07-08T15:25:05.368Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Func",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://raw.githubusercontent.com/fang-tech/Pic/main/img/pngtree-round-logo-with-mountains-and-water-vector-png-image_7031662.png"><link rel="canonical" href="https://fang-tech.github.io/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AI-Agent项目解析01 - 架构概览和Controller层分析',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">走难</span></a><a class="nav-page-title" href="/"><span class="site-name">AI-Agent项目解析01 - 架构概览和Controller层分析</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/java/"><i class="fa-fw fas fa-music"></i><span> Java</span></a></li><li><a class="site-page child" href="/Spring/"><i class="fa-fw fas fa-video"></i><span> Spring</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">AI-Agent项目解析01 - 架构概览和Controller层分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-07T16:00:00.000Z" title="发表于 2025-07-08 00:00:00">2025-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-08T15:25:05.368Z" title="更新于 2025-07-08 23:25:05">2025-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/AI-Agent/">AI-Agent</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/AI-Agent/%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/">架构分析</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="ai-agent-0"><a href="#ai-agent-0" class="headerlink" title="ai-agent-0"></a>ai-agent-0</h1><p>自上而下的阅读, 优先理解整个业务框架, 可以看作是对于业务建模的逆推</p>
+<h2 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h2><p>文件夹位置: trigger-http</p>
+<p>比起细读每个controller的实现细节, 这部分在最开始阅读的时候, 我更倾向于关注更宏观的controller实现的功能, 避免在最开始的时候迷失在细节里面, 因为很多要想理解很多细节往往依托于对于整个业务框架的理解</p>
+<p>通过大致理解每个controller的功能, 初步搭建起来整个ai-agent的业务</p>
+<p>这步需要删繁就简, 删去和业务不直接相关的部分</p>
+<h3 id="Service-Controller"><a href="#Service-Controller" class="headerlink" title="Service-Controller"></a>Service-Controller</h3><p>业务核心相关的Controller部分, 这部分同样是不纠结于具体的实现, 我们只关注实现的业务是怎么样的, 这里只有一个Controller(其实在api层里的service就能看出来, 那里也只有一个service接口), 同时不同于CRUD相关的Controller我们是对持久化对象删繁就简, 这里我们是对业务删繁就简, 只留下来核心的处理来串联业务</p>
+<h4 id="preheat"><a href="#preheat" class="headerlink" title="preheat"></a>preheat</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Response&lt;Boolean&gt; <span class="title function_">preheat</span><span class="params">(<span class="meta">@RequestParam(&quot;aiAgentId&quot;)</span> Long aiClientId)</span> &#123;</span><br><span class="line">    log.info(<span class="string">&quot;预热装配 AiAgent &#123;&#125;&quot;</span>, aiClientId);</span><br><span class="line">    aiAgentPreheatService.preheat(aiClientId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据aiClientId预热指定client的配置, 如果想进一步查看预热的内容, 我们就需要去查看preheat的具体实现</p>
+<h4 id="chatAgent"><a href="#chatAgent" class="headerlink" title="chatAgent"></a>chatAgent</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> Response&lt;String&gt; <span class="title function_">chatAgent</span><span class="params">(<span class="meta">@RequestParam(&quot;aiAgentId&quot;)</span> Long aiAgentId, <span class="meta">@RequestParam(&quot;message&quot;)</span> String message)</span> &#123;</span><br><span class="line">     log.info(<span class="string">&quot;AiAgent 智能体对话，请求 &#123;&#125; &#123;&#125;&quot;</span>, aiAgentId, message);</span><br><span class="line">     <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> aiAgentChatService.aiAgentChat(aiAgentId, message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>指定AgentId进行对话</p>
+<h4 id="chatStream"><a href="#chatStream" class="headerlink" title="chatStream"></a>chatStream</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Flux&lt;ChatResponse&gt; <span class="title function_">chatStream</span><span class="params">(<span class="meta">@RequestParam(&quot;aiAgentId&quot;)</span> Long aiAgentId, <span class="meta">@RequestParam(&quot;ragId&quot;)</span> Long ragId, <span class="meta">@RequestParam(&quot;message&quot;)</span> String message)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;AiAgent 智能体对话(stream)，请求 &#123;&#125; &#123;&#125; &#123;&#125;&quot;</span>, aiAgentId, ragId, message);</span><br><span class="line">        <span class="keyword">return</span> aiAgentChatService.aiAgentChatStream(aiAgentId, ragId, message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>指定aiagent并携带rag进行流式对话</p>
+<h4 id="uploadRagFile"><a href="#uploadRagFile" class="headerlink" title="uploadRagFile"></a>uploadRagFile</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Response&lt;Boolean&gt; <span class="title function_">uploadRagFile</span><span class="params">(<span class="meta">@RequestParam(&quot;name&quot;)</span> String name, <span class="meta">@RequestParam(&quot;tag&quot;)</span> String tag, <span class="meta">@RequestParam(&quot;files&quot;)</span> List&lt;MultipartFile&gt; files)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;上传知识库，请求 &#123;&#125;&quot;</span>, name);</span><br><span class="line">        aiAgentRagService.storeRagFile(name, tag, files);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上传知识库文件, 并未rag打上tag和name</p>
+<h3 id="CRUD-Controller"><a href="#CRUD-Controller" class="headerlink" title="CRUD-Controller"></a>CRUD-Controller</h3><p>其实在实际阅读的时候, 这种CRUD的方法都可以直接跳过, 毕竟不涉及业务逻辑, 大部分也不会什么细节设计, 简单读下注释和@Resource发现只有dao的时候就大概知道可以跳过了, 但是需要在这个地方重点关注<strong>CRUD处理的对象</strong>, 需要有个印象, 同时删除掉id&#x2F;name&#x2F;createtime之类的属性, 留下来需要重点关注的和业务相关的属性记录下来</p>
+<h4 id="AiAdminAgentClientController"><a href="#AiAdminAgentClientController" class="headerlink" title="AiAdminAgentClientController"></a>AiAdminAgentClientController</h4><hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value = &quot;queryAgentClientList&quot;, method = RequestMethod.POST)</span></span><br><span class="line">    <span class="keyword">public</span> ResponseEntity&lt;List&lt;AiAgentClient&gt;&gt; <span class="title function_">queryAgentClientList</span><span class="params">(<span class="meta">@RequestBody</span> AiAgentClient aiAgentClient)</span> &#123;</span><br><span class="line">        List&lt;AiAgentClient&gt; aiAgentClientList = aiAgentClientDao.queryAgentClientList(aiAgentClient);</span><br><span class="line">        <span class="keyword">return</span> ResponseEntity.ok(aiAgentClientList);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>方法内部就是简单的根据入参获取所有AI智能体客户端, 根据SQL语句中的查询条件, 可以发现这里是通过传入的aiAgentClient中的有的信息来搜索出来所有满足条件的client, 这里的入参就像是一些软件上的筛选标签, 只有这些tag的结果才会被显示出</p>
+<blockquote>
+<p>通过这个方法能实现根据条件获取所有满足条件的AiAgentClient的业务, 可以通过这个实现最开始的所有的client的展示, 只要入参是空就行, 也就是没有筛选条件</p>
+<p>同时是分页返回(这里因为使用了offset, 会有深度分页的问题, 不过就这个查询体量这个问题还不需要被关心就是了, 不会影响啥性能)</p>
+</blockquote>
+<hr>
+<p>剩下的方法就是同样的CRUD, 不额外说明</p>
+<ul>
+<li>​     根据ID查询AI智能体客户端关联</li>
+<li>​     根据智能体ID查询客户端关联列表</li>
+<li>​     根据客户端ID查询智能体关联列表</li>
+<li>​     新增AI智能体客户端关联</li>
+<li>​     更新AI智能体客户端关联</li>
+<li>​     删除AI智能体客户端关联</li>
+</ul>
+<p>不过这里能发现智能体和客户端之间是有差异的, 同时通过client_id和agent_id连接</p>
+<p>下面是这个Controller CRUD的实体对象的定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiAgentClient</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> Long agentId;</span><br><span class="line">    <span class="keyword">private</span> Long clientId;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 序列号(执行顺序)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer sequence;</span><br><span class="line">    <span class="keyword">private</span> Date createTime;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继承Page是为了便于实现分页</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前页码</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">pageNum</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 每页条数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">pageSize</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 总条数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> total;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 总页数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> pages;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getOffset</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (pageNum - <span class="number">1</span>) * pageSize;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getLimit</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> pageSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="AiAdminAgentController"><a href="#AiAdminAgentController" class="headerlink" title="AiAdminAgentController"></a>AiAdminAgentController</h4><p>这个Controller是对于AiAgent持久化对象的CRUD, 内容不赘述</p>
+<pre><code> - 分页查询AI智能体列表
+ - 根据channel查询AI智能体列表
+ - 根据ID查询AI智能体
+ - 新增AI智能体
+ - 更新AI智能体
+ - 删除AI智能体
+</code></pre>
+<p>需要关注的是AiAgent这个持久化对象的属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiAgent</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> String agentName;</span><br><span class="line">    <span class="keyword">private</span> String description;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 渠道类型(agent，chat_stream)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String channel;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态(0:禁用,1:启用)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer status;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> Date createTime;</span><br><span class="line">    <span class="keyword">private</span> Date updateTime;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>需要后续重点关注的是channel属性的作用</p>
+<h4 id="AiAdminAgentTaskScheduleController"><a href="#AiAdminAgentTaskScheduleController" class="headerlink" title="AiAdminAgentTaskScheduleController"></a>AiAdminAgentTaskScheduleController</h4><p>CRUD的方法</p>
+<ul>
+<li><p>分页查询AI代理任务调度列表</p>
+</li>
+<li><p>根据ID查询AI代理任务调度</p>
+</li>
+<li><p>新增AI代理任务调度</p>
+</li>
+<li><p>更新AI代理任务调度</p>
+</li>
+<li><p>删除AI代理任务调度</p>
+</li>
+<li><p>只留下来的和业务代码高度相关的部分</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiAgentTaskSchedule</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 任务描述</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String description;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 智能体ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long agentId;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 时间表达式(如: 0/3 * * * * *)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String cronExpression;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 任务入参配置(JSON格式)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String taskParam;</span><br><span class="line">    <span class="keyword">private</span> Integer status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里看到我们能创建定时task, 定时执行某个agent, 通过cron表达式来设置定时任务的执行频次</p>
+<h4 id="AiAdminClientAdvisorConfigController"><a href="#AiAdminClientAdvisorConfigController" class="headerlink" title="AiAdminClientAdvisorConfigController"></a>AiAdminClientAdvisorConfigController</h4><ul>
+<li><p>分页查询客户端顾问配置列表</p>
+</li>
+<li><p>根据ID查询客户端顾问配置</p>
+</li>
+<li><p>根据客户端ID查询顾问配置列表</p>
+</li>
+<li><p>新增客户端顾问配置</p>
+</li>
+<li><p>更新客户端顾问配置</p>
+</li>
+<li><p>删除客户端顾问配置</p>
+</li>
+<li><p>智能体顾问的配置对象</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiClientAdvisorConfig</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 客户端ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long clientId;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 顾问ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long advisorId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将client和advisor通过id关联起来</p>
+<h4 id="AiAdminClientAdvisorController"><a href="#AiAdminClientAdvisorController" class="headerlink" title="AiAdminClientAdvisorController"></a>AiAdminClientAdvisorController</h4><p>对AiClientAdvisord的CRUD</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AiClientAdvisor</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 顾问类型(PromptChatMemory/RagAnswer/SimpleLoggerAdvisor等)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String advisorType;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 扩展参数配置，json 记录</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String extParam;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态(0:禁用,1:启用)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer status;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>顾问类型, PromptChatMemory类型的功能应该是预定义了提示词, RagAnswer是前面的结合了Rag知识库的顾问, SimpleLoggerAdvisor是日志分析? 这个暂时不知道</p>
+<p>CRUD的方法</p>
+<ul>
+<li>分页查询客户端顾问列表</li>
+<li>根据ID查询客户端顾问</li>
+<li>新增客户端顾问</li>
+<li>更新客户端顾问</li>
+<li>删除客户端顾问</li>
+</ul>
+<h4 id="AiAdminClientModelConfigController"><a href="#AiAdminClientModelConfigController" class="headerlink" title="AiAdminClientModelConfigController"></a>AiAdminClientModelConfigController</h4><p>对AiClientModelConfig的CRUD</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiClientModelConfig</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 客户端ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long clientId;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模型ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long modelId;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>将Client与model绑定起来的config类, 用于持久化这个client使用的模型?</p>
+<p>CRUD的方法</p>
+<ul>
+<li>分页查询客户端模型配置列表</li>
+<li>根据ID查询客户端模型配置</li>
+<li>根据客户端ID查询模型配置</li>
+<li>根据模型ID查询客户端模型配置列表</li>
+<li>新增客户端模型配置</li>
+<li>更新客户端模型配置</li>
+<li>删除客户端模型配置</li>
+</ul>
+<h4 id="AiAdminClientModelController"><a href="#AiAdminClientModelController" class="headerlink" title="AiAdminClientModelController"></a>AiAdminClientModelController</h4><p>对AiClientModel的CRUD</p>
+<p>AiClientModel: 标准的模型API配置类, 其中需要额外解释的是<code>completionsPath</code>和<code>embeddingsPath</code>, 同时需要将其与AiClientModelConfig区分开来, 后者只是为了建立model和client的关联关系的对象</p>
+<ul>
+<li>completionsPath: 用于支持对话功能, 指定AI模型文本生成&#x2F;对话完成功能的API端点路径, 用于构建完整的API请求URL，调用模型的文本生成服务</li>
+<li>embeddingsPath: 用于支持rag功能, 指定AI模型向量嵌入功能的API端点路径, 用于将文本转换为向量表示，支持语义搜索、相似度计算等功能</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiClientModel</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 主键ID</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模型名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String modelName;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 基础URL</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String baseUrl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * API密钥</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String apiKey;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 完成路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String completionsPath;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 嵌入路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String embeddingsPath;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模型类型(openai/azure等)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String modelType;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模型版本</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String modelVersion;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 超时时间(秒)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer timeout;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态(0:禁用,1:启用)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer status</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CRUD的方法</p>
+<ul>
+<li>分页查询客户端模型列表</li>
+<li>查询所有的模型的配置</li>
+<li>根据ID查询客户端模型</li>
+<li>新增客户端模型</li>
+<li>更新客户端模型</li>
+<li>删除客户端模型</li>
+</ul>
+<h4 id="AiAdminClientSystemPromptController"><a href="#AiAdminClientSystemPromptController" class="headerlink" title="AiAdminClientSystemPromptController"></a>AiAdminClientSystemPromptController</h4><p>对AiClientSystemPrompt的CRUD</p>
+<p>AiClientSystemPrompt: 提示词持久化对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiClientSystemPrompt</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 主键ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 提示词内容</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String promptContent;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态(0:禁用,1:启用)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CRUD的方法</p>
+<ul>
+<li>分页查询系统提示词列表</li>
+<li>查询所有系统提示词列表</li>
+<li>根据ID查询系统提示词</li>
+<li>新增系统提示词</li>
+<li>更新系统提示词</li>
+<li>删除系统提示词</li>
+</ul>
+<h4 id="AiAdminClientToolConfigController"><a href="#AiAdminClientToolConfigController" class="headerlink" title="AiAdminClientToolConfigController"></a>AiAdminClientToolConfigController</h4><p>对AiClientToolConfig的CRUD</p>
+<p>AiClientToolConfig: 用于将tool和client_id关联起来, 同时说明这个工具的类型, 有MCP和function call作为可选项</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiClientToolConfig</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 客户端ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long clientId;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 工具类型(mcp/function call)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String toolType;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 工具ID(MCP ID/function call ID)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long toolId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CRUD方法</p>
+<ul>
+<li>分页查询客户端工具配置列表</li>
+<li>根据ID查询客户端工具配置</li>
+<li>根据客户端ID查询工具配置列表</li>
+<li>新增客户端工具配置</li>
+<li>更新客户端工具配置</li>
+<li>删除客户端工具配置</li>
+</ul>
+<h4 id="AiAdminClientToolMcpController"><a href="#AiAdminClientToolMcpController" class="headerlink" title="AiAdminClientToolMcpController"></a>AiAdminClientToolMcpController</h4><p>对AiClientToolMcp的CRUD</p>
+<p>AiClientToolMcp: 对于MCP工具的配置信息的记录, 其中需要注意的字段是<code>transportType</code>和<code>transportConfig</code></p>
+<p><strong>transportType:</strong> 传输类型(sse&#x2F;stdio)</p>
+<ul>
+<li>SSE(Server-Sent Events): 使用远程MCP服务, 比如百度AI搜索这种, 往往需要有apikey进行验证<ul>
+<li>基于HTTP的实时通信协议</li>
+<li>适用于远程MCP服务器</li>
+<li>通过HTTP连接进行数据传输</li>
+</ul>
+</li>
+<li>STDIO: 本地部署的MCP服务<ul>
+<li>基于进程间通信</li>
+<li>适用于本地MCP服务器</li>
+<li>通过命令行启动和管理</li>
+</ul>
+</li>
+</ul>
+<p><strong>transportConfig:</strong> 传输配置, 简单来说就是MCP的一切配置信息</p>
+<ol>
+<li>连接参数<ul>
+<li>SSE模式：配置远程服务的URL、端点路径、认证信息</li>
+<li>STDIO模式：配置本地进程的启动命令和参数</li>
+</ul>
+</li>
+<li>认证信息</li>
+</ol>
+<ul>
+<li>API密钥、令牌等安全凭证</li>
+<li>支持不同服务商的认证方式</li>
+</ul>
+<ol start="3">
+<li>服务发现</li>
+</ol>
+<ul>
+<li>指定具体的MCP服务器地址</li>
+<li>配置服务端点和路径</li>
+</ul>
+<ol start="4">
+<li>运行环境</li>
+</ol>
+<ul>
+<li>STDIO模式下的JVM参数</li>
+<li>进程启动环境变量</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiClientToolMcp</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * MCP名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String mcpName;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 传输类型(sse/stdio)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String transportType;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 传输配置</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String transportConfig;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 请求超时时间(分钟)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer requestTimeout;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态(0:禁用,1:启用)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CRUD方法</p>
+<ul>
+<li>分页查询MCP配置列表</li>
+<li>根据ID查询MCP配置</li>
+<li>新增MCP配置更新MCP配置</li>
+<li>更新MCP配置</li>
+<li>删除MCP配置</li>
+</ul>
+<h4 id="AiAdminRagOrderController"><a href="#AiAdminRagOrderController" class="headerlink" title="AiAdminRagOrderController"></a>AiAdminRagOrderController</h4><p>对AiRagOrder的CRUD</p>
+<p>AiRagOrder: 知识库的订单, 这里的订单不是真的什么下单的那个订单, 这里只是一种抽象的业务模型, 下单-处理业务-返回处理结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AiRagOrder</span> <span class="keyword">extends</span> <span class="title class_">Page</span> &#123;</span><br><span class="line">     <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 主键ID</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 知识库名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String ragName;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 知识标签</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String knowledgeTag;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态(0:禁用,1:启用)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CRUD的方法</p>
+<ul>
+<li>分页查询RAG订单列表</li>
+<li>查询所有RAG订单列表</li>
+<li>根据ID查询RAG订单</li>
+<li>新增RAG订单</li>
+<li>更新RAG订单</li>
+<li>删除RAG订单</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>taskSchedule: 定时任务调度, <strong>task绑定agentId</strong>, 通过corn表达式设置任务定时策略, 通过taskParam配置, 这里的业务流程可能是通过业务系统创建定时任务, 根据配置信息, 调用某个agent执行配置信息中的任务</li>
+<li>Advisor: 存在多种类型的顾问, 调用知识库的, 带prompt的, 还有一个未知的simplelogger, 同时<strong>advisor绑定client</strong>, advisor可以看作是提供了提问的配置信息, 你可以根据不同的配置来进行不同类型的提问</li>
+<li>model: 模型的配置信息, 一个配置信息也就代表了一个模型实体, <strong>model和client绑定</strong></li>
+<li>Tool: AI可以使用的工具(MCP等)的配置信息, <strong>tool和client绑定</strong></li>
+<li>Rag: 存储在PG数据库里面, MySQL里面只记录了id, name, tag等信息\</li>
+<li>client: <strong>绑定advisor, model, tool</strong>, 一个AI服务的实体, 定义了这个服务使用的tool, advisor配置信息, model模型配置信息</li>
+<li>agent: 绑定多个client, 是一个综合AI服务的实体, 一个agent能通过绑定多个client, 并定义执行顺序, 完成对多个client的串联, 实现复杂的AI服务</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io">Func</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://fang-tech.github.io/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-0/">https://fang-tech.github.io/2025/07/08/Project/ai-agent/过程笔记/ai-agent-0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://fang-tech.github.io" target="_blank">走难</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring-AI/">Spring AI</a><a class="post-meta__tags" href="/tags/Controller/">Controller</a><a class="post-meta__tags" href="/tags/DDD/">DDD</a><a class="post-meta__tags" href="/tags/AI-Agent/">AI-Agent</a><a class="post-meta__tags" href="/tags/%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/">架构分析</a><a class="post-meta__tags" href="/tags/%E4%B8%9A%E5%8A%A1%E5%BB%BA%E6%A8%A1/">业务建模</a></div><div class="post-share"><div class="social-share" data-image="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-1/" title="AI-Agent项目解析02 - preheat预热机制深度解析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">AI-Agent项目解析02 - preheat预热机制深度解析</div></div><div class="info-2"><div class="info-item-1">ai-agent-1-preheat解析接着上篇对于Controller的解析, 我们现在需要深入到service-controller中的domain层的具体实现, 来看详细看业务的实现 按照实际业务流程-preheat -&gt; ragupload -&gt; chat -&gt; task的顺序解析 这篇主要解析preheat方法(也是实现最复杂的一个) preheat解析 AiAgentPreheatService中的preheat  123456public void preheat(Long aiClientId) throws Exception &#123;    StrategyHandler&lt;AiAgentEngineStarterEntity, DefaultArmoryStrategyFactory.DynamicContext, String&gt; handler = defaultArmoryStrategyFactory.strategyHandler();    handler.apply(AiAgentEngineStarterEnti...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%9C%AA%E7%90%86%E8%A7%A3%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="Big-Market项目问题记录 - Redis锁解决间隙锁问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Big-Market项目问题记录 - Redis锁解决间隙锁问题</div></div><div class="info-2"><div class="info-item-1">1. 第26节中的redis锁用于避免间隙锁问题- 这里的间隙锁问题到底是什么 - 这里的redis锁的作用是什么, 解决了什么情景下的什么问题, 没搞懂这  fix : 增加redis锁, 避免产生间隙锁问题问题原来的代码 1234567891011raffleActivityOrderDao.insert(raffleActivityOrder);// 2. 更新账户 - 总int count = raffleActivityAccountDao.updateAccountQuota(raffleActivityAccount);// 3. 创建账户 - 更新为0，则账户不存在，创新新账户if (0 == count) &#123;    raffleActivityAccountDao.insert(raffleActivityAccount);&#125;// 4. 更新账户 - 月                    raffleActivityAccountMonthDao.addAccountQuota(raffleActivityAccountMonth);  ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-1/" title="AI-Agent项目解析02 - preheat预热机制深度解析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">AI-Agent项目解析02 - preheat预热机制深度解析</div></div><div class="info-2"><div class="info-item-1">ai-agent-1-preheat解析接着上篇对于Controller的解析, 我们现在需要深入到service-controller中的domain层的具体实现, 来看详细看业务的实现 按照实际业务流程-preheat -&gt; ragupload -&gt; chat -&gt; task的顺序解析 这篇主要解析preheat方法(也是实现最复杂的一个) preheat解析 AiAgentPreheatService中的preheat  123456public void preheat(Long aiClientId) throws Exception &#123;    StrategyHandler&lt;AiAgentEngineStarterEntity, DefaultArmoryStrategyFactory.DynamicContext, String&gt; handler = defaultArmoryStrategyFactory.strategyHandler();    handler.apply(AiAgentEngineStarterEnti...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/Spring/Spring%20AI/AI%E6%A6%82%E5%BF%B5/" title="Spring AI - 人工智能核心概念解析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">Spring AI - 人工智能核心概念解析</div></div><div class="info-2"><div class="info-item-1">Models我们按照输入和输出的内容, 将模型分成四大类  Prompt 基于自然语言输入, 用于知道AI模型生成特定的内容  用户设定的规则 输出的格式 不同角色的不同输入  创建高效的提示词, 包括建立请求的上下文并将其中的各个部分替换成特定用户的输入的值 Tell me a &#123;adjective&#125; joke about &#123;content&#125; EmbeddingEmbedding的工作原理是将文本, 图像, 视频转换成浮点数向量 通过计算两段文本向量之间的数值距离, 应用程序可以衡量两个向量也就是两个内容之间的相似度 常用于实现RAG (Retieval Augmented Generation: 检索增强生成)   Structured Output简单来说就是对于怎么让AI的输出按照固定的格式的技术 Bring Your Data &amp; APIs to the AI Model Prompt Stuffing : 将数据嵌入到提供给模型的提示中, 典型的应用之一就是RAG Tool Calling: 工具调用, 允许AI使用外部...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Java/Spring/SpringMVC/SpringMVC/" title="SpringMVC核心概念与实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">SpringMVC核心概念与实践</div></div><div class="info-2"><div class="info-item-1">SpringMVC1. RESTful与注解上的细节1.1 类上的ResultMapping注解 类上的ResultMapping注解, 会让类中方法的resultMapping从类上的路径开始  不过这个时候注意返回的html路径问题, 访问的根路径是templates文件夹, 如果在里面有子文件夹, 注意写全文件夹  User   12345678@RequestMapping(&quot;/product&quot;)@Controllerpublic class UserController &#123;    @RequestMapping(&quot;/detail&quot;)    public String toDetail()&#123;        return &quot;/product/detail&quot;;    &#125;&#125;   Product  12345678@RequestMapping(&quot;/user&quot;)@Controllerpublic class ProductController &#123;   ...</div></div></div></a><a class="pagination-related" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/14.DDD%E6%80%BB%E7%BB%93/" title="Big-Market项目 - DDD领域驱动设计总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">Big-Market项目 - DDD领域驱动设计总结</div></div><div class="info-2"><div class="info-item-1">充血模型什么是充血模型充血模型和贫血模型的区别充血模型的优势值对象与实体对象DTOVO抽象类仓储层六边形</div></div></div></a><a class="pagination-related" href="/2025/07/08/Project/ai-agent/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/ai-agent-2-%E5%89%A9%E4%BD%99%E5%8A%9F%E8%83%BD/" title="AI-Agent项目解析03 - 对话功能和定时任务实现"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-08</div><div class="info-item-2">AI-Agent项目解析03 - 对话功能和定时任务实现</div></div><div class="info-2"><div class="info-item-1">ai-agent-2-剩余功能在完成预热以后, 我们就正式进入到用户直接面向的核心功能: 对话和定时任务 aiAgentChat对话分成流式对话和普通对话两种 普通对话-aiAgentChat方法获取到完整的AI的回答以后再给出返回  获取所有的client的ID  123List&lt;Long&gt; aiClientIds = repository.queryAiClientIdsByAiAgentId(aiAgentId);String content = &quot;&quot;;   根据clientId取出来对应的client Bean对象, 链式调用这个agent对应的client们, 渐进式提问 这里传入的advisor的参数, CHAT_MEMORY_CONVERSATION_ID_KEY是用于标识这次对话的ID, 这个ID是用来区分上下文的, 不同的对话有着不同的ID不同的上下文 param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100)) 这个参数的作用是将对话历史记录的数量限制在100条    12345678910for (Lo...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://raw.githubusercontent.com/fang-tech/Pic/main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250709003827.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Func</div><div class="author-info-description">Func的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">271</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">48</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ai-agent-0"><span class="toc-number">1.</span> <span class="toc-text">ai-agent-0</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Controller"><span class="toc-number">1.1.</span> <span class="toc-text">Controller</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Service-Controller"><span class="toc-number">1.1.1.</span> <span class="toc-text">Service-Controller</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#preheat"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">preheat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#chatAgent"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">chatAgent</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#chatStream"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">chatStream</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uploadRagFile"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">uploadRagFile</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CRUD-Controller"><span class="toc-number">1.1.2.</span> <span class="toc-text">CRUD-Controller</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminAgentClientController"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">AiAdminAgentClientController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminAgentController"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">AiAdminAgentController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminAgentTaskScheduleController"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">AiAdminAgentTaskScheduleController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminClientAdvisorConfigController"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">AiAdminClientAdvisorConfigController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminClientAdvisorController"><span class="toc-number">1.1.2.5.</span> <span class="toc-text">AiAdminClientAdvisorController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminClientModelConfigController"><span class="toc-number">1.1.2.6.</span> <span class="toc-text">AiAdminClientModelConfigController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminClientModelController"><span class="toc-number">1.1.2.7.</span> <span class="toc-text">AiAdminClientModelController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminClientSystemPromptController"><span class="toc-number">1.1.2.8.</span> <span class="toc-text">AiAdminClientSystemPromptController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminClientToolConfigController"><span class="toc-number">1.1.2.9.</span> <span class="toc-text">AiAdminClientToolConfigController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminClientToolMcpController"><span class="toc-number">1.1.2.10.</span> <span class="toc-text">AiAdminClientToolMcpController</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AiAdminRagOrderController"><span class="toc-number">1.1.2.11.</span> <span class="toc-text">AiAdminRagOrderController</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/9.%20%E4%BD%BF%E7%94%A8%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E6%8A%BD%E5%A5%96%E8%A7%84%E5%88%99/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.855Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/8.%20%E6%8A%BD%E5%A5%96%E4%B8%AD%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.854Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/7.%20%E6%8A%BD%E5%A5%96%E5%89%8D%E7%BD%AE%E8%A7%84%E5%88%99%E8%BF%87%E6%BB%A4/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.853Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/6.%20%E6%9D%83%E9%87%8D%E8%A3%85%E9%85%8D%E5%A4%84%E7%90%86/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.852Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/08/Project/Big-Market/%E8%BF%87%E7%A8%8B%E7%AC%94%E8%AE%B0/26.%20%E7%A7%AF%E5%88%86%E9%A2%86%E5%9F%9F%E8%B0%83%E9%A2%9D%E6%9C%8D%E5%8A%A1/" title="无标题">无标题</a><time datetime="2025-07-08T15:03:04.847Z" title="发表于 2025-07-08 23:03:04">2025-07-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/fang-tech/Pic/main/img/psc.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Func</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  const initGitalk = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGitalk = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const gitalk = new Gitalk({
+      clientID: 'Ov23li4bXLe7MUGkzYiL',
+      clientSecret: '6e07175d5780251b166904c518448940a5214fb1',
+      repo: 'fang-tech.github.io',
+      owner: 'fang-tech',
+      admin: ['fang-tech'],
+      updateCountCallback: commentCount,
+      ...option,
+      id: isShuoshuo ? path : (option && option.id) || 'f6b37a46c18da2103146976eebc50f9d'
+    })
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async(el, path) => {
+    if (typeof Gitalk === 'function') initGitalk(el, path)
+    else {
+      await btf.getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await btf.getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Gitalk' === 'Gitalk'
+      ? window.shuoshuoComment = { loadComment: loadGitalk }
+      : window.loadOtherComment = loadGitalk
+    return
+  }
+
+  if ('Gitalk' === 'Gitalk' || !false) {
+    if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
