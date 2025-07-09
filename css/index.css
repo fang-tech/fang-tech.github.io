@@ -1754,9 +1754,6 @@ figure.highlight pre .javascript .function {
   -ms-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
-.container .highlight-tools > .macStyle {
-  padding: 0;
-}
 .container .highlight-tools .code-lang {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -1807,6 +1804,54 @@ figure.highlight pre .javascript .function {
 }
 .container .gist table td {
   border: none;
+}
+.container figure.highlight {
+  margin: 0 0 24px;
+  border-radius: 7px;
+  -webkit-box-shadow: 0 5px 10px 0 rgba(144,164,174,0.4);
+  box-shadow: 0 5px 10px 0 rgba(144,164,174,0.4);
+  -webkit-transform: translateZ(0);
+}
+.container figure.highlight .highlight-tools .macStyle {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+}
+.container figure.highlight .highlight-tools .macStyle > * {
+  margin-right: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.container figure.highlight .highlight-tools .macStyle > :last-child {
+  margin-right: 5px;
+}
+.container figure.highlight .highlight-tools .macStyle .mac-close {
+  background: #fc625d;
+}
+.container figure.highlight .highlight-tools .macStyle .mac-minimize {
+  background: #fdbc40;
+}
+.container figure.highlight .highlight-tools .macStyle .mac-maximize {
+  background: #35cd4b;
+}
+.container figure.highlight .highlight-tools > :nth-child(2) {
+  -webkit-box-ordinal-group: 8;
+  -moz-box-ordinal-group: 8;
+  -o-box-ordinal-group: 8;
+  -ms-flex-order: 8;
+  -webkit-order: 8;
+  order: 8;
+}
+.container figure.highlight .highlight-tools.closed .expand {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 .article-sort {
   margin-left: 10px;
@@ -3271,6 +3316,13 @@ figure.highlight pre .javascript .function {
   background-position: bottom;
   background-size: cover;
 }
+#footer:before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: var(--mark-bg);
+  content: '';
+}
 #footer > * {
   position: relative;
   color: var(--light-grey);
@@ -4407,6 +4459,21 @@ figure.highlight pre .javascript .function {
   #rightside #hide-aside-btn {
     display: none;
   }
+}
+#rightside #go-up .scroll-percent {
+  display: none;
+}
+#rightside #go-up.show-percent .scroll-percent {
+  display: block;
+}
+#rightside #go-up.show-percent .scroll-percent + i {
+  display: none;
+}
+#rightside #go-up:hover .scroll-percent {
+  display: none;
+}
+#rightside #go-up:hover .scroll-percent + i {
+  display: block;
 }
 #sidebar #menu-mask {
   position: fixed;
@@ -6329,4 +6396,62 @@ blockquote.pullquote.right {
   z-index: 1000;
   display: none;
   background: rgba(0,0,0,0.6);
+}
+#local-search .search-dialog .local-search-box {
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+}
+#local-search .search-dialog .local-search-box input {
+  padding: 5px 14px;
+  width: 100%;
+  outline: none;
+  border: 2px solid #49b1f5;
+  border-radius: 40px;
+  background: var(--search-bg);
+  color: var(--search-input-color);
+  -webkit-appearance: none;
+}
+#local-search .search-dialog .search-wrap {
+  display: none;
+}
+#local-search .search-dialog .local-search-hit-item {
+  margin-left: 24px;
+  padding-left: 3px;
+  line-height: 1.8;
+}
+#local-search .search-dialog .local-search-hit-item::marker {
+  color: #49b1f5;
+  font-weight: bold;
+  font-style: italic;
+}
+#local-search .search-dialog .local-search-hit-item a {
+  color: var(--search-a-color);
+}
+#local-search .search-dialog .local-search-hit-item a:hover {
+  color: #49b1f5;
+}
+#local-search .search-dialog .local-search-hit-item .search-result-title {
+  font-weight: 600;
+}
+#local-search .search-dialog .local-search-hit-item .search-result {
+  margin: 0 0 8px;
+  word-break: break-all;
+  font-size: 0.9em;
+}
+#local-search .search-dialog .search-result-list {
+  overflow-y: overlay;
+  margin: 0 -20px;
+  padding: 0 22px;
+  max-height: calc(80vh - 180px);
+}
+@media screen and (max-width: 768px) {
+  #local-search .search-dialog .search-result-list {
+    max-height: calc(var(--search-height) - 190px) !important;
+  }
+}
+.search-keyword {
+  background: transparent;
+  color: #f47466;
+  font-weight: 600;
 }
