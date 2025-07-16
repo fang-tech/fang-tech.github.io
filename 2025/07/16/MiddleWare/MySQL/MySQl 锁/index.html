@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MySQL 锁机制 | Function's Blog</title><meta name="author" content="Function"><meta name="copyright" content="Function"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="参考:  https:&#x2F;&#x2F;relph1119.github.io&#x2F;mysql-learning-notes&#x2F;#&#x2F;mysql&#x2F;25-%E5%B7%A5%E4%BD%9C%E9%9D%A2%E8%AF%95%E8%80%81%E5%A4%A7%E9%9A%BE-%E9%94%81  https:&#x2F;&#x2F;xiaolincoding.com&#x2F;mysql&#x2F;lock&#x2F;how_to_lock.html   MyS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 锁机制">
+<meta property="og:url" content="https://fang-tech.github.io/2025/07/16/MiddleWare/MySQL/MySQl%20%E9%94%81/index.html">
+<meta property="og:site_name" content="Function&#39;s Blog">
+<meta property="og:description" content="参考:  https:&#x2F;&#x2F;relph1119.github.io&#x2F;mysql-learning-notes&#x2F;#&#x2F;mysql&#x2F;25-%E5%B7%A5%E4%BD%9C%E9%9D%A2%E8%AF%95%E8%80%81%E5%A4%A7%E9%9A%BE-%E9%94%81  https:&#x2F;&#x2F;xiaolincoding.com&#x2F;mysql&#x2F;lock&#x2F;how_to_lock.html   MyS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg">
+<meta property="article:published_time" content="2025-07-16T09:11:16.627Z">
+<meta property="article:modified_time" content="2025-07-16T17:15:56.008Z">
+<meta property="article:author" content="Function">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MySQL 锁机制",
+  "url": "https://fang-tech.github.io/2025/07/16/MiddleWare/MySQL/MySQl%20%E9%94%81/",
+  "image": "https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg",
+  "datePublished": "2025-07-16T09:11:16.627Z",
+  "dateModified": "2025-07-16T17:15:56.008Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Function",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><link rel="canonical" href="https://fang-tech.github.io/2025/07/16/MiddleWare/MySQL/MySQl%20%E9%94%81/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL 锁机制',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/categories/Interview/"><i class="fa-fw fa-solid fa-clipboard-question"></i><span> Interview</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> Middleware</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li><li><a class="site-page child" href="/categories/Middleware/Redis/"><i class="fa-fw fa-solid fa-memory"></i><span> Redis</span></a></li><li><a class="site-page child" href="/categories/Middleware/MQ/"><i class="fa-fw fa-solid fa-comments"></i><span> MQ</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-j"></i><span> Java</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/JUC/"><i class="fa-fw fa-brands fa-threads"></i><span> JUC</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-leaf"></i><span> Spring</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Spring/Spring-AI/"><i class="fa-fw fa-solid fa-robot"></i><span> Spring AI</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-code"></i><span> Algorithm</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Algorithm/Binary-Sort/"><i class="fa-fw fas fa-code"></i><span> Binary Sort</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Function's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">MySQL 锁机制</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/categories/Interview/"><i class="fa-fw fa-solid fa-clipboard-question"></i><span> Interview</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> Middleware</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li><li><a class="site-page child" href="/categories/Middleware/Redis/"><i class="fa-fw fa-solid fa-memory"></i><span> Redis</span></a></li><li><a class="site-page child" href="/categories/Middleware/MQ/"><i class="fa-fw fa-solid fa-comments"></i><span> MQ</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-j"></i><span> Java</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/JUC/"><i class="fa-fw fa-brands fa-threads"></i><span> JUC</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-leaf"></i><span> Spring</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Spring/Spring-AI/"><i class="fa-fw fa-solid fa-robot"></i><span> Spring AI</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-code"></i><span> Algorithm</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Algorithm/Binary-Sort/"><i class="fa-fw fas fa-code"></i><span> Binary Sort</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">MySQL 锁机制</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-16T09:11:16.627Z" title="发表于 2025-07-16 17:11:16">2025-07-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-16T17:15:56.008Z" title="更新于 2025-07-17 01:15:56">2025-07-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Middleware/">Middleware</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Middleware/MySQL/">MySQL</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Middleware/MySQL/Lock/">Lock</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>参考:</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://relph1119.github.io/mysql-learning-notes/#/mysql/25-%E5%B7%A5%E4%BD%9C%E9%9D%A2%E8%AF%95%E8%80%81%E5%A4%A7%E9%9A%BE-%E9%94%81">https://relph1119.github.io/mysql-learning-notes/#/mysql/25-%E5%B7%A5%E4%BD%9C%E9%9D%A2%E8%AF%95%E8%80%81%E5%A4%A7%E9%9A%BE-%E9%94%81</a> </li>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/mysql/lock/how_to_lock.html">https://xiaolincoding.com/mysql/lock/how_to_lock.html</a></li>
+</ol>
+</blockquote>
+<h1 id="MySQL锁机制详解"><a href="#MySQL锁机制详解" class="headerlink" title="MySQL锁机制详解"></a>MySQL锁机制详解</h1><h2 id="快照读与锁定读"><a href="#快照读与锁定读" class="headerlink" title="快照读与锁定读"></a>快照读与锁定读</h2><p>MySQL中读可以分作两类</p>
+<ul>
+<li>快照读: 也就是普通的<code>select</code>, <code>读-读</code>场景不需要额外的机制保证并发安全, 而<code>读-写</code>场景通过MVCC来实现隔离级别</li>
+<li>锁定读: 会加锁的读, 是<code>select ... for update</code>或者<code>select ... lock in share mode</code> , 在MySQL中update, delete操作会分成两部分, 读取阶段和写入(删除)阶段, 前一阶段就属于锁定读</li>
+</ul>
+<h2 id="共享锁-S-和互斥锁-X"><a href="#共享锁-S-和互斥锁-X" class="headerlink" title="共享锁(S)和互斥锁(X)"></a>共享锁(S)和互斥锁(X)</h2><p>共享锁: 如果一个事务给一个表(记录)加了S锁, 其他事务能再获取这个S锁, 但是该事务和其他事务都不能再获取这个表(记录)的X锁</p>
+<p>互斥锁: 独占锁, 如果有一个事务给一个表(记录)加了X锁, 其他事务不能再从这个表(记录)上获取锁了(无论XS), 同时也不能给已经上锁了的表(记录)加上X锁</p>
+<table>
+<thead>
+<tr>
+<th>兼容性</th>
+<th>共享锁S</th>
+<th>互斥锁X</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>共享锁S</td>
+<td>兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td>互斥锁X</td>
+<td>不兼容</td>
+<td>不兼容</td>
+</tr>
+</tbody></table>
+<p>类似于<code>读-读</code>并发安全, 所以不需要额外处理, 也就是S锁能兼容, 其他的情况都存在并发安全问题, 所以不能兼容</p>
+<h2 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h2><h3 id="表级锁"><a href="#表级锁" class="headerlink" title="表级锁"></a>表级锁</h3><p>锁上整张表的锁, 分有X和S两种</p>
+<p><strong>什么时候会加上表级锁</strong>: MySQL InnoDB引擎中因为有更细粒度的行级锁, 所以其实表级锁应用场景极其有限(没啥用)</p>
+<p>但是现在有个问题就是, 如果我们要对某个表加X锁或者S锁, 有个问题就是, 我们需要确保现在这个表是没有不兼容的行锁的</p>
+<ul>
+<li>我们要加上表级S锁的时候, 就需要保证表内没有X锁</li>
+<li>我们要加上表级X锁的时候, 就需要保证表内没有锁</li>
+</ul>
+<p>这种时候很明显我们不能遍历每行来看是不是有加锁, Innodb引入了意向锁的机制</p>
+<h3 id="意向锁"><a href="#意向锁" class="headerlink" title="意向锁"></a>意向锁</h3><p>IS锁: 共享意向锁, IX锁: 互斥意向锁</p>
+<p><strong>什么时候会加上意向锁:</strong> 现在在加锁前, 我们会现在表级上加上一个意向锁, 比如我们要加上一个互斥X锁, 我们就会先在表上加一把IX, IS同理</p>
+<p>在有了意向锁以后, 我们就能通过判断表上有没有持有IS和IX锁来快速判断现在我们能不能加表锁</p>
+<p><strong>IS, IX是表级锁, 它们的出现仅仅是为了在之后加表级锁的时候快速判断表中是不是存在加锁的记录, IS锁和IS锁之间是兼容的,  IX和IX之间是兼容的</strong></p>
+<table>
+<thead>
+<tr>
+<th>兼容性</th>
+<th><code>X</code></th>
+<th><code>IX</code></th>
+<th><code>S</code></th>
+<th><code>IS</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>X</code></td>
+<td>不兼容</td>
+<td>不兼容</td>
+<td>不兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td><code>IX</code></td>
+<td>不兼容</td>
+<td>兼容 兼容的</td>
+<td>不兼容</td>
+<td>兼容 兼容的</td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>不兼容</td>
+<td>不兼容</td>
+<td>兼容 兼容的</td>
+<td>兼容 兼容的</td>
+</tr>
+<tr>
+<td><code>IS</code></td>
+<td>不兼容</td>
+<td>兼容 兼容的</td>
+<td>兼容 兼容的</td>
+<td>兼容 兼容的</td>
+</tr>
+</tbody></table>
+<h3 id="MDL锁"><a href="#MDL锁" class="headerlink" title="MDL锁"></a>MDL锁</h3><p>Meta Data Lock: 元数据锁, 是针对DDL操作的锁, 防止在存在事务还在执行的时候变更表结构</p>
+<p><strong>什么时候会加上MDL:</strong> </p>
+<ul>
+<li>对一张表CRUD的时候, 加上MDL读锁</li>
+<li>修改表结构的时候, 加上MDL写锁</li>
+</ul>
+<p>MDL写锁的获取会阻塞MDL读锁的获取, 也就是如果有一个事务在修改表结构获取MDL写锁的时候阻塞了, 后续的CRUD操作都会被阻塞住</p>
+<p>MDL在事务提交后才会释放</p>
+<h3 id="AUTO-INC锁"><a href="#AUTO-INC锁" class="headerlink" title="AUTO-INC锁"></a>AUTO-INC锁</h3><p>是用于处理AUTO_INCREAMENT自增字段的自增的锁, 如果并发地向一张表中插入记录, 就可能会导致自增字段值重复</p>
+<p>有两种锁来解决并发自增问题</p>
+<ul>
+<li>AUTO-INC锁: 在执行插入语句的时候, 会加上一个表级的AUTO_INC锁, 然后分配自增属性的值, 在插入语句执行结束后将锁释放掉, 以此将插入时生成自增值串行化</li>
+<li>轻量级锁: 在执行插入语句的时候, 获取这个轻量级锁, 在生成自增属性的值以后就将锁释放掉</li>
+</ul>
+<p>如果我们的插入语句在执行前就知道要插入多少条数据, 就会采用轻量级锁</p>
+<blockquote>
+<p>TIP：设计InnoDB的大佬提供了一个称之为innodb_autoinc_lock_mode的系统变量来控制到底使用上述两种方式中的哪种来为AUTO_INCREMENT修饰的列进行赋值，当innodb_autoinc_lock_mode值为0时，一律采用AUTO-INC锁；当innodb_autoinc_lock_mode值为2时，一律采用轻量级锁；当innodb_autoinc_lock_mode值为1时，两种方式混着来（也就是在插入记录数量确定时采用轻量级锁，不确定时使用AUTO-INC锁）。不过当innodb_autoinc_lock_mode值为2时，可能会造成不同事务中的插入语句为AUTO_INCREMENT修饰的列生成的值是交叉的，在有主从复制的场景中是不安全的。</p>
+</blockquote>
+<h2 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h2><p>行锁在MySQL中是InnoDB独有的更加细粒度的锁</p>
+<h3 id="记录锁"><a href="#记录锁" class="headerlink" title="记录锁"></a>记录锁</h3><p>Record Lock: 记录锁, 有S锁和X锁之分, 是针对一条记录上加的锁, 也就是对某一行加上的锁</p>
+<p><strong>什么时候加锁:</strong> 在执行锁定读的时候会对遍历到的行加上, 往往是以next-key lock的组成部分的形式被加上</p>
+<h3 id="间隙锁"><a href="#间隙锁" class="headerlink" title="间隙锁"></a>间隙锁</h3><p>Gap Loc: 间隙锁, 有S锁和X锁, 但是没有分别, 实际上是都是S锁的行为, 多个事务可同时获取一个间隙的Gap Lock, 是对一个开区间的锁, 用于解决可重复读隔离级别下的幻读现象的</p>
+<p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507170024001.png" alt="img"></p>
+<p>在id范围(3, 5)的间隙锁以后, 其他事务就无法再插入id &#x3D;4的记录了</p>
+<p><strong>什么时候加锁:</strong> 和记录锁是一样的, 执行锁定读的时候会对遍历到的行加上, 往往是以next-key lock的组成部分的形式被加上</p>
+<h3 id="Next-Key-Lock"><a href="#Next-Key-Lock" class="headerlink" title="Next-Key Lock"></a>Next-Key Lock</h3><p>Next-Key Lock &#x3D; Record Lock + Gap Lock, 锁定一个范围, 并且锁定记录本身</p>
+<p>因为Next-Key Lock是包含Record Lock的, 所以是分X锁和S锁的</p>
+<h3 id="插入意向锁"><a href="#插入意向锁" class="headerlink" title="插入意向锁"></a>插入意向锁</h3><p>是在insert前会对某个记录加上锁, 用于提高插入的并发效率, <strong>只要插入位置不同, 想插入的事务间不会相互阻塞</strong>, 只有当多个事务尝试插入相同位置时才会产生冲突</p>
+<p><strong>什么时候加锁:</strong> 在执行插入操作的时候需要判断这个位置上有没有间隙锁, 如果有, 插入操作就会被阻塞, 然后生成一个插入意向锁(is_wait &#x3D; true), 在这个间隙锁被释放掉以后, 插入意向锁就会被真正获取到, 执行插入操作</p>
+<h3 id="有插入意向锁（当前机制）："><a href="#有插入意向锁（当前机制）：" class="headerlink" title="有插入意向锁（当前机制）："></a>有插入意向锁（当前机制）：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">css复制索引：[1] [4] [7] [10]</span><br><span class="line">事务A：INSERT 5  → 在(4,7)设置插入意向锁</span><br><span class="line">事务B：INSERT 6  → 在(4,7)设置插入意向锁</span><br><span class="line">结果：两个事务可以并发执行 ✓</span><br></pre></td></tr></table></figure>
+
+<h3 id="没有插入意向锁（假设情况）："><a href="#没有插入意向锁（假设情况）：" class="headerlink" title="没有插入意向锁（假设情况）："></a>没有插入意向锁（假设情况）：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">css复制索引：[1] [4] [7] [10]</span><br><span class="line">事务A：INSERT 5  → 在(4,7)设置间隙锁</span><br><span class="line">事务B：INSERT 6  → 等待事务A释放间隙锁</span><br><span class="line">结果：事务B被阻塞，必须等待 ✗</span><br></pre></td></tr></table></figure>
+</article><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/07/11/Interview/Java%20JUC/" title="Java JUC-并发编程面试问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Java JUC-并发编程面试问题</div></div><div class="info-2"><div class="info-item-1">并发编程问题 </div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Function</div><div class="author-info-description">Function的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E9%94%81%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">MySQL锁机制详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%AB%E7%85%A7%E8%AF%BB%E4%B8%8E%E9%94%81%E5%AE%9A%E8%AF%BB"><span class="toc-number">1.1.</span> <span class="toc-text">快照读与锁定读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E9%94%81-S-%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81-X"><span class="toc-number">1.2.</span> <span class="toc-text">共享锁(S)和互斥锁(X)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E9%94%81"><span class="toc-number">1.3.</span> <span class="toc-text">表锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E7%BA%A7%E9%94%81"><span class="toc-number">1.3.1.</span> <span class="toc-text">表级锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%84%8F%E5%90%91%E9%94%81"><span class="toc-number">1.3.2.</span> <span class="toc-text">意向锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MDL%E9%94%81"><span class="toc-number">1.3.3.</span> <span class="toc-text">MDL锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AUTO-INC%E9%94%81"><span class="toc-number">1.3.4.</span> <span class="toc-text">AUTO-INC锁</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%8C%E9%94%81"><span class="toc-number">1.4.</span> <span class="toc-text">行锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E9%94%81"><span class="toc-number">1.4.1.</span> <span class="toc-text">记录锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%B4%E9%9A%99%E9%94%81"><span class="toc-number">1.4.2.</span> <span class="toc-text">间隙锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Next-Key-Lock"><span class="toc-number">1.4.3.</span> <span class="toc-text">Next-Key Lock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%84%8F%E5%90%91%E9%94%81"><span class="toc-number">1.4.4.</span> <span class="toc-text">插入意向锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E6%8F%92%E5%85%A5%E6%84%8F%E5%90%91%E9%94%81%EF%BC%88%E5%BD%93%E5%89%8D%E6%9C%BA%E5%88%B6%EF%BC%89%EF%BC%9A"><span class="toc-number">1.4.5.</span> <span class="toc-text">有插入意向锁（当前机制）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B2%A1%E6%9C%89%E6%8F%92%E5%85%A5%E6%84%8F%E5%90%91%E9%94%81%EF%BC%88%E5%81%87%E8%AE%BE%E6%83%85%E5%86%B5%EF%BC%89%EF%BC%9A"><span class="toc-number">1.4.6.</span> <span class="toc-text">没有插入意向锁（假设情况）：</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/16/MiddleWare/MySQL/MySQl%20%E9%94%81/" title="MySQL 锁机制">MySQL 锁机制</a><time datetime="2025-07-16T09:11:16.627Z" title="发表于 2025-07-16 17:11:16">2025-07-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/11/Interview/Java%20JUC/" title="Java JUC-并发编程面试问题">Java JUC-并发编程面试问题</a><time datetime="2025-07-11T05:08:36.353Z" title="发表于 2025-07-11 13:08:36">2025-07-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/10/Interview/Java%20Collection/" title="Java Colletion-集合框架面试问题">Java Colletion-集合框架面试问题</a><time datetime="2025-07-10T15:04:32.330Z" title="发表于 2025-07-10 23:04:32">2025-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/10/Interview/Java%20Base/" title="Java基础面试问题">Java基础面试问题</a><time datetime="2025-07-10T14:35:13.203Z" title="发表于 2025-07-10 22:35:13">2025-07-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/10/Algorithm/Binary%20Search/" title="Binary Sort-二分查找">Binary Sort-二分查找</a><time datetime="2025-07-10T05:52:28.381Z" title="发表于 2025-07-10 13:52:28">2025-07-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Function</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"lang":"zh-CN","input_position":"top","emit_metadata":1,"reactions_enabled":1}
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'fang-tech/fang-tech.github.io',
+      'data-repo-id': 'R_kgDOPJD8XA',
+      'data-category-id': 'DIC_kwDOPJD8XM4CswtE',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
