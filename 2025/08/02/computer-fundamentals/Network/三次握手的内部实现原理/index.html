@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>深入理解三次握手的实现原理 | Function's Blog</title><meta name="author" content="Function"><meta name="copyright" content="Function"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="三次握手的内部实现原理 不同于八股中简单的对三次握手的流程的介绍, 本文会从在Linux中使用socket建立TCP连接完成的工作的角度深度剖析三次握手 参考:  深入理解Linux网络： 修炼底层内功，掌握高性能原理 (张彦飞)   使用Socket通信的过程 123456&#x2F;&#x2F; 客户端的核心代码int main()&#123;	int fd &#x3D; socket(AF_INET, SOCK_STRE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解三次握手的实现原理">
+<meta property="og:url" content="https://fang-tech.github.io/2025/08/02/computer-fundamentals/Network/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Function&#39;s Blog">
+<meta property="og:description" content="三次握手的内部实现原理 不同于八股中简单的对三次握手的流程的介绍, 本文会从在Linux中使用socket建立TCP连接完成的工作的角度深度剖析三次握手 参考:  深入理解Linux网络： 修炼底层内功，掌握高性能原理 (张彦飞)   使用Socket通信的过程 123456&#x2F;&#x2F; 客户端的核心代码int main()&#123;	int fd &#x3D; socket(AF_INET, SOCK_STRE">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg">
+<meta property="article:published_time" content="2025-08-02T05:33:20.000Z">
+<meta property="article:modified_time" content="2025-08-03T17:51:56.728Z">
+<meta property="article:author" content="Function">
+<meta property="article:tag" content="Computer Fundamentals">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="三次握手的实现原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深入理解三次握手的实现原理",
+  "url": "https://fang-tech.github.io/2025/08/02/computer-fundamentals/Network/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/",
+  "image": "https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg",
+  "datePublished": "2025-08-02T05:33:20.000Z",
+  "dateModified": "2025-08-03T17:51:56.728Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Function",
+      "url": "https://fang-tech.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><link rel="canonical" href="https://fang-tech.github.io/2025/08/02/computer-fundamentals/Network/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '深入理解三次握手的实现原理',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">26</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Function's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">深入理解三次握手的实现原理</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">深入理解三次握手的实现原理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-02T05:33:20.000Z" title="发表于 2025-08-02 13:33:20">2025-08-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-03T17:51:56.728Z" title="更新于 2025-08-04 01:51:56">2025-08-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Computer-Fundamentals/">Computer Fundamentals</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Computer-Fundamentals/Network/">Network</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Computer-Fundamentals/Network/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">三次握手的实现原理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="三次握手的内部实现原理"><a href="#三次握手的内部实现原理" class="headerlink" title="三次握手的内部实现原理"></a>三次握手的内部实现原理</h1><blockquote>
+<p>不同于八股中简单的对三次握手的流程的介绍, 本文会从在Linux中使用socket建立TCP连接完成的工作的角度深度剖析三次握手</p>
+<p>参考:</p>
+<ol>
+<li>深入理解Linux网络： 修炼底层内功，掌握高性能原理 (张彦飞)</li>
+</ol>
+</blockquote>
+<p>使用Socket通信的过程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 客户端的核心代码</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="type">int</span> fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    connect(fd, ....);</span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 服务端的核心代码</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    bind(fd, ...);</span><br><span class="line">    listen(fd, <span class="number">128</span>);</span><br><span class="line">    accept(fd, ...);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="socket函数的作用"><a href="#socket函数的作用" class="headerlink" title="socket函数的作用"></a>socket函数的作用</h2><p>从开发者的角度我们调用socket函数, 创建一个socket, 然后返回一个句柄用于访问和操作我们这个创建的socket. 从内核的角度来看, 调用这个函数会在内核内部创建一系列的socket相关的内核对象</p>
+<p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250803112717.png"></p>
+<p>从<code>socket</code>的系统调用出发, 创建socket的主要位置是<code>sock_create</code>, 而<code>sock_create</code>又到了<code>__scok_create</code></p>
+<p>在<code>__scok_create</code>中, 首先调用<code>sock_alloc</code>来分配一个<code>struct </code>sock内核对象, 接着获取协议族的操作函数表, 并调用其create方法, 对于AF_INET协议族来说, 执行到的是<code>inet_create</code>方法</p>
+<p>在<code>inet_create</code>方法中, 根据SOCK_STREAM超找到对于TCP定义的操作方法的实现集合inet_stream_ops和tcp_prot, 并将它们分别设置到socket-&gt;ops和sock-&gt;sk_prot上.</p>
+<p>再往下在<code>sock_init_data</code>中, 将sock的sk_data_ready函数指针进行了初始化, 设置为默认的sock_def_readable</p>
+<p>在软中断上收到数据包时会通过sk_data_ready函数指针 (实际上被设置成了sock_def_readable())来唤醒sock上等待的进程</p>
+<p>现在一个tcp对象, 确切地说是AF_INET协议族下的SOCK_STREAM对象就算创建完毕了. 花费了一次socket系统调用的开销</p>
+<h3 id="socket小结"><a href="#socket小结" class="headerlink" title="socket小结"></a>socket小结</h3><p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250803112817.png"></p>
+<p>socket系统调用完成的工作有</p>
+<ol>
+<li>创建struct sock等一系列内核对象</li>
+<li>找到协议族的操作函数表, 初始化操作函数</li>
+<li>对sock_init_data中的sk_data_ready函数指针进行初始化, 这里是sock_def_readable()</li>
+</ol>
+<p>开销是一次系统调用</p>
+<h2 id="bind函数的作用"><a href="#bind函数的作用" class="headerlink" title="bind函数的作用"></a>bind函数的作用</h2><p>简单来说就是让操作系统将一个特定的socket和一个IP:port绑定起来</p>
+<p>做的工作有</p>
+<ol>
+<li>将要绑定的IP地址设置到socket的inet-&gt;inet_rcv_saddr成员上</li>
+<li>将要绑定的端口设置到socket的inet-&gt;inet_sport成员上</li>
+</ol>
+<h2 id="listen函数的作用"><a href="#listen函数的作用" class="headerlink" title="listen函数的作用"></a>listen函数的作用</h2><p>listen函数的主要作用就是申请和初始化连接队列, 包括全连接队列和半连接队列. 其中全连接队列是一个链表, 而半连接队列为了快速查找使用的是哈希表.</p>
+<h3 id="listen系统调用"><a href="#listen系统调用" class="headerlink" title="listen系统调用"></a>listen系统调用</h3><p>首先到listen系统调用, 在这一步主要是</p>
+<ul>
+<li>通过句柄拿到socket内核对象</li>
+<li>获取内核参数somaxconn(if backlog &gt; somaxconn than backlog &#x3D; somaxconn)</li>
+<li>接下来通过sock-&gt;ops-&gt;listen进入到协议栈的listen函数</li>
+</ul>
+<h3 id="协议栈listen"><a href="#协议栈listen" class="headerlink" title="协议栈listen"></a>协议栈listen</h3><p>因为是TCP, AF_INET类型的socket对象, sock-&gt;ops-&gt;listen指向的是inet_listen函数</p>
+<ul>
+<li>如果状态不是LISTEN, 执行inet_csk_listen_start()函数</li>
+<li>然后<strong>设置全连接队列的长度是backlog, 也就是服务端的全连接队列的长度是min(backlog, net.core.somaxconn)</strong></li>
+</ul>
+<p>再看到inet_csk_listen_start()函数</p>
+<ul>
+<li>将sock强转成功inet_connection_sock(叫icsk)</li>
+<li>调用reqsk_queue_alloc(&amp;icsk-&gt;icsk_accept_queue, nr_table_entries), 接收队列内核对象的申请和初始化</li>
+</ul>
+<p>这里能强转成功的原因是这些sock是逐层嵌套的关系</p>
+<p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250803114831.png"></p>
+<p>对于TCP的socket来说, sock对象实际上是一个tcp_sock. 因此可以随便强转成其中的某个数据结构</p>
+<p>reqsk_queue_alloc包含了两件很重要的事情, 接受队列数据结构的定义和接收队列的申请和初始化</p>
+<h3 id="接收队列的定义"><a href="#接收队列的定义" class="headerlink" title="接收队列的定义"></a>接收队列的定义</h3><p>这里的接收队列并不是socket接收数据的rcv队列, 是指一个包含了全连接队列和半连接队列的数据结构</p>
+<p>icsk-&gt;icsk_accept_queue定义在inet_connection_sock下面, 是一个request_sock_queue类型的对象, 是内核用来实现客户端请求的主要数据结构. 我们平时说的全连接队列和半连接队列都是在这个数据结构中实现的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inet_connetcion_sock</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">inet_sock</span>		<span class="title">icsk_inet</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">request_sock_queue</span> <span class="title">icsk_accept_queue</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">request_sock_queue</span> &#123;</span></span><br><span class="line">    <span class="comment">// 全连接队列</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">request_sock</span> *<span class="title">rskq_accept_head</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">request_sock</span> *<span class="title">rskq_accept_tail</span>;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 半连接队列</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listen_sock</span>  *<span class="title">listen_opt</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250803124642.png"></p>
+<p>对于全连接队列, 因为不需要复杂的查找工作, accept处理的时候, 只需要先进先出就好, 所有使用链式队列就好</p>
+<p>而半连接队列相关的数据结构是listen_opt, 是listen_sock类型的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">listen_sock</span> &#123;</span></span><br><span class="line">    u8				max_qlen_log;</span><br><span class="line">    u32				nr_table_entries;</span><br><span class="line">    ...</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">request_sock</span> *<span class="title">syn_table</span>[0];</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为服务端需要在第三次握手的时候快速地查找出来第一次握手时留存的reques_sock, 所以使用了哈希表来管理</p>
+<h3 id="接收队列申请和初始化"><a href="#接收队列申请和初始化" class="headerlink" title="接收队列申请和初始化"></a>接收队列申请和初始化</h3><p>回到inet_csk_listen_start函数中. 调用了reqsk_queue_alloc来申请和初始化icsk_accept_queue这个对象</p>
+<ol>
+<li>首先计算出来半连接队列的长度</li>
+<li>为listen_sock对象申请内存, 这里包含了半连接队列</li>
+<li>全连接队列头初始化, 设置成NULL</li>
+<li>将半连接队列挂到了接收队列queue上</li>
+</ol>
+<h3 id="半连接队列长度计算"><a href="#半连接队列长度计算" class="headerlink" title="半连接队列长度计算"></a>半连接队列长度计算</h3><p>在nr_table_entries在最初调用reqsk_queue_alloc计算, 值是net.core.somaxconn和用户调用listen的时候传入的backlog二者之间的最小值</p>
+<ul>
+<li>min_t(u32, nr_table_entries, sysctl_max_syn_backlog)和sysctl_max_syn_backlog内核对象再取了一次最小值</li>
+<li>max_t(u32, nr_table_entries, 8), 保证nr_table_entries不会小于8. 防止新手传入的一个太小的值无法建立连接</li>
+<li>roundup_pow_of_two(nr_table_entris + 1)用来向上对齐到2的整数次幂</li>
+</ul>
+<p>所以最后, <strong>半连接队列的长度是min(backlog, net.core.somaxconn, tcp_max_syn_backlog) + 1再向上取整到2的N次幂, 但是最小不能小于16(也就是前面的min计算出来的值不能小于8)</strong></p>
+<p>同时为了提升比较性能, 内核并没有直接记录半连接队列的长度, 而是记录的N次幂</p>
+<h3 id="listen小结"><a href="#listen小结" class="headerlink" title="listen小结"></a>listen小结</h3><p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250803130848.png"></p>
+<p><strong>对于全连接队列, min(backlog, net.core.somaxconn)</strong></p>
+<p><strong>半连接队列的长度是min(backlog, net.core.somaxconn, net.ipv4.tcp_max_syn_backlog) + 1再向上取整到2的N次幂, 但是最小不能小于16(也就是前面的min计算出来的值不能小于8)</strong></p>
+<p>也就是如果我们要调整半连接队列的长度, 要同时考虑这三个参数</p>
+<h2 id="connect函数的作用"><a href="#connect函数的作用" class="headerlink" title="connect函数的作用"></a>connect函数的作用</h2><p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250803225707.png"></p>
+<h3 id="connect调用链展开"><a href="#connect调用链展开" class="headerlink" title="connect调用链展开"></a>connect调用链展开</h3><p>首先就是和listen一样的步骤, 调用<code>connect(fd, ...)</code>系统调用, 在系统调用内部首先使用<code>sockfd_lookup_light(fd, ...)</code>来获取内核中对应的socket对象</p>
+<p>对于AF_INET类型的socket内核对象来说, sock-&gt;ops-&gt;connect指针指向的是<code>inet_stream_connect()</code>函数. 然后会进入到<code>__inet_stream_connect()</code></p>
+<p>刚创建的socket状态时SS_UNCONNECTED, 会在<code>__inet_stream_connect()</code>进入到case SS_UNCONNECTED的处理逻辑中. 取出socket中的sock对象, 然后执行sock中的sk-&gt;sk_prot-&gt;connect指向的<code>tcp_v4_connect()</code></p>
+<p>在<code>tcp_v4_connect()</code>中, 设置socket的状态为TCP_SYN_SENT, 调用inet_hash_connnect(…, sk)动态地选择一个端口, 然后调用tcp_connect(sk)来构建发送一个syn报文</p>
+<h3 id="选择可用的端口"><a href="#选择可用的端口" class="headerlink" title="选择可用的端口"></a>选择可用的端口</h3><p>接下来就是看到inet_hash_connect()是怎么动态地选择出来一个可用的端口的,  inet_hash_connect()会直接调用<code>__inet_hash_connect(death_row, sk, inet_sk_port_offset(sk), __inet_check_established, __inet_hash_nolisten)</code></p>
+<p>其中有两个重要的参数</p>
+<ul>
+<li><code>inet_sk_port_offset(sk)</code>: 这个函数是根据连接目的IP和端口等信息生成的一个随机数</li>
+<li><code>__inet_check_established</code>: 是检查是否和现有ESTABLISH状态的连接冲突的时候使用的函数</li>
+</ul>
+<p>接下来, 我们进入到<code>__inet_hash_connect()</code></p>
+<ol>
+<li><p>判断这个socket是不是bind过, 如果调用过, 相当于已经手动选定了客户端的端口了, 就不需要动态地获取端口了. 如果没有调用过, 则snum为0, 我们进入到遍历查找出来可用的端口</p>
+</li>
+<li><p>接着从内核中获取本地端口配置, remaining &#x3D;  high - low - 1</p>
+</li>
+<li><p>从遍历所有的端口查找可用的端口</p>
+</li>
+<li><pre><code class="language-c">if (!snum) &#123;
+    // 遍历查找
+    for (i = 1; i &lt;= remaining; i++) &#123;
+        port = low + (i + offset) % remaining;
+
+        // 查看是否是保留端口, 是则continue跳过
+        
+        //查找和遍历已经使用的端口的哈希链表
+        
+        // 如果端口已经使用过了, 进一步调用check_established()检查端口是否可用
+    &#125;
+&#125;
+</code></pre>
+</li>
+</ol>
+<p>在循环内部</p>
+<ol>
+<li>判断inet_is_reserved_local_port, 判断要选择的端口是否在net_ipv4.ip_local_reserved_ports中, 在的话就不能用</li>
+<li>整个系统中会维护所有已经被使用过的端口的哈希表, hinfo-&gt;bhash. 代码会在这个哈希表中查找要选择的端口有没有被使用过, 如果没有找到, 说明这个端口是可用的. 这个时候通过net_bind_bucklet_create申请一个inet_bind_bucket来记录端口已经使用了</li>
+<li>遍历完所有的端口都没有找到可用的端口, 则会返回-EADDRNOTAVAIL(Error ADDRess NOT AVAILable), 在用户程序的视角上看就是Cannot assign requested address这个错误</li>
+</ol>
+<h3 id="如果端口已经被使用过了"><a href="#如果端口已经被使用过了" class="headerlink" title="如果端口已经被使用过了"></a>如果端口已经被使用过了</h3><p>我们如果在哈希表bhash中发现了这个端口已经使用过了,  会进一步进入到check_established 继续检查是否可用, 如果这个函数返回了0, 说明这个端口还能接着用</p>
+<blockquote>
+<p>为什么使用过了还能接着使用?</p>
+<p>我们只需要保证四元组是不一样的就行, 所以即使saddr和sport都是一样的, 只要daddr或者dport有一个不一样就行</p>
+</blockquote>
+<p>check_established由调用方传入, 实际使用的是<code>__inet_check_establied</code></p>
+<p>在这个函数中会找到inet_ehash_bucket中这个端口对应的hash bucket, 然后遍历看看有没有四元组都一样的, 一样的话就报错. 其中inet_ehash_bucket是所有的ESTABLISH状态的socket组成的哈希表. 遍历这个哈希表, 然后使用INET_MATCH宏来判断是否可用</p>
+<h3 id="发起syn请求"><a href="#发起syn请求" class="headerlink" title="发起syn请求"></a>发起syn请求</h3><p>回到tcp_v4_connect, 这个时候已经完成了获取一个可用端口了, 接下来就进入到tcp_connect(sk)</p>
+<ol>
+<li>申请一个skb, 并将其设置成SYN包</li>
+<li>添加到发送队列上</li>
+<li>调用tcp_transmit_skb将该包发出去</li>
+<li>启动一个重传定时器, 超时重传</li>
+</ol>
+<h3 id="connect小结"><a href="#connect小结" class="headerlink" title="connect小结"></a>connect小结</h3><p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250804003552.png"></p>
+<p><strong>客户端在执行connect函数的时候, 把本地socket状态设置成TCP_SYN_SENT, 然后选一个可用的端口, 接着发出SYN握手请求并启动重传定时器.</strong></p>
+<p>搞清楚了TCP连接中客户端的端口会在两个位置确定</p>
+<ul>
+<li>如果在connect之前调用了bind, 如果bind的不是0, 则会使用bind中指定的端口号</li>
+<li>如果没有调用过bind(bind的端口号是0也会自动选择), 则会在connect的时候, 随机地从ip_local_port_range选择一个位置开始循环判断, 如果端口号查找失败, 则会报错 “Cannot assign requested address”<ul>
+<li>如果你不想某个端口号被使用到, 则把他们写入到ip_local_reserved_ports这个内核参数中就行了</li>
+</ul>
+</li>
+</ul>
+<h2 id="完整的TCP连接的建立过程"><a href="#完整的TCP连接的建立过程" class="headerlink" title="完整的TCP连接的建立过程"></a>完整的TCP连接的建立过程</h2><h3 id="客户端connect"><a href="#客户端connect" class="headerlink" title="客户端connect"></a>客户端connect</h3><p><strong>客户端在执行connect函数的时候, 把本地socket状态设置成TCP_SYN_SENT, 然后选一个可用的端口, 接着发出SYN握手请求并启动重传定时器.</strong></p>
+<p>第一次重传超时时间一般是1s, 老版本的Linux可能是3s</p>
+<h3 id="服务端响应SYN"><a href="#服务端响应SYN" class="headerlink" title="服务端响应SYN"></a>服务端响应SYN</h3><p>所有的TCP包, 都经过了网卡, 软中断, 进入到<code>tcp_v4_rcv</code>函数. 该函数根据网络包(skb) TCP头信息中的目的IP查到当前处于listen状态的socket, 然后继续进入到<code>tcp_v4_do_rcv</code>处理握手过程</p>
+<p><code>tcp_v4_do_rcv()</code></p>
+<ol>
+<li>如果socket的状态是TCP_LISTEN, 会进入到tcp_v4_hnd_req查看半连接队列. 因为是第一次握手, 所以半连接队列中是空的, 相当于什么都处理.</li>
+<li>在<code>tcp_rcv_state_process</code>里根据不同的socket状态进行不同的处理(第一步握手的SYN和第三步握手的ACK就是在这里区分开来)</li>
+</ol>
+<p>tcp_rcv_state_process在sk状态是TCP_LISTEN状态并且包是syn握手包的时候, 进入到icsk_af_ops_conn_request &#x3D; <code>tcp_v4_conn_request</code>函数, 服务端响应SYN主要处理逻辑都在里面</p>
+<p><code>tcp_v4_conn_request()</code></p>
+<ol>
+<li>判断半连接队列是否已经满了, 如果满了, 进入到tcp_syn_flood_action判断有没有开启tcp_syncookies内核参数. <strong>如果队列满, 并且没有开启tcp_syncookies, 握手包直接丢弃</strong></li>
+<li>判断全连接队列是不是满了, <strong>如果满了, 且young_ack的数量 &gt; 1, 同样直接丢弃</strong></li>
+</ol>
+<blockquote>
+<p>young_ack是半连接队列中保持的一个计数器, 记录的是刚有SYN到达, 没有被SYN_ACK重传定时器重传过SYN_ACK. 同时也没有完成过三次握手的sock数量</p>
+</blockquote>
+<ol start="3">
+<li><strong>创建request_sock, 构造synack响应包, 通过<code>ip_build_and_send_pkt</code>发送响应包,  添加到半连接队列, 并开启定时器</strong></li>
+</ol>
+<p>这一步的主要工作就是, <strong>判断接收队列是不是满了, 满了的话, 可能会丢弃该请求, 否则发送出去synack, 申请request_sock添加到半连接队列中, 同时启动定时器</strong></p>
+<h3 id="客户端响应SYNACK"><a href="#客户端响应SYNACK" class="headerlink" title="客户端响应SYNACK"></a>客户端响应SYNACK</h3><p>客户端收到SYNACK包的时候, 同样会进入到tcp_rcv_state_process函数. 因为自身的状态是TCP_SYN_SENT, 所以会进入到另一个不同的分支</p>
+<p><code>tcp_rcv_synsent_state_process()</code>是客户端响应synack的主要逻辑</p>
+<ol>
+<li>调用tcp_finish_connect标记该socket连接建立完成, 状态变成ESTABLISH, 初始化拥塞控制, 打开TCP保活计时器</li>
+<li>调用tcp_send_ack(), 申请和构造ack包, 发送出去</li>
+<li>调用tcp_clean_rtx_queue(), 删除发送队列, 删除connect时设置的重传定时器</li>
+</ol>
+<p><strong>客户端响应来自服务端的synack时清除了connect时创建的重传定时器, 把当前socket状态设置成ESTABLESHED, 开启保活定时器后发出第三次握手的请求</strong></p>
+<h3 id="服务端响应ACK"><a href="#服务端响应ACK" class="headerlink" title="服务端响应ACK"></a>服务端响应ACK</h3><p>反直觉的是, 这里服务端监听socket的状态仍然是TCP_LISTEN, 所以仍然会进入到<code>tcp_v4_hnd_req</code>中, 不过因为半连接队列不是空了, 所以执行的逻辑会发生变化</p>
+<p><code>inet_csk_search_req</code>负责在半连接队列中找到现在的TCP请求对应的半连接request_sock对象, 然后进入到<code>tcp_check_req</code></p>
+<p><code>tcp_check_req()</code></p>
+<ol>
+<li>调用icsk_af_ops-&gt;syn_recv_sock &#x3D; <code>tcp_v4_syn_recv_sock</code>函数创建子socket</li>
+<li>调用<code>inet_csk_reqsk_queue_unlink</code>清理半连接队列</li>
+<li>将子<code>inet_csk_reqsk_queue_add</code>将子socket对应的request sock添加到全连接队列</li>
+</ol>
+<h4 id="创建子socket"><a href="#创建子socket" class="headerlink" title="创建子socket"></a>创建子socket</h4><p><code>tcp_v4_syn_recv_sock()</code></p>
+<ol>
+<li>判断接收队列是不是满了, 如果满了, goto exit_overflow修改一下计数器就将请求丢弃</li>
+<li>创建sock并初始化</li>
+</ol>
+<h4 id="删除半连接队列"><a href="#删除半连接队列" class="headerlink" title="删除半连接队列"></a>删除半连接队列</h4><p><code>inet_csk_reqsk_queue_unlink()</code></p>
+<ol>
+<li><code>reqsk_queue_unlink()</code>函数将连接请求从半连接队列中删除</li>
+</ol>
+<h4 id="添加全连接队列"><a href="#添加全连接队列" class="headerlink" title="添加全连接队列"></a>添加全连接队列</h4><p><code>inet_csk_reqsk_queue_add()</code></p>
+<ol>
+<li>在<code>reqsk_queue_add</code>中将握手成功的request_sock对象插入到全连接队列链表的尾部</li>
+</ol>
+<h4 id="设置状态为RESTABLISHED"><a href="#设置状态为RESTABLISHED" class="headerlink" title="设置状态为RESTABLISHED"></a>设置状态为RESTABLISHED</h4><p>第三次握手的时候进入到tcp_rcv_state_process的路径不一样, 是通过子socket进来的. 这个时候子socket的状态是TCP_SYN_RECV</p>
+<p><strong>在tcp_set_state(sk, TCP_ESTABLISHED), 将连接设置成TCP_ESTABLISHED. 服务端响应第三次握手ACK所作的工作是把当前半连接对象删除, 创建了新的socket后加入到全连接队列, 然后将新连接的状态设置为ESTABLISHED</strong></p>
+<h3 id="服务端accept"><a href="#服务端accept" class="headerlink" title="服务端accept"></a>服务端accept</h3><p>inet_csk_accept中调用reqsk_queue_remove从全连接队列中获取一个头元素并返回.</p>
+<p><strong>accept</strong>重点工作就是从已经建立好的全连接队列中取出来一个返回给用户进程</p>
+<h3 id="连接建立过程总结"><a href="#连接建立过程总结" class="headerlink" title="连接建立过程总结"></a>连接建立过程总结</h3><p><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/20250804015146.png"></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Computer-Fundamentals/">Computer Fundamentals</a><a class="post-meta__tags" href="/tags/Network/">Network</a><a class="post-meta__tags" href="/tags/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">三次握手的实现原理</a></div><div class="post-share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/04/computer-fundamentals/Operating%20System/Linux%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%86%85%E5%AD%98(%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%AF%87)/" title="操作系统内存管理 - Linux虚拟内存篇"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">操作系统内存管理 - Linux虚拟内存篇</div></div><div class="info-2"><div class="info-item-1">进程是如何使用内存的 (虚拟内存篇)以问题来引入  申请内存申请到的真的是物理内存吗 对虚拟内存的申请如何转化成对物理内存的访问? top命令输出进程的内存指标中VIRT和RES分别是什么含义 堆栈的大小限制是多大, 当堆栈发生溢出以后应用程序会发生什么 进程栈和线程栈是一个东西吗 malloc大概是怎么工作的  虚拟内存和物理页为什么要有虚拟内存 用户进程访问内核数据要加以限制 用户进程之间需要隔离 内存不足的时候swap到硬盘上, 保证系统可正常运行  虚拟地址空间到底是什么在内核中的定义, 每个进程的task_struct都有一个核心对象 - mm_struct类型的mm. 代表的就是进程的虚拟地址空间 1234struct task_struct &#123;    ...        struct mm_struct 	*mm;&#125;  在这个虚拟内存空间里面, 每一段已经分配出去的地址范围都是通过一个个虚拟内存区域VMA来表示, 也就是对应到内核中的数据结构vm_area_struct 12345struct vm_area_struct &#123;	uns...</div></div></div></a><a class="pagination-related  no-desc" href="/2025/08/01/project/Architecture/%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1/REST/" title=""><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2"></div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/08/01/computer-fundamentals/Algorithm/Heap/" title="堆"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-01</div><div class="info-item-2">堆</div></div><div class="info-2"><div class="info-item-1">堆核心概念 这里并不讨论堆的实现和基本的原理, 只是讨论这个数据结构的使用场景, 解决的问题  使用堆我们能获得O(logn)的时间复杂度的插入和删除元素, O(1)的时间复杂度的获取某个集合的最大(小)值 如果一个场景需要持续获取某个变化集合的最大(小)值, 我们就能考虑使用堆, 并且一定会有出堆操作!!! 不然我们简单维护一个min或max变量就行了 一般解法1234// 创建小堆Queue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();// 创建大堆Queue&lt;Integer&gt; maxHeap = new PriorityQueue&lt;&gt;((a,b) -&gt; b-a);  典型例题295. 数据流的中位数 347. 前 K 个高频元素 215. 数组中的第K个最大元素 </div></div></div></a><a class="pagination-related" href="/2025/07/10/computer-fundamentals/Algorithm/Binary%20Search/" title="Binary Sort-二分查找"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-10</div><div class="info-item-2">Binary Sort-二分查找</div></div><div class="info-2"><div class="info-item-1">二分查找典型特征 原数组是有序的, 或者改变原数组顺序不影响答案 我们要找出来一个数字在数组中的位置(标准二分查找题目)  一般化特征 我们能一次性排除解空间中的一半解 我们要找出来解空间中的某一个解的位置  解题通法-红蓝染色法我们能将数组依照单调性分成两部分, 以我们要找出target为例 num &gt;&#x3D; target的部分染成蓝色, num &lt; target为红色, 我们需要染色的区间是[left, right]或者(left-1, right+1)…  [left, right]要染色的区间的含义就是我们现在没有染色也就是不知道其中的元素和target之间的关系  循环不变量(以两端闭区间举例)  left - 1始终是红色 right + 1始终是蓝色  思考顺序 首先确定我们怎么确定答案, 这种方式一定是要利用原数组在找到答案方面的单调性, 我们一定能一次性排除一半的解空间 确定下来红蓝染色情况 确定下来没有染色区间的开闭选择(一般是双开区间)  典型例题及实现找到第一个大于等于target的值 闭区间12345678910111213141516...</div></div></div></a><a class="pagination-related" href="/2025/07/30/computer-fundamentals/Algorithm/Stack/" title="栈 (单调栈)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-30</div><div class="info-item-2">栈 (单调栈)</div></div><div class="info-2"><div class="info-item-1">栈栈核心特征 (什么时候使用栈)本质上是一种用空间换时间的优化方案, 如果我们缓存数据的方向是从左往右(从右往左), 而我们求解答案的时候是从右往左的, 计算完成以后就不需要了, 符合后进先出的特征, 使用栈结构 比如括号匹配问题, 我们从左向右遍历和缓存数据, 然后在我们匹配到右括号的时候, 从右往左将数据弹出 一般解法1234567891011for (int i = 0; i &lt; nums.length; i++) &#123;   	// 特殊的情况下, 也就是匹配到了需要解递归的数据的时候    // 元素出栈    while (!stack.isEmpty() &amp;&amp; condition) &#123;        int j = stack.pop();        ...    &#125;        // 一般情况下直接将元素入栈    stack.push(i);&#125;  典型题目20. 有效的括号 394. 字符串解码 非典型题目155. 最小栈 单调栈核心特征单调栈是栈的一种特殊的用法, 我们维护的栈是一个大小单调变化的...</div></div></div></a><a class="pagination-related" href="/2025/07/25/computer-fundamentals/Operating%20System/IO-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" title="操作系统I&#x2F;O - 多路复用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-25</div><div class="info-item-2">操作系统I&#x2F;O - 多路复用</div></div><div class="info-2"><div class="info-item-1">I&#x2F;O-多路复用多路复用是解决的什么问题解决的最根本的问题是: 我们怎么让我们的服务器能并发处理更多的数量的请求 最经典的问题就是C10K问题: 服务器怎么并发处理1w个请求 解决这个问题我们就需要考虑到, 连接占用的资源有哪些  文件描述符: Socket实际上是一个虚拟的文件, 也就对应着有相应的文件描述符, 在Linux中一个进程能打开的文件描述符的数量是有限的, 一般来说是1024(默认值) 系统内存: 每个TCP连接在内核中都有对应的数据结构, 也就是每个连接都占用了一定的内存  在这些基础上, 我们该怎么实现并发处理1w个请求呢?  多进程模型?  我们每成功建立一个连接就创建一个进程, 这个时候因为fork()创建的子进程中的文件描述符也是被继承过去, 让子进程来通过已连接Socket来提供服务 但是这种方式很明显是不能解决C10K问题的, 没有哪个系统扛得住创建1W个进程, 并且进程间切换的成本很高, 性能很差  多线程模型  为了解决多进程模型中, 进程的体量很大并且切换成本高的问题, 我们换成多线程模型 当服务器与客户端 TCP 完成连接后，通过 p...</div></div></div></a><a class="pagination-related" href="/2025/08/09/computer-fundamentals/Operating%20System/Linux%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="操作系统内存管理 - Linux物理内存篇"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-09</div><div class="info-item-2">操作系统内存管理 - Linux物理内存篇</div></div><div class="info-2"><div class="info-item-1">Linux物理内存物理内存检测在物理内存这个硬件和操作系统之间, 还存在着一个固件层(firmware)也叫BIOS. 它负责硬件自检, 初始化所有硬件设备, 加载操作系统引导程序, 将控制权移交给操作系统并提供结构供操作系统读取硬件信息. 操作系统所需的内存等硬件信息都是通过固件来获取的 在固件ACPI接口规范中定义了探测内存的物理分布规范. 内核请求中断15H , 并设置操作码为E820H,  因为操作码是E820, 所以这个机制也被称为E820 会在detect_memory_e820函数发出15号中断并处理所有结果, 把内存地址范围保存到boot_params.e820_table对象中. boot_params只是一个中间数据, 专门还有一个e820_table全局数据结构来保存内存地址范围, 在e820__memory_setup中会将boot_params.e820_table保存到e820_table中, 并打印出来. 服务器能通过mseg命令来查看到实际的物理内存地址. memblock内存分配器的创建在完成了E820机制检测到可用的内存地址范围以后, 调用e8...</div></div></div></a><a class="pagination-related" href="/2025/07/25/computer-fundamentals/Operating%20System/IO-%E9%9B%B6%E6%8B%B7%E8%B4%9D/" title="操作系统I&#x2F;O - 零拷贝"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-25</div><div class="info-item-2">操作系统I&#x2F;O - 零拷贝</div></div><div class="info-2"><div class="info-item-1">I&#x2F;O的演进DMA技术在最开始的时候, 读一个文件的过程是   用户进程调用read(), 切换到内核态, CPU向磁盘发起IO请求 磁盘将数据放入到磁盘控制器缓冲区里面, 发送IO中断信号给CPU CPU将数据从磁盘数据控制器缓冲区中拷贝到 PageCache CPU将数据从PageCache中拷贝到用户缓冲区 read()调用返回, 切换到用户态  一共发生了两次用户态和内核态的上下文切换, 发生了两次拷贝, 并且数据的搬运也是交给CPU来操作的, 占用了大量的CPU的时间, 导致了CPU吞吐量下降 解决方式就是引入了DMA(Direct Memory Access)直接内存访问技术,  我们将把数据从磁盘控制器缓冲区搬运到PageCache的工作交给了DMA控制器来进行  现在的读一个文件的流程变成了  用户进程调用read(), 切换到内核态, 向操作系统发起IO请求, 将数据读取到自己的内存缓冲区中, 进程进入到了阻塞状态 CPU收到操作系统发送的指令以后, 将请求发送给DMA, DMA再进一步发送给磁盘 磁盘将数据放入到磁盘控制器缓冲区里面, 发送IO中断信...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Function</div><div class="author-info-description">Function的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/fang-tech"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">三次握手的内部实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#socket%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text">socket函数的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#socket%E5%B0%8F%E7%BB%93"><span class="toc-number">1.1.1.</span> <span class="toc-text">socket小结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bind%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">bind函数的作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#listen%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">listen函数的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#listen%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="toc-number">1.3.1.</span> <span class="toc-text">listen系统调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E6%A0%88listen"><span class="toc-number">1.3.2.</span> <span class="toc-text">协议栈listen</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6%E9%98%9F%E5%88%97%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">接收队列的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6%E9%98%9F%E5%88%97%E7%94%B3%E8%AF%B7%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">1.3.4.</span> <span class="toc-text">接收队列申请和初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8A%E8%BF%9E%E6%8E%A5%E9%98%9F%E5%88%97%E9%95%BF%E5%BA%A6%E8%AE%A1%E7%AE%97"><span class="toc-number">1.3.5.</span> <span class="toc-text">半连接队列长度计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listen%E5%B0%8F%E7%BB%93"><span class="toc-number">1.3.6.</span> <span class="toc-text">listen小结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#connect%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">connect函数的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#connect%E8%B0%83%E7%94%A8%E9%93%BE%E5%B1%95%E5%BC%80"><span class="toc-number">1.4.1.</span> <span class="toc-text">connect调用链展开</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%8F%AF%E7%94%A8%E7%9A%84%E7%AB%AF%E5%8F%A3"><span class="toc-number">1.4.2.</span> <span class="toc-text">选择可用的端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E7%AB%AF%E5%8F%A3%E5%B7%B2%E7%BB%8F%E8%A2%AB%E4%BD%BF%E7%94%A8%E8%BF%87%E4%BA%86"><span class="toc-number">1.4.3.</span> <span class="toc-text">如果端口已经被使用过了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E8%B5%B7syn%E8%AF%B7%E6%B1%82"><span class="toc-number">1.4.4.</span> <span class="toc-text">发起syn请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#connect%E5%B0%8F%E7%BB%93"><span class="toc-number">1.4.5.</span> <span class="toc-text">connect小结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E7%9A%84TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B"><span class="toc-number">1.5.</span> <span class="toc-text">完整的TCP连接的建立过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AFconnect"><span class="toc-number">1.5.1.</span> <span class="toc-text">客户端connect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%93%8D%E5%BA%94SYN"><span class="toc-number">1.5.2.</span> <span class="toc-text">服务端响应SYN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%93%8D%E5%BA%94SYNACK"><span class="toc-number">1.5.3.</span> <span class="toc-text">客户端响应SYNACK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%93%8D%E5%BA%94ACK"><span class="toc-number">1.5.4.</span> <span class="toc-text">服务端响应ACK</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%AD%90socket"><span class="toc-number">1.5.4.1.</span> <span class="toc-text">创建子socket</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%8D%8A%E8%BF%9E%E6%8E%A5%E9%98%9F%E5%88%97"><span class="toc-number">1.5.4.2.</span> <span class="toc-text">删除半连接队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%85%A8%E8%BF%9E%E6%8E%A5%E9%98%9F%E5%88%97"><span class="toc-number">1.5.4.3.</span> <span class="toc-text">添加全连接队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E7%8A%B6%E6%80%81%E4%B8%BARESTABLISHED"><span class="toc-number">1.5.4.4.</span> <span class="toc-text">设置状态为RESTABLISHED</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AFaccept"><span class="toc-number">1.5.5.</span> <span class="toc-text">服务端accept</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B%E6%80%BB%E7%BB%93"><span class="toc-number">1.5.6.</span> <span class="toc-text">连接建立过程总结</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/09/computer-fundamentals/Operating%20System/Linux%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="操作系统内存管理 - Linux物理内存篇">操作系统内存管理 - Linux物理内存篇</a><time datetime="2025-08-09T03:10:20.000Z" title="发表于 2025-08-09 11:10:20">2025-08-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/04/computer-fundamentals/Operating%20System/Linux%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%86%85%E5%AD%98(%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%AF%87)/" title="操作系统内存管理 - Linux虚拟内存篇">操作系统内存管理 - Linux虚拟内存篇</a><time datetime="2025-08-04T05:16:26.000Z" title="发表于 2025-08-04 13:16:26">2025-08-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/02/computer-fundamentals/Network/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" title="深入理解三次握手的实现原理">深入理解三次握手的实现原理</a><time datetime="2025-08-02T05:33:20.000Z" title="发表于 2025-08-02 13:33:20">2025-08-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/01/project/Architecture/%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1/REST/" title="无标题">无标题</a><time datetime="2025-08-01T09:56:46.412Z" title="发表于 2025-08-01 17:56:46">2025-08-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/01/project/Architecture/%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1/%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E8%B0%83%E7%94%A8/" title="分布式架构-远程服务调用 (RPC)">分布式架构-远程服务调用 (RPC)</a><time datetime="2025-08-01T08:40:26.000Z" title="发表于 2025-08-01 16:40:26">2025-08-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By Function</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"lang":"zh-CN","input_position":"top","emit_metadata":1,"reactions_enabled":1}
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'fang-tech/fang-tech.github.io',
+      'data-repo-id': 'R_kgDOPJD8XA',
+      'data-category-id': 'DIC_kwDOPJD8XM4CswtE',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
