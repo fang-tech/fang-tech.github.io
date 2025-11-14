@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="https://functional.top/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://functional.top/img/butterfly-icon.png">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://functional.top/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Hexo",
+  "alternateName": [
+    "functional.top"
+  ],
+  "url": "https://functional.top/"
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://functional.top/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Hexo',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">Hexo</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Hive/" title="Hive Introduction">Hive Introduction</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">Hive的作用Hive将提交任务这一件事情简化, 屏蔽了执行引擎, 提供了HiveQL供用户使用, 用户可以使用SQL的形式提交并执行任务. 从输入数据到最后的执行经过的步骤:  用户通过客户端连接到HiveServer2提交SQL -&gt; Driver接受客户端的HiveQL -&gt; Compiler &#x2F; Semantic Analyzer &#x2F; Optimizer将QL转化成逻辑计划, 物理计划, 并进行CBO优化 -&gt; Execution Engine将物理计划分解成具体的执行任务, 提交到底层的计算引擎上 (MapReduce, Spark) -&gt; 在HDFS上存储数据, 由YARN分配资源给计算引擎 另一条线是HiveServer2 -&gt; Hive MetaStore Server访问元数据, 通过Thrift提供元数据 (表&#x2F;分区&#x2F;统计), 并将结果持久化到关系型数据库  HMS (Hive Metastore)HMS </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Livy_2_Architecture/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">整体架构 Livy 的整体架构是怎样的？有哪几层？   🔍 探索：画出 REST API → Server → RSCClient → RSCDriver → Spark 的层次图   Livy Server 和 Spark Driver 是什么关系？   🔍 探索：理解 Livy Server 是客户端，Spark Driver 是服务端的反转架构   RSC (Remote Spark Context) 是什么？为什么需要它？   🔍 探索：rsc&#x2F;src&#x2F;main&#x2F;java&#x2F;org&#x2F;apache&#x2F;livy&#x2F;rsc&#x2F;README.md   Livy 如何与 YARN&#x2F;K8s 集成？   🔍 探索：SparkYarnApp.scala，查看如何监控 YARN 应用  模块职责 core、server、rsc、repl 四个模块各自的职责是什么？   🔍 探索：查看各模块的 pom.xml 依赖关系   为什么 Interactive Session 需要 ReplDriver，而...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Livy_3_Key_Process/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content"> 创建一个 Interactive Session 的完整流程是什么？经历了哪些步骤？   🔍 探索：InteractiveSession.create() → RSCClient 构建 → ContextLauncher 启动 Driver   PingJob 是什么？为什么需要它？   🔍 探索：InteractiveSession.start() 第 537 行，理解连接验证   Session 从 Starting 到 Running 状态，中间发生了什么？   🔍 探索：跟踪 PingJob 的 onJobSucceeded 回调   如果 Spark Driver 启动失败，Session 会经历哪些状态？   🔍 探索：PingJob 的 onJobFailed 和 errorOut() 方法  代码执行流程 用户提交的代码是如何到达 Spark Driver 执行的？   🔍 探索：executeStatement() → RSCClient.submitReplCode() → RPC → ReplDriver.handle()   RPC 通信是如何...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Livy_4_Advanced_features/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">状态管理 为什么 InteractiveSession 需要双层状态（serverSideState + replState）？   🔍 探索：state 属性的实现，理解细粒度状态监控   状态转换有哪些保护机制？为什么需要这些保护？   🔍 探索：transition() 方法的 areSameStates 和 transitFromInactiveToActive 检查   多个线程同时触发状态转换时，如何保证一致性？   🔍 探索：synchronized 关键字的使用   SparkApp 状态和 Session 状态的映射关系是什么？   🔍 探索：stateChanged() 回调，理解事件驱动的状态同步  会话恢复 Livy Server 重启后，如何恢复已有的 Session？   🔍 探索：InteractiveSession.recover()，SessionStore 的实现   支持哪些持久化方式？它们的优缺点是什么？   🔍 探索：FileSystemStateStore、ZooKeeperStateStore、JDBCStateStore...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Livy_5_Production_Practice/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">配置管理 有哪些关键的 Livy 配置项？如何调优？   🔍 探索：livy.conf.template，理解各配置项的作用   如何配置多个 Spark 版本支持？   🔍 探索：livy.spark.versions 配置   如何配置 Kerberos 认证？   🔍 探索：LivyServer.scala 中的 UserGroupInformation   如何配置资源隔离（队列、用户模拟）？   🔍 探索：AccessManager、proxyUser 参数  监控告警 Livy 暴露了哪些监控指标？如何采集？   🔍 探索：Metrics.scala，Prometheus 集成   如何监控 Session 的健康状态？   🔍 探索：&#x2F;sessions API，状态监控   如何收集 Spark Driver 的日志？   🔍 探索：logLines() 方法，SparkApp.log()   如何知道 Session 启动时间过长？   🔍 探索：MetricsKey.INTERACTIVE_SESSION_START_TIME  高可用...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Livy_6_Implementation_Details/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">RPC 机制 RPC 的消息格式是什么？如何序列化和反序列化？   🔍 探索：KryoMessageCodec.java，消息头和消息体   RPC 如何处理超时和重试？   🔍 探索：Rpc.call() 方法，Future 机制   SASL 握手的流程是什么？   🔍 探索：SaslHandler.java，客户端和服务端的认证   如何保证 RPC 连接的安全性？   🔍 探索：secret 的生成和验证  REPL 实现 Scala REPL 是如何集成的？   🔍 探索：ScalaInterpreter.scala，IMain 的使用   PySpark 是如何执行的？与 Scala 有何不同？   🔍 探索：PythonInterpreter.scala，py4j 的使用   如何实现代码自动补全？   🔍 探索：completion() 方法，REPL 的 complete 接口   如何取消正在执行的 Statement？   🔍 探索：cancelStatement()，线程中断机制  SparkApp 监控 YARN 应用状态是如何监控的？ ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Livy_7_Optimize_and_expand/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">常见问题 Session 一直卡在 Starting 状态，如何排查？   🔍 探索：检查 Driver 日志、YARN 队列资源、网络连通性   PingJob 失败的常见原因有哪些？   🔍 探索：RPC 连接失败、Driver 启动超时、资源不足   Session 突然变成 Dead 状态，可能的原因？   🔍 探索：Driver OOM、YARN 杀掉应用、网络断开   代码执行超时，如何定位问题？   🔍 探索：Driver 日志、Spark UI、任务堆栈  性能问题 大量 Session 创建导致 Livy Server 压力大，如何优化？   🔍 探索：Session 池化、限流、资源预分配   RPC 通信成为瓶颈，如何优化？   🔍 探索：增加 rpc.max.threads、优化序列化   恢复大量 Session 时 Server 启动慢，如何解决？   🔍 探索：异步恢复、批量加载  数据问题 Session 恢复后状态不一致，如何处理？   🔍 探索：乐观锁机制、元数据清理   ZooKeeper 中的 Session 数据损坏，如何...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/Livy_Troubleshooting/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/Big_Data/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E8%A7%88/" title="大数据结构总览">大数据结构总览</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">大数据结构大数据可以分成五个层次 数据收集:将数据从数据源收集到数据存储层, 常用的组件有关系型, 非关系型, 分布式消息队列三种  关系型: Sqooq&#x2F;Canal, 连接MySQL这种关系型数据库和Hadoop之间的桥梁, Sqool可以全量将数据库中的数据导入到Hadoop中, Canal则能实现增量的导入 非关系型: Flume, 流式数据收集, 比如日志等数据, 经过ETL以后导入到Hadoop中 分布式消息队列: [[Kafka]], 常用作消息总线, 有分布式的高容错的设计, 适配大数据场景  数据存储主要由分布式文件系统和分布式数据库组成  分布式文件系统: HDFS, Hadoop分布式文件系统, 有强大的容错机制, 社区开发了很多种文件格式 分布式数据库: HBase, 构建在HDFS之上的分布式数据库, 提供结构化和半结构化的数据库, 支持列无限拓展  资源管理和服务调度 YARN: 统一资源管理与调度系统, 能够管理集群中的各种资源, 并按照一定策略分配给上层的各类应用. 同时支持灵活的配置, 允许用户按照队列的方式组织和管理资源, 且每个队列的...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/14/How/How_to_Code/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></span></div><div class="content">How to Comment行中注解对于代码的注解, 除了本身写法非常的晦涩的(比如c&#x2F;cpp), 需要写 “这是什么的”  注解, 其他大多数情况下, 我们的注解的职责需要关注 “为什么”, 在需要的地方解释这里为什么会需要这么一段代码.  行中注解应该避免繁琐的 “这是什么的”. 让你的代码易读&#x2F;解释性强&#x2F;清晰应该是你的 ”code“ 的尽力实现的职责, 好的代码应该本身就易读, 不要把这个工作推脱给comment. “comment”在行中的职责是补充为什么 </div></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">John Doe</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/14/Big_Data/Hive/" title="Hive Introduction">Hive Introduction</a><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/14/Big_Data/Livy_2_Architecture/" title="Untitled">Untitled</a><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/14/Big_Data/Livy_3_Key_Process/" title="Untitled">Untitled</a><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/14/Big_Data/Livy_4_Advanced_features/" title="Untitled">Untitled</a><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/14/Big_Data/Livy_5_Production_Practice/" title="Untitled">Untitled</a><time datetime="2025-11-14T10:15:50.013Z" title="Created 2025-11-14 10:15:50">2025-11-14</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/xv6-lab/" style="font-size: 1.1em; color: #999">xv6-lab</a> <a href="/tags/Best-Practice/" style="font-size: 1.1em; color: #999">Best-Practice</a> <a href="/tags/Spark/" style="font-size: 1.3em; color: #99a1ac">Spark</a> <a href="/tags/Git/" style="font-size: 1.1em; color: #999">Git</a> <a href="/tags/BigData/" style="font-size: 1.5em; color: #99a9bf">BigData</a> <a href="/tags/Hive/" style="font-size: 1.1em; color: #999">Hive</a> <a href="/tags/language/" style="font-size: 1.3em; color: #99a1ac">language</a> <a href="/tags/Overview/" style="font-size: 1.1em; color: #999">Overview</a> <a href="/tags/scala/" style="font-size: 1.3em; color: #99a1ac">scala</a> <a href="/tags/syscall/" style="font-size: 1.1em; color: #999">syscall</a> <a href="/tags/how-to-learn/" style="font-size: 1.3em; color: #99a1ac">how-to-learn</a> <a href="/tags/Livy/" style="font-size: 1.1em; color: #999">Livy</a> <a href="/tags/xv6/" style="font-size: 1.3em; color: #99a1ac">xv6</a> <a href="/tags/Operating-System/" style="font-size: 1.3em; color: #99a1ac">Operating-System</a> <a href="/tags/Workflow/" style="font-size: 1.1em; color: #999">Workflow</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              November 2025
+            </span>
+            <span class="card-archive-list-count">14</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/10/">
+            <span class="card-archive-list-date">
+              October 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">17</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-11-14T10:16:05.603Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
