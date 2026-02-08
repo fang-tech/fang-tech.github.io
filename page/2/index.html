@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="https://functional.top/page/2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://functional.top/img/butterfly-icon.png">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://functional.top/img/butterfly-icon.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://functional.top/page/2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Hexo',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">Hexo</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/AI-Framwork/AgentScope-Java/AgentSkill%E5%AE%8C%E6%95%B4%E8%AE%BE%E8%AE%A1%E6%A1%88/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content">现在的skill使用流程  准备: skills文件夹 加载: 通过FileSystemSkillRepository指定这个文件夹为baseUrl -&gt; 从这个文件夹中load skills -&gt; 注册进SkillBox中 加载结束: 将SkillBox注册到ReActAgent中 运行时动态管理: 通过skillBox提供的API管理(CRUD)skill并加载进系统 对话前: 通过SkillHook将skill的instruction和skill (name, desc)二元组注入到system_prmopt 对话时: 通过SkillLoaderTool(skillId, path(包含SKILL.md)), load对应的skill的特定的内容  拓展后的流程  准备: skills数据源 加载: 使用数据源创建repo, 将repo注册进skillBox 可以直接将repo注册进skillBox, 交给skillBox管理 不再将需要从repo中load数据, 注册成AgentSkill再注册到SkillBox中(repo_name, repo_instan...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/AI-Framwork/AgentScope-Java/%E5%8F%AF%E8%83%BD%E7%9A%84%E6%8F%90%E6%A1%88/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content"> 上下文工程(tool方面) 命名空间的规范性引入以此提高模型对于tool的语意的明细, 微软的参考文档 关于Tool的上下文缩减, Claude的实现文档 ToolSearchTool Programmatic Tool Calling 返回文档化, 只返回链接      </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/Big-Data/Livy/Livy_2_Architecture/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content">整体架构 Livy 的整体架构是怎样的？有哪几层？   🔍 探索：画出 REST API → Server → RSCClient → RSCDriver → Spark 的层次图   Livy Server 和 Spark Driver 是什么关系？   🔍 探索：理解 Livy Server 是客户端，Spark Driver 是服务端的反转架构   RSC (Remote Spark Context) 是什么？为什么需要它？   🔍 探索：rsc&#x2F;src&#x2F;main&#x2F;java&#x2F;org&#x2F;apache&#x2F;livy&#x2F;rsc&#x2F;README.md   Livy 如何与 YARN&#x2F;K8s 集成？   🔍 探索：SparkYarnApp.scala，查看如何监控 YARN 应用  模块职责 core、server、rsc、repl 四个模块各自的职责是什么？   🔍 探索：查看各模块的 pom.xml 依赖关系   为什么 Interactive Session 需要 ReplDriver，而...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/Big-Data/Livy/Livy_3_Key_Process/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content"> 创建一个 Interactive Session 的完整流程是什么？经历了哪些步骤？   🔍 探索：InteractiveSession.create() → RSCClient 构建 → ContextLauncher 启动 Driver   PingJob 是什么？为什么需要它？   🔍 探索：InteractiveSession.start() 第 537 行，理解连接验证   Session 从 Starting 到 Running 状态，中间发生了什么？   🔍 探索：跟踪 PingJob 的 onJobSucceeded 回调   如果 Spark Driver 启动失败，Session 会经历哪些状态？   🔍 探索：PingJob 的 onJobFailed 和 errorOut() 方法  代码执行流程 用户提交的代码是如何到达 Spark Driver 执行的？   🔍 探索：executeStatement() → RSCClient.submitReplCode() → RPC → ReplDriver.handle()   RPC 通信是如何...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/Big-Data/Livy/Livy_4_Advanced_features/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content">状态管理 为什么 InteractiveSession 需要双层状态（serverSideState + replState）？   🔍 探索：state 属性的实现，理解细粒度状态监控   状态转换有哪些保护机制？为什么需要这些保护？   🔍 探索：transition() 方法的 areSameStates 和 transitFromInactiveToActive 检查   多个线程同时触发状态转换时，如何保证一致性？   🔍 探索：synchronized 关键字的使用   SparkApp 状态和 Session 状态的映射关系是什么？   🔍 探索：stateChanged() 回调，理解事件驱动的状态同步  会话恢复 Livy Server 重启后，如何恢复已有的 Session？   🔍 探索：InteractiveSession.recover()，SessionStore 的实现   支持哪些持久化方式？它们的优缺点是什么？   🔍 探索：FileSystemStateStore、ZooKeeperStateStore、JDBCStateStore...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/Big-Data/Livy/Livy_5_Production_Practice/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content">配置管理 有哪些关键的 Livy 配置项？如何调优？   🔍 探索：livy.conf.template，理解各配置项的作用   如何配置多个 Spark 版本支持？   🔍 探索：livy.spark.versions 配置   如何配置 Kerberos 认证？   🔍 探索：LivyServer.scala 中的 UserGroupInformation   如何配置资源隔离（队列、用户模拟）？   🔍 探索：AccessManager、proxyUser 参数  监控告警 Livy 暴露了哪些监控指标？如何采集？   🔍 探索：Metrics.scala，Prometheus 集成   如何监控 Session 的健康状态？   🔍 探索：&#x2F;sessions API，状态监控   如何收集 Spark Driver 的日志？   🔍 探索：logLines() 方法，SparkApp.log()   如何知道 Session 启动时间过长？   🔍 探索：MetricsKey.INTERACTIVE_SESSION_START_TIME  高可用...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/Big-Data/Livy/Livy_6_Implementation_Details/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content">RPC 机制 RPC 的消息格式是什么？如何序列化和反序列化？   🔍 探索：KryoMessageCodec.java，消息头和消息体   RPC 如何处理超时和重试？   🔍 探索：Rpc.call() 方法，Future 机制   SASL 握手的流程是什么？   🔍 探索：SaslHandler.java，客户端和服务端的认证   如何保证 RPC 连接的安全性？   🔍 探索：secret 的生成和验证  REPL 实现 Scala REPL 是如何集成的？   🔍 探索：ScalaInterpreter.scala，IMain 的使用   PySpark 是如何执行的？与 Scala 有何不同？   🔍 探索：PythonInterpreter.scala，py4j 的使用   如何实现代码自动补全？   🔍 探索：completion() 方法，REPL 的 complete 接口   如何取消正在执行的 Statement？   🔍 探索：cancelStatement()，线程中断机制  SparkApp 监控 YARN 应用状态是如何监控的？ ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/Big-Data/Livy/Livy_7_Optimize_and_expand/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="content">常见问题 Session 一直卡在 Starting 状态，如何排查？   🔍 探索：检查 Driver 日志、YARN 队列资源、网络连通性   PingJob 失败的常见原因有哪些？   🔍 探索：RPC 连接失败、Driver 启动超时、资源不足   Session 突然变成 Dead 状态，可能的原因？   🔍 探索：Driver OOM、YARN 杀掉应用、网络断开   代码执行超时，如何定位问题？   🔍 探索：Driver 日志、Spark UI、任务堆栈  性能问题 大量 Session 创建导致 Livy Server 压力大，如何优化？   🔍 探索：Session 池化、限流、资源预分配   RPC 通信成为瓶颈，如何优化？   🔍 探索：增加 rpc.max.threads、优化序列化   恢复大量 Session 时 Server 启动慢，如何解决？   🔍 探索：异步恢复、批量加载  数据问题 Session 恢复后状态不一致，如何处理？   🔍 探索：乐观锁机制、元数据清理   ZooKeeper 中的 Session 数据损坏，如何...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/02/08/Big-Data/Livy/Livy_Troubleshooting/" title="Untitled">Untitled</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-02-08T11:04:02.564Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></span></div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2025/11/24/Big-Data/Spark/source%20code%20read/3.%20How%20spark%20job%20trigger%20a%20job%20and%20how%20it%20split%20job%20to%20stages%20and%20schedule%20the%20stage./" title="[Spark Source Code 3] How your spark job trigger a job and how it split job to stages and schedule the stage.">[Spark Source Code 3] How your spark job trigger a job and how it split job to stages and schedule the stage.</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2025-11-24T00:00:00.000Z" title="Created 2025-11-24 00:00:00">2025-11-24</time></span></div><div class="content">Spark启动一个job的过程前置条件在 AM 执行完 resumeDriver() 后,Executor 已经分配并注册完成,用户代码继续运行。当代码执行到 action 操作时,开始创建和提交 job。 详细步骤 代码执行到action操作, 这个时候已经有了有transformation操作形成的RDD DAG 窄依赖: 父RDD的每个分区只被一个子RDD分区使用, 如(map, filter) 宽依赖: 父RDD的每个分区都有可能被多个子RDD分区使用, 如(reduceByKey) 注意对于宽窄依赖来说, 依赖的粒度是分区级别, 同时这个属性是某个transfomation的固有属性, 这是这个算子的计算方式决定的, 如果他产生一条数据需要父RDD中不止一条数据, 涉及到数据的聚合,这个时候这个操作就会是宽依赖的操作 所有的action操作最后都会调用到SparkContext.runJob()   SparkContext提交Job到DAGScheduler sc.runJob进行参数清理和验证 调用DAGScheduler.runJob() -&gt; submit...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#content-inner">3</a><a class="extend next" rel="next" href="/page/3/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">John Doe</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" title="Untitled">Untitled</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/Big-Data/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E8%A7%88/" title="大数据结构总览">大数据结构总览</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/How/How_to_Code/" title="Untitled">Untitled</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/How/How_to_Learn_a_Language/" title="如何学习一门语言(以scala为例)">如何学习一门语言(以scala为例)</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/Language/Scala%20Basic/" title="Scala基础语法">Scala基础语法</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/Spark/" style="font-size: 1.4em; color: #99a5b6">Spark</a> <a href="/tags/language/" style="font-size: 1.2em; color: #999da3">language</a> <a href="/tags/scala/" style="font-size: 1.2em; color: #999da3">scala</a> <a href="/tags/BigData/" style="font-size: 1.5em; color: #99a9bf">BigData</a> <a href="/tags/Operating-System/" style="font-size: 1.2em; color: #999da3">Operating-System</a> <a href="/tags/xv6-lab/" style="font-size: 1.1em; color: #999">xv6-lab</a> <a href="/tags/Git/" style="font-size: 1.1em; color: #999">Git</a> <a href="/tags/xv6/" style="font-size: 1.2em; color: #999da3">xv6</a> <a href="/tags/Livy/" style="font-size: 1.1em; color: #999">Livy</a> <a href="/tags/Overview/" style="font-size: 1.1em; color: #999">Overview</a> <a href="/tags/Hive/" style="font-size: 1.1em; color: #999">Hive</a> <a href="/tags/Workflow/" style="font-size: 1.1em; color: #999">Workflow</a> <a href="/tags/syscall/" style="font-size: 1.1em; color: #999">syscall</a> <a href="/tags/source-code/" style="font-size: 1.3em; color: #99a1ac">source_code</a> <a href="/tags/Best-Practice/" style="font-size: 1.1em; color: #999">Best-Practice</a> <a href="/tags/how-to-learn/" style="font-size: 1.2em; color: #999da3">how-to-learn</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              February 2026
+            </span>
+            <span class="card-archive-list-count">19</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              November 2025
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/10/">
+            <span class="card-archive-list-date">
+              October 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">26</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-02-08T11:04:25.114Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

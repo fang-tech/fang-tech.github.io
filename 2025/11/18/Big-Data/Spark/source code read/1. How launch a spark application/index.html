@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>[Spark Source Code 1] How launch a spark Application | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="只关注spark application通过spark-submit shell脚本启动的情况以问题为导向探究   ✅ spark-submit 脚本做了什么？ ✅ Launcher 层的作用是什么？为什么需要它？ ✅ 参数是如何从 Shell 传递到 Java 的？ ✅ 为什么使用 NULL 分隔符？ ✅ prepareSubmitEnvironment() 返回的 4 个值分别是什么？ ✅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Spark Source Code 1] How launch a spark Application">
+<meta property="og:url" content="https://functional.top/2025/11/18/Big-Data/Spark/source%20code%20read/1.%20How%20launch%20a%20spark%20application/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="只关注spark application通过spark-submit shell脚本启动的情况以问题为导向探究   ✅ spark-submit 脚本做了什么？ ✅ Launcher 层的作用是什么？为什么需要它？ ✅ 参数是如何从 Shell 传递到 Java 的？ ✅ 为什么使用 NULL 分隔符？ ✅ prepareSubmitEnvironment() 返回的 4 个值分别是什么？ ✅">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://functional.top/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-11-18T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-02-08T11:04:02.565Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="BigData">
+<meta property="article:tag" content="Spark">
+<meta property="article:tag" content="source_code">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://functional.top/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Spark Source Code 1] How launch a spark Application",
+  "url": "https://functional.top/2025/11/18/Big-Data/Spark/source%20code%20read/1.%20How%20launch%20a%20spark%20application/",
+  "image": "https://functional.top/img/butterfly-icon.png",
+  "datePublished": "2025-11-18T00:00:00.000Z",
+  "dateModified": "2026-02-08T11:04:02.565Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "John Doe",
+      "url": "https://functional.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://functional.top/2025/11/18/Big-Data/Spark/source%20code%20read/1.%20How%20launch%20a%20spark%20application/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '[Spark Source Code 1] How launch a spark Application',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">[Spark Source Code 1] How launch a spark Application</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">[Spark Source Code 1] How launch a spark Application</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-18T00:00:00.000Z" title="Created 2025-11-18 00:00:00">2025-11-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-02-08T11:04:02.565Z" title="Updated 2026-02-08 11:04:02">2026-02-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>只关注spark application通过spark-submit shell脚本启动的情况<br>以问题为导向探究</p>
+</blockquote>
+<ol>
+<li>✅ spark-submit 脚本做了什么？</li>
+<li>✅ Launcher 层的作用是什么？为什么需要它？</li>
+<li>✅ 参数是如何从 Shell 传递到 Java 的？</li>
+<li>✅ 为什么使用 NULL 分隔符？</li>
+<li>✅ prepareSubmitEnvironment() 返回的 4 个值分别是什么？</li>
+<li>✅ Client 和 Cluster 模式的 childMainClass 有什么不同？</li>
+<li>✅ 不同集群管理器（YARN&#x2F;K8s&#x2F;Standalone）的启动有什么区别？</li>
+<li>✅ app.start() 之后发生了什么？</li>
+<li>✅ 配置的优先级是怎样的？</li>
+<li>✅ 为什么某些模式组合不支持（如 LOCAL + CLUSTER）？</li>
+</ol>
+<h1 id="How-spark-command-is-parsed"><a href="#How-spark-command-is-parsed" class="headerlink" title="How spark command is parsed"></a>How spark command is parsed</h1><h2 id="shell脚本入口阶段"><a href="#shell脚本入口阶段" class="headerlink" title="shell脚本入口阶段"></a>shell脚本入口阶段</h2><blockquote>
+<p>找到SPARK_HOME, JAVA_HOME, 将launcher入口类和submit入口类添加到执行路径中, 补全java命令, 执行命令</p>
+</blockquote>
+<h3 id="整体的流程"><a href="#整体的流程" class="headerlink" title="整体的流程"></a>整体的流程</h3><h4 id="entry-point"><a href="#entry-point" class="headerlink" title="entry point"></a>entry point</h4><p><strong>file: bin&#x2F;spark-submit</strong></p>
+<ul>
+<li>提交命令</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spark-submit \</span><br><span class="line">	--master yarn \</span><br><span class="line">	--class MyApp my.jar arg1 arg2</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>源码</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到SPARK_HOME的路径</span></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$&#123;SPARK_HOME&#125;</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">source</span> <span class="string">&quot;<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$0</span>&quot;</span>)</span>&quot;</span>/find-spark-home</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行bin./spark-class脚本, 将传递给spark-submit的参数添加上org.apache.spark.deploy.SparkSubmit</span></span><br><span class="line"><span class="built_in">exec</span> <span class="string">&quot;<span class="variable">$&#123;SPARK_HOME&#125;</span>&quot;</span>/bin/spark-class org.apache.spark.deploy.SparkSubmit <span class="string">&quot;<span class="variable">$@</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>找到并设置SPARK_HOME</li>
+<li>调用<code>exec &quot;$&#123;SPARK_HOME&#125;&quot;/bin/spark-class org.apache.spark.deploy.SparkSubmit &quot;$@&quot;</code><ol>
+<li>通过SPARK_HOME的路径加载spark-class脚本, 同时在命令行参数中添加<code>org.apache.spark.deploy.SparkSubmit</code>, 这个类是spark提交任务的入口类, 也就是后面<code>java</code>要执行的类</li>
+</ol>
+</li>
+</ol>
+<h4 id="为执行java-Launcher做准备和设置"><a href="#为执行java-Launcher做准备和设置" class="headerlink" title="为执行java Launcher做准备和设置"></a>为执行java Launcher做准备和设置</h4><p><strong>file: bin&#x2F;spark-class</strong></p>
+<ol>
+<li>加载load-spark-env.sh<ol>
+<li>尝试加载用户的spark-env.sh (如果存在)</li>
+<li>从<code>$&#123;SPARK_HOME&#125;/conf/spark-env.sh</code>加载(把这个文件中的配置全都加载到环境变量中)</li>
+</ol>
+</li>
+<li>设置RUNNER (java的路径JAVA_HOME, 也是后面用于启动整个spark的java版本)</li>
+<li>设置SPARK_JARS_DIR</li>
+<li>设置LAUNCH_CLASSPATH &#x3D; ${SPARK_JARS_DIR}&#x2F;*</li>
+<li>build_command组装命令: <code>&quot;$RUNNER&quot; -Xmx128m $SPARK_LAUNCHER_OPTS -cp &quot;$LAUNCH_CLASSPATH&quot; org.apache.spark.launcher.Main &quot;$@&quot;</code></li>
+</ol>
+<p>最后要执行的命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">java -Xmx128m <span class="variable">$SPARK_LAUNCHER_OPTS</span> -<span class="built_in">cp</span> <span class="variable">$&#123;SPARK_JARS_DIR&#125;</span>/*  \</span><br><span class="line">	org.apache.spark.launcher.Main \</span><br><span class="line">	org.apache.spark.deploy.SparkSubmit \</span><br><span class="line">	--master yarn \</span><br><span class="line">	--class MyApp my.jar arg1 arg2</span><br></pre></td></tr></table></figure>
+
+<h2 id="Launcher阶段"><a href="#Launcher阶段" class="headerlink" title="Launcher阶段"></a>Launcher阶段</h2><p>构建最后要执行的用于启动spark application的java命令行, 输出给spark-class</p>
+<p>这一步做的事情处理更加复杂的对参数的整合处理, 最后得到一个完整的目标命令, 之所以放在java中运行, 是因为这部分的处理颇为繁复和复杂, 放在java里更好写</p>
+<p><strong>file: launcher&#x2F;src&#x2F;main&#x2F;…&#x2F;spark&#x2F;launcher.Main.java</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argsArray)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">	List&lt;String&gt; cmd;</span><br><span class="line">	<span class="comment">// spark-submit case, we just focus on this</span></span><br><span class="line">	<span class="keyword">if</span> (className.equals(<span class="string">&quot;org.apache.spark.deploy.SparkSubmit&quot;</span>)) &#123;</span><br><span class="line">		<span class="comment">// build full java command in spark-submit case</span></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="type">AbstractCommandBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SparkSubmitCommandBuilder</span>(args);</span><br><span class="line">			<span class="comment">// now we have prepared parsed command class instances in builder </span></span><br><span class="line">			cmd = buildCommand(builder, env, printLaunchCommand);</span><br><span class="line">		&#125; <span class="keyword">catch</span> <span class="comment">//...</span></span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">	List&lt;String&gt; bashCmd = prepareBashCommand(cmd, env); </span><br><span class="line">	<span class="comment">// this output will catch by spark-class shell </span></span><br><span class="line">	<span class="keyword">for</span> (String c : bashCmd) &#123;  </span><br><span class="line">	  System.out.print(c.replaceFirst(<span class="string">&quot;\r$&quot;</span>,<span class="string">&quot;&quot;</span>));  </span><br><span class="line">	  System.out.print(<span class="string">&#x27;\0&#x27;</span>);  </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title function_">buildCommand</span><span class="params">(  </span></span><br><span class="line"><span class="params">    AbstractCommandBuilder builder,  </span></span><br><span class="line"><span class="params">    Map&lt;String, String&gt; env,  </span></span><br><span class="line"><span class="params">    <span class="type">boolean</span> printLaunchCommand)</span> &#123;  </span><br><span class="line">  List&lt;String&gt; cmd = builder.buildCommand(env);  </span><br><span class="line">  <span class="keyword">return</span> cmd;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// builder&#x27;s method </span></span><br><span class="line"><span class="keyword">public</span> List&lt;String&gt; <span class="title function_">buildCommand</span><span class="params">(Map&lt;String, String&gt; env)</span> &#123;  </span><br><span class="line">	<span class="comment">// is Remote...</span></span><br><span class="line">	</span><br><span class="line">  <span class="keyword">if</span> (PYSPARK_SHELL.equals(appResource) &amp;&amp; !isSpecialCommand) &#123;  </span><br><span class="line">    <span class="keyword">return</span> buildPySparkShellCommand(env);  </span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SPARKR_SHELL.equals(appResource) &amp;&amp; !isSpecialCommand) &#123;  </span><br><span class="line">    <span class="keyword">return</span> buildSparkRCommand(env);  </span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">	  <span class="comment">// our case will entry this one </span></span><br><span class="line">    <span class="keyword">return</span> buildSparkSubmitCommand(env);  </span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> List&lt;String&gt; <span class="title function_">buildSparkSubmitCommand</span><span class="params">(Map&lt;String, String&gt; env)</span> &#123;  </span><br><span class="line">  <span class="comment">// Load the properties file and check whether spark-submit will be running the app&#x27;s driver  </span></span><br><span class="line">  <span class="comment">// or just launching a cluster app. When running the driver, the JVM&#x27;s argument will be  </span></span><br><span class="line">  <span class="comment">// modified to cover the driver&#x27;s configuration.  </span></span><br><span class="line">  Map&lt;String, String&gt; config = getEffectiveConfig();  </span><br><span class="line">  <span class="type">boolean</span> <span class="variable">isClientMode</span> <span class="operator">=</span> isClientMode(config);  </span><br><span class="line">  <span class="type">String</span> <span class="variable">extraClassPath</span> <span class="operator">=</span> isClientMode ? config.get(SparkLauncher.DRIVER_EXTRA_CLASSPATH) : <span class="literal">null</span>;  </span><br><span class="line">  <span class="type">String</span> <span class="variable">defaultExtraClassPath</span> <span class="operator">=</span> config.get(SparkLauncher.DRIVER_DEFAULT_EXTRA_CLASS_PATH);  </span><br><span class="line">  <span class="keyword">if</span> (extraClassPath == <span class="literal">null</span> || extraClassPath.trim().isEmpty()) &#123;  </span><br><span class="line">    extraClassPath = defaultExtraClassPath;  </span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">    extraClassPath += File.pathSeparator + defaultExtraClassPath;  </span><br><span class="line">  &#125;  </span><br><span class="line">  </span><br><span class="line">  List&lt;String&gt; cmd = buildJavaCommand(extraClassPath);  </span><br><span class="line">  <span class="comment">// Take Thrift/Connect Server as daemon  </span></span><br><span class="line">  <span class="keyword">if</span> (isThriftServer(mainClass) || isConnectServer(mainClass)) &#123;  </span><br><span class="line">    addOptionString(cmd, System.getenv(<span class="string">&quot;SPARK_DAEMON_JAVA_OPTS&quot;</span>));  </span><br><span class="line">  &#125;  </span><br><span class="line">  addOptionString(cmd, System.getenv(<span class="string">&quot;SPARK_SUBMIT_OPTS&quot;</span>));  </span><br><span class="line">  </span><br><span class="line">  <span class="comment">// We don&#x27;t want the client to specify Xmx. These have to be set by their corresponding  </span></span><br><span class="line">  <span class="comment">// memory flag --driver-memory or configuration entry spark.driver.memory  </span></span><br><span class="line">  <span class="type">String</span> <span class="variable">driverDefaultJavaOptions</span> <span class="operator">=</span> config.get(SparkLauncher.DRIVER_DEFAULT_JAVA_OPTIONS);  </span><br><span class="line">  checkJavaOptions(driverDefaultJavaOptions);  </span><br><span class="line">  <span class="type">String</span> <span class="variable">driverExtraJavaOptions</span> <span class="operator">=</span> config.get(SparkLauncher.DRIVER_EXTRA_JAVA_OPTIONS);  </span><br><span class="line">  checkJavaOptions(driverExtraJavaOptions);  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (isClientMode) &#123;  </span><br><span class="line">    <span class="comment">// Figuring out where the memory value come from is a little tricky due to precedence.  </span></span><br><span class="line">    <span class="comment">// Precedence is observed in the following order:    // - explicit configuration (setConf()), which also covers --driver-memory cli argument.    // - properties file.    // - SPARK_DRIVER_MEMORY env variable    // - SPARK_MEM env variable    // - default value (1g)    // Take Thrift/Connect Server as daemon    </span></span><br><span class="line">    <span class="type">String</span> <span class="variable">tsMemory</span> <span class="operator">=</span>  </span><br><span class="line">      isThriftServer(mainClass) || isConnectServer(mainClass) ?  </span><br><span class="line">        System.getenv(<span class="string">&quot;SPARK_DAEMON_MEMORY&quot;</span>) : <span class="literal">null</span>;  </span><br><span class="line">    <span class="type">String</span> <span class="variable">memory</span> <span class="operator">=</span> firstNonEmpty(tsMemory, config.get(SparkLauncher.DRIVER_MEMORY),  </span><br><span class="line">      System.getenv(<span class="string">&quot;SPARK_DRIVER_MEMORY&quot;</span>), System.getenv(<span class="string">&quot;SPARK_MEM&quot;</span>), DEFAULT_MEM);  </span><br><span class="line">    cmd.add(<span class="string">&quot;-Xmx&quot;</span> + memory);  </span><br><span class="line">    addOptionString(cmd, driverDefaultJavaOptions);  </span><br><span class="line">    addOptionString(cmd, driverExtraJavaOptions);  </span><br><span class="line">    mergeEnvPathList(env, getLibPathEnvName(),  </span><br><span class="line">      config.get(SparkLauncher.DRIVER_EXTRA_LIBRARY_PATH));  </span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// SPARK-36796: Always add some JVM runtime default options to submit command  </span></span><br><span class="line">  addOptionString(cmd, JavaModuleOptions.defaultModuleOptions());  </span><br><span class="line">  addOptionString(cmd, <span class="string">&quot;-Dderby.connection.requireAuthentication=false&quot;</span>);  </span><br><span class="line">  cmd.add(<span class="string">&quot;org.apache.spark.deploy.SparkSubmit&quot;</span>);  </span><br><span class="line">  cmd.addAll(buildSparkSubmitArgs());  </span><br><span class="line">  <span class="keyword">return</span> cmd;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从Main中能看到整体的调用的链路: Root -&gt; main</p>
+<ul>
+<li>SparkSubmitCommandBuilder: 构造方法 -&gt; 将命令行的k-v解析并注入到OptionParser对象中, 保存在builder中</li>
+<li>buildCommand: <ul>
+<li>builder.buildCommand:<ul>
+<li>buildSparkSubmitCommand:<ul>
+<li>这里是逻辑的关键点, 会将spark的配置转化成JVM的配置</li>
+<li>有内存的设置, 注入默认参数值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>最后将命令从cmd&#x2F;env中提取出来, 并且打印到stdout中供spark-class捕获</li>
+</ul>
+<p>这里值得关注的点有两个</p>
+<ol>
+<li><strong>memory的注入的优先级</strong> <ul>
+<li>explicit configuration (setConf()), which also covers –driver-memory cli argument.  </li>
+<li>properties file.  </li>
+<li>SPARK_DRIVER_MEMORY env variable  </li>
+<li>SPARK_MEM env variable  </li>
+<li>default value (1g)</li>
+</ul>
+</li>
+<li><strong>传递给spark-class的命令以\0作为分隔符</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">SparkSubmitCommandBuilder(List&lt;String&gt; args) &#123;  </span><br><span class="line">  <span class="comment">// not entry this switch statement if use single spark-submit</span></span><br><span class="line">  <span class="keyword">if</span> (args.size() &gt; <span class="number">0</span>) &#123;  </span><br><span class="line">    <span class="keyword">switch</span> (args.get(<span class="number">0</span>)) &#123;  </span><br><span class="line">      <span class="keyword">case</span> <span class="string">&quot;pyspark-shell-main&quot;</span>:  </span><br><span class="line">        <span class="comment">//... </span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">&quot;sparkr-shell-main&quot;</span>:  </span><br><span class="line">        <span class="comment">//...   </span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">&quot;run-example&quot;</span>:  </span><br><span class="line">				<span class="comment">//... </span></span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="type">OptionParser</span> <span class="variable">parser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OptionParser</span>(<span class="literal">true</span>);  </span><br><span class="line">    parser.parse(submitArgs);  </span><br><span class="line">    <span class="comment">// now we have prepared parsed command class instances in builder </span></span><br><span class="line">    <span class="comment">// for Main to resolve it</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// parse是一个模版方法, 其中的关键逻辑是在子类中重写的handle方法</span></span><br><span class="line"><span class="comment">// this method parse cmd command k-v to class field </span></span><br><span class="line"><span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">handle</span><span class="params">(String opt, String value)</span> &#123;  </span><br><span class="line">  <span class="keyword">switch</span> (opt) &#123;  </span><br><span class="line">    <span class="keyword">case</span> MASTER -&gt; master = value;  </span><br><span class="line">    <span class="keyword">case</span> REMOTE -&gt; &#123;  </span><br><span class="line">      isRemote = <span class="literal">true</span>;  </span><br><span class="line">      remote = value;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">case</span> DEPLOY_MODE -&gt; deployMode = value;  </span><br><span class="line">    <span class="keyword">case</span> PROPERTIES_FILE -&gt; propertiesFile = value;  </span><br><span class="line">    <span class="keyword">case</span> LOAD_SPARK_DEFAULTS -&gt; loadSparkDefaults = <span class="literal">true</span>;  </span><br><span class="line">    <span class="keyword">case</span> DRIVER_MEMORY -&gt; conf.put(SparkLauncher.DRIVER_MEMORY, value);  </span><br><span class="line">    <span class="keyword">case</span> DRIVER_JAVA_OPTIONS -&gt; conf.put(SparkLauncher.DRIVER_EXTRA_JAVA_OPTIONS, value);  </span><br><span class="line">    <span class="keyword">case</span> DRIVER_LIBRARY_PATH -&gt; conf.put(SparkLauncher.DRIVER_EXTRA_LIBRARY_PATH, value);  </span><br><span class="line">    <span class="keyword">case</span> DRIVER_DEFAULT_CLASS_PATH -&gt;  </span><br><span class="line">      conf.put(SparkLauncher.DRIVER_DEFAULT_EXTRA_CLASS_PATH, value);  </span><br><span class="line">    <span class="keyword">case</span> DRIVER_CLASS_PATH -&gt; conf.put(SparkLauncher.DRIVER_EXTRA_CLASSPATH, value);  </span><br><span class="line">    <span class="keyword">case</span> CONF -&gt; &#123;  </span><br><span class="line">      checkArgument(value != <span class="literal">null</span>, <span class="string">&quot;Missing argument to %s&quot;</span>, CONF);  </span><br><span class="line">      String[] setConf = value.split(<span class="string">&quot;=&quot;</span>, <span class="number">2</span>);  </span><br><span class="line">      checkArgument(setConf.length == <span class="number">2</span>, <span class="string">&quot;Invalid argument to %s: %s&quot;</span>, CONF, value);  </span><br><span class="line">      conf.put(setConf[<span class="number">0</span>], setConf[<span class="number">1</span>]);  </span><br><span class="line">    &#125;  </span><br><span class="line">		<span class="keyword">case</span> <span class="comment">//... </span></span><br><span class="line">  &#125;  </span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里是SparkSubmitCommandBuilder的调用链条</p>
+<ul>
+<li>constructor<ul>
+<li>parser.parser: 外包在handle的while循环<ul>
+<li>handle: 将k-v转换成对象中的字段的值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> +o posix</span><br><span class="line">CMD=()</span><br><span class="line">DELIM=$<span class="string">&#x27;\n&#x27;</span></span><br><span class="line">CMD_START_FLAG=<span class="string">&quot;false&quot;</span></span><br><span class="line"><span class="keyword">while</span> IFS= <span class="built_in">read</span> -d <span class="string">&quot;<span class="variable">$DELIM</span>&quot;</span> -r _ARG; <span class="keyword">do</span></span><br><span class="line">  ARG=<span class="variable">$&#123;_ARG//$&#x27;\r&#x27;&#125;</span></span><br><span class="line">  <span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$CMD_START_FLAG</span>&quot;</span> == <span class="string">&quot;true&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    CMD+=(<span class="string">&quot;<span class="variable">$ARG</span>&quot;</span>)</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$ARG</span>&quot;</span> == $<span class="string">&#x27;\0&#x27;</span> ]; <span class="keyword">then</span></span><br><span class="line">      <span class="comment"># After NULL character is consumed, change the delimiter and consume command string.</span></span><br><span class="line">      DELIM=<span class="string">&#x27;&#x27;</span></span><br><span class="line">      CMD_START_FLAG=<span class="string">&quot;true&quot;</span></span><br><span class="line">    <span class="keyword">elif</span> [ <span class="string">&quot;<span class="variable">$ARG</span>&quot;</span> != <span class="string">&quot;&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$ARG</span>&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span> &lt; &lt;(build_command <span class="string">&quot;<span class="variable">$@</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">CMD=(<span class="string">&quot;<span class="variable">$&#123;CMD[@]:0:$LAST&#125;</span>&quot;</span>) <span class="comment"># last is exit code, remove it</span></span><br><span class="line"><span class="built_in">exec</span> <span class="string">&quot;<span class="variable">$&#123;CMD[@]&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>最后spark-class将Launcher的输出以\0为分割, 以数组的形式加载到CMD中, 最后exec</p>
+<h2 id="正式启动SparkApplication应用"><a href="#正式启动SparkApplication应用" class="headerlink" title="正式启动SparkApplication应用"></a>正式启动SparkApplication应用</h2><p><strong>entry point: org.apache.spark.deploy.SparkSubmit.scala</strong></p>
+<blockquote>
+<p> 对于应用的启动, spark会针对不同的维度做不同的处理, 所以要理解下面的不同的启动application的路径, 必须的前置知识是对于spark不同的运行的模式的理解</p>
+</blockquote>
+<h3 id="spark的运行模式"><a href="#spark的运行模式" class="headerlink" title="spark的运行模式"></a>spark的运行模式</h3><p>Spark从<strong>集群管理器</strong>和<strong>部署模式</strong>两个维度划分运行模式</p>
+<h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><p>从集群管理器来看</p>
+<ul>
+<li>LOCAL: 单机模式, 单JVM进程, 但是所有组件都在一个进程中</li>
+<li>STANDALONE: Spark自带的集群管理器, 适合小规模集群</li>
+<li>YARN: Hadoop Yarn集群</li>
+<li>k8s: 容器化部署</li>
+</ul>
+<p>从部署模式来看</p>
+<ul>
+<li>Client: Driver机是本地(spark-submit进程), 可以看到实时输出, 方便调试</li>
+<li>Cluster: 将Driver机交给集群管理, 更加稳定可靠, 但是无法直接获取Driver机输出</li>
+</ul>
+<p><strong>不同的集群管理器, 决定了spark不同的资源申请方式, 不同的部署方式, 决定了Driver的启动位置</strong></p>
+<p><em>下面的代码都是SparkSubmit.scala: prepareSubmitEnvironment中的</em></p>
+<h4 id="对于分类的识别"><a href="#对于分类的识别" class="headerlink" title="对于分类的识别"></a>对于分类的识别</h4><p>通过<code>--master</code>参数设置<br>cluster mode识别:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> clusterManager: <span class="type">Int</span> = args.maybeMaster <span class="keyword">match</span> &#123;  </span><br><span class="line">  <span class="keyword">case</span> <span class="type">Some</span>(v) =&gt;  </span><br><span class="line">    assert(args.maybeRemote.isEmpty)  </span><br><span class="line">    v <span class="keyword">match</span> &#123;  </span><br><span class="line">      <span class="keyword">case</span> <span class="string">&quot;yarn&quot;</span> =&gt; <span class="type">YARN</span>  </span><br><span class="line">      <span class="keyword">case</span> m <span class="keyword">if</span> m.startsWith(<span class="string">&quot;spark&quot;</span>) =&gt; <span class="type">STANDALONE</span>  </span><br><span class="line">      <span class="keyword">case</span> m <span class="keyword">if</span> <span class="type">SparkMasterRegex</span>.isK8s(m) =&gt; <span class="type">KUBERNETES</span>  </span><br><span class="line">      <span class="keyword">case</span> m <span class="keyword">if</span> m.startsWith(<span class="string">&quot;local&quot;</span>) =&gt; <span class="type">LOCAL</span>  </span><br><span class="line">      <span class="keyword">case</span> _ =&gt;  </span><br><span class="line">        error(<span class="string">&quot;Master must either be yarn or start with spark, k8s, or local&quot;</span>)  </span><br><span class="line">        <span class="number">-1</span>  </span><br><span class="line">    &#125;  </span><br><span class="line">  <span class="keyword">case</span> <span class="type">None</span> =&gt; <span class="type">LOCAL</span> <span class="comment">// default master or remote mode.  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过master参数的内容进行匹配, 默认是LOCAL模式</p>
+<p>通过<code>spark.submit.deployMode</code> conf来设置<br>deploy mode识别:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> deployMode: <span class="type">Int</span> = args.deployMode <span class="keyword">match</span> &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&quot;client&quot;</span> | <span class="literal">null</span> =&gt; <span class="type">CLIENT</span></span><br><span class="line">	<span class="keyword">case</span> <span class="string">&quot;cluster&quot;</span> =&gt; <span class="type">CLUSTER</span></span><br><span class="line">	<span class="keyword">case</span> _ =&gt;</span><br><span class="line">		error(<span class="string">&quot;Deploy mode must be either client or cluster&quot;</span>)</span><br><span class="line">		<span class="number">-1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>默认是CLIENT模式</p>
+<h4 id="快速失败"><a href="#快速失败" class="headerlink" title="快速失败"></a>快速失败</h4><p>快速失败, 处理不接受的(cluster, deployMode)组合方式</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">(clusterManager, deployMode) <span class="keyword">match</span> &#123; </span><br><span class="line">	<span class="comment">// CLUSTER &amp; STANDALONE &amp; Py/R</span></span><br><span class="line">	<span class="keyword">case</span> (<span class="type">STANDALONE</span>, <span class="type">CLUSTER</span>) <span class="keyword">if</span> args.isPython =&gt;</span><br><span class="line">		error(<span class="string">&quot;Cluster deploy mode is currently not supported for python &quot;</span> +</span><br><span class="line">			<span class="string">&quot;applications on standalone clusters.&quot;</span>)</span><br><span class="line">	<span class="keyword">case</span> (<span class="type">STANDALONE</span>, <span class="type">CLUSTER</span>) <span class="keyword">if</span> args.isR =&gt;</span><br><span class="line">		error(<span class="string">&quot;Cluster deploy mode is currently not supported for R &quot;</span> +</span><br><span class="line">			<span class="string">&quot;applications on standalone clusters.&quot;</span>)</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// LOCAL &amp; CLUSTER</span></span><br><span class="line">	<span class="keyword">case</span> (<span class="type">LOCAL</span>, <span class="type">CLUSTER</span>) =&gt;</span><br><span class="line">		error(<span class="string">&quot;Cluster deploy mode is not compatible with master \&quot;local\&quot;&quot;</span>)</span><br><span class="line">		</span><br><span class="line">	<span class="comment">// CLUSTER &amp; SHELL</span></span><br><span class="line">	<span class="keyword">case</span> (_, <span class="type">CLUSTER</span>) <span class="keyword">if</span> isShell(args.primaryResource) =&gt;</span><br><span class="line">		error(<span class="string">&quot;Cluster deploy mode is not applicable to Spark shells.&quot;</span>)</span><br><span class="line">	<span class="keyword">case</span> (_, <span class="type">CLUSTER</span>) <span class="keyword">if</span> isSqlShell(args.mainClass) =&gt;</span><br><span class="line">		error(<span class="string">&quot;Cluster deploy mode is not applicable to Spark SQL shell.&quot;</span>)</span><br><span class="line">	<span class="keyword">case</span> (_, <span class="type">CLUSTER</span>) <span class="keyword">if</span> isThriftServer(args.mainClass) =&gt;</span><br><span class="line">		error(<span class="string">&quot;Cluster deploy mode is not applicable to Spark Thrift server.&quot;</span>)</span><br><span class="line">	<span class="keyword">case</span> (_, <span class="type">CLUSTER</span>) <span class="keyword">if</span> isConnectServer(args.mainClass) =&gt;</span><br><span class="line">		error(<span class="string">&quot;Cluster deploy mode is not applicable to Spark Connect server.&quot;</span>)</span><br><span class="line">	<span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="应用启动"><a href="#应用启动" class="headerlink" title="应用启动"></a>应用启动</h2><h3 id="怎么将控制权交给用户代码"><a href="#怎么将控制权交给用户代码" class="headerlink" title="怎么将控制权交给用户代码"></a>怎么将控制权交给用户代码</h3><p><strong>根据运行模式, 指定不同的mainClass</strong></p>
+<ul>
+<li>如果deployMode &#x3D;&#x3D; CLIENT<ul>
+<li>运行的<strong>主类是用户代码的mainClass</strong></li>
+<li>用户的资源直接使用本地的资源(因为是client模式, app是直接运行在用户机上的)</li>
+</ul>
+</li>
+<li>如果使用的是YarnCluster<ul>
+<li>运行的<strong>主类是YARN_CLUSTER_SUBMIT_CLASS: org.apache.spark.deploy.yarn.YarnClusterApplication</strong><ul>
+<li>用户的代码是python代码<ul>
+<li>将用户的代码和资源添加到–primary-py-file</li>
+<li>–class org.apache.spark.deploy.PythonRunner</li>
+</ul>
+</li>
+<li>如果用户的代码是Java&#x2F;Scala代码<ul>
+<li>将资源添加到–jar后</li>
+<li>用–class指定用户的mainClass</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果使用的是k8sCluster<ul>
+<li>运行的<strong>主类是KUBERNETES_CLUSTER_SUBMIT_CLASS: org.apache.spark.deploy.k8s.submit.KubernetesClientApplication</strong><ul>
+<li>和上面一样的处理, 如果是python, 则要运行的mainClass是<code>&quot;--main-class&quot;, &quot;org.apache.spark.deploy.PythonRunner&quot;</code></li>
+<li>如果是Java&#x2F;Scala: <code>--main-class args.mainClass</code></li>
+<li>通过<code>--arg</code>添加上args</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在指定完主类以后, 会在<code>runMain</code>中运行<code>app.start()</code>来启动对应的SparkApplication子类</p>
+<h1 id="问题解答"><a href="#问题解答" class="headerlink" title="问题解答"></a>问题解答</h1><ol>
+<li>✅ spark-submit 脚本做了什么？<ol>
+<li>找到SPARK_HOME, 然后在SPARK_HOME&#x2F;bin找到并启动spark-class脚本</li>
+</ol>
+</li>
+<li>✅ Launcher 层的作用是什么？为什么需要它？<ol>
+<li>作用: 用于生成最终的完整的适应不同平台的java命令用于启动Spark, 之所以放在java代码而不是bash中, 是因为这里的功能较为复杂, 放在Java中更好处理, 对于Driver机的memory的指定也是在这一步进行的</li>
+<li>我们需要解析用户传入的参数, 来将它们解析成Spark能够方便解析的样式</li>
+</ol>
+</li>
+<li>✅ 参数是如何从 Shell 传递到 Java 的？<ol>
+<li>在启动JVM的时候作为命令行参数传入</li>
+</ol>
+</li>
+<li>✅ 为什么使用 NULL 分隔符？<ol>
+<li>这个分隔符在bash中是完全没有意义的字符, 能够保证在所有的bash和环境中都能正确解析</li>
+</ol>
+</li>
+<li>✅ prepareSubmitEnvironment() 返回的 4 个值分别是什么？<ol>
+<li>childMainClass: 要start执行的SparkApplication, 会在这个app里面执行用户的代码</li>
+<li>childClassPath: 用户要执行的代码所需要的资源&#x2F;jar文件路径</li>
+<li>childArgs: 用户代码需要的命令行参数</li>
+<li>sparkConf: spark的配置</li>
+</ol>
+</li>
+<li>✅ Client 和 Cluster 模式的 childMainClass 有什么不同？<ol>
+<li>Client的会直接赋值成用户代码的MainClass, 在app.start的时候, 实际上启动的是JavaMainApplication来包装用户的MainClass并通过反射invoke运行</li>
+<li>Cluster会根据用户的集群的类型, 使用不同的向集群提交任务的包装类, 在启动application的时候, 实际上启动的是这些集群启动包装类</li>
+</ol>
+</li>
+<li>✅ 不同集群管理器（YARN&#x2F;K8s&#x2F;Standalone）的启动有什么区别？<ol>
+<li>会需要使用不同的main-class&#x2F;classpath&#x2F;args的配置的参数, 同时会使用不同的SparkApplication</li>
+</ol>
+</li>
+<li>✅ app.start() 之后发生了什么？<ol>
+<li>这个方法是阻塞调用的, 会等待SparkApplication中的main方法运行完毕<br> 1. CLIENT模式下: 反射invoke用户的main函数, 所以在执行到这一行代码的时候, 会阻塞等待用户的main方法执行完.<br> 2. CLUSTER模式下: 运行集群包装类, 在运行完毕以后, 向集群提交任务以后会包装类就运行完毕了</li>
+<li>执行finally代码块: 在k8s环境下运行的spark-submit, 主动调用stop来清理这个submit进程的资源</li>
+</ol>
+</li>
+<li>✅ 配置的优先级是怎样的？<ol>
+<li>命令行参数</li>
+<li>用户通过<code>--properties</code>指定的properties文件</li>
+<li>spark-defaults.conf文件</li>
+<li>环境变量</li>
+<li>默认值</li>
+<li>采用灵活度和更加明确的配置方式优先级更高</li>
+</ol>
+</li>
+<li>✅ 为什么某些模式组合不支持（如 LOCAL + CLUSTER）？<ol>
+<li>因为这些deployMode和clusterMode是冲突的, LOCAL意味着没有集群, 这个时候不能选择CLUSTER deployMode</li>
+</ol>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://functional.top">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://functional.top/2025/11/18/Big-Data/Spark/source%20code%20read/1.%20How%20launch%20a%20spark%20application/">https://functional.top/2025/11/18/Big-Data/Spark/source%20code%20read/1.%20How%20launch%20a%20spark%20application/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/BigData/">BigData</a><a class="post-meta__tags" href="/tags/Spark/">Spark</a><a class="post-meta__tags" href="/tags/source-code/">source_code</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/21/Big-Data/Spark/source%20code%20read/2.%20How%20spark%20access%20Yarn%20and%20start%20container%20to%20run%20tasks./" title="[Spark Source Code 2] How spark access YARN and start container to run tasks."><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">[Spark Source Code 2] How spark access YARN and start container to run tasks.</div></div><div class="info-2"><div class="info-item-1">Spark on YARN的整体运行的架构YARN重要的角色  Resource Manager: 全局资源管理器 ApplicationManager: 应用管理器(RM子组件), 接收Client提交的请求 为每个APP分配一个appId 选择NM启动AM 管理AM的生命周期   Scheduler: 资源调度器(RM子组件) 根据调度策略分配资源, 响应AM的资源请求   NodeManager: 节点管理器, 每台机器分配一个NM, 是这台机器在集群中的代理 管理单个节点的资源 向RM报告节点状态和资源使用情况 接收从AM收到请求   Container YARN中资源分配的基本单位 对应着一组CPU 内存等资源 运行ApplicationMaster (AM) 或Executor    Spark on YARN的运行流程ApplicationMaster(区别于上面的ApplicationManager): 每个app都会分配一个AM, 该AM是这个app在YARN集群的代理, 运行在YARN集群中的app通过AM向RM(scheduler)请求资源  提交AM Cl...</div></div></div></a><a class="pagination-related" href="/2025/11/14/Workflow/Git%20Best-Practice/" title="Git 最佳实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Git 最佳实践</div></div><div class="info-2"><div class="info-item-1">Git 最佳实践使用Git的核心原则是:   精细地控制自己的行为对于stage&#x2F;work&#x2F;local&#x2F;remote的影响 尽可能拆分commit local: 每完成一个阶段性的任务就创建一个commit来便于rollback和比对自己的修改 remote: 所有的commit都应该基于main&#x2F;dev创建, commit之间保持平行关系, 每次push之前fetch   保持主分支的commit线性  pull branch显示所有的远程的分支 1git branch -r  选择远程分支: 拉取所有的远程分支和直接修改远程分支都不是最佳的实践, 这样会破坏仓库的独立性, 最好的做法是创建一个关联到远程分支的本地分支 1git switch -c feature/login origin/feature/login commit &amp; push 在commit之前需要先获取所有的更新来同步在你创建这个分支到你commit之前这个branch发生的变更, 如果团队使用rebase来MR, 在commit后一般还需要rebase到or...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/21/Big-Data/Spark/source%20code%20read/2.%20How%20spark%20access%20Yarn%20and%20start%20container%20to%20run%20tasks./" title="[Spark Source Code 2] How spark access YARN and start container to run tasks."><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-21</div><div class="info-item-2">[Spark Source Code 2] How spark access YARN and start container to run tasks.</div></div><div class="info-2"><div class="info-item-1">Spark on YARN的整体运行的架构YARN重要的角色  Resource Manager: 全局资源管理器 ApplicationManager: 应用管理器(RM子组件), 接收Client提交的请求 为每个APP分配一个appId 选择NM启动AM 管理AM的生命周期   Scheduler: 资源调度器(RM子组件) 根据调度策略分配资源, 响应AM的资源请求   NodeManager: 节点管理器, 每台机器分配一个NM, 是这台机器在集群中的代理 管理单个节点的资源 向RM报告节点状态和资源使用情况 接收从AM收到请求   Container YARN中资源分配的基本单位 对应着一组CPU 内存等资源 运行ApplicationMaster (AM) 或Executor    Spark on YARN的运行流程ApplicationMaster(区别于上面的ApplicationManager): 每个app都会分配一个AM, 该AM是这个app在YARN集群的代理, 运行在YARN集群中的app通过AM向RM(scheduler)请求资源  提交AM Cl...</div></div></div></a><a class="pagination-related" href="/2025/11/24/Big-Data/Spark/source%20code%20read/3.%20How%20spark%20job%20trigger%20a%20job%20and%20how%20it%20split%20job%20to%20stages%20and%20schedule%20the%20stage./" title="[Spark Source Code 3] How your spark job trigger a job and how it split job to stages and schedule the stage."><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-24</div><div class="info-item-2">[Spark Source Code 3] How your spark job trigger a job and how it split job to stages and schedule the stage.</div></div><div class="info-2"><div class="info-item-1">Spark启动一个job的过程前置条件在 AM 执行完 resumeDriver() 后,Executor 已经分配并注册完成,用户代码继续运行。当代码执行到 action 操作时,开始创建和提交 job。 详细步骤 代码执行到action操作, 这个时候已经有了有transformation操作形成的RDD DAG 窄依赖: 父RDD的每个分区只被一个子RDD分区使用, 如(map, filter) 宽依赖: 父RDD的每个分区都有可能被多个子RDD分区使用, 如(reduceByKey) 注意对于宽窄依赖来说, 依赖的粒度是分区级别, 同时这个属性是某个transfomation的固有属性, 这是这个算子的计算方式决定的, 如果他产生一条数据需要父RDD中不止一条数据, 涉及到数据的聚合,这个时候这个操作就会是宽依赖的操作 所有的action操作最后都会调用到SparkContext.runJob()   SparkContext提交Job到DAGScheduler sc.runJob进行参数清理和验证 调用DAGScheduler.runJob() -&gt; submit...</div></div></div></a><a class="pagination-related" href="/2026/02/08/Big-Data/Hive/" title="Hive Introduction"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-08</div><div class="info-item-2">Hive Introduction</div></div><div class="info-2"><div class="info-item-1">Hive的作用Hive将提交任务这一件事情简化, 屏蔽了执行引擎, 提供了HiveQL供用户使用, 用户可以使用SQL的形式提交并执行任务. 从输入数据到最后的执行经过的步骤:  用户通过客户端连接到HiveServer2提交SQL -&gt; Driver接受客户端的HiveQL -&gt; Compiler &#x2F; Semantic Analyzer &#x2F; Optimizer将QL转化成逻辑计划, 物理计划, 并进行CBO优化 -&gt; Execution Engine将物理计划分解成具体的执行任务, 提交到底层的计算引擎上 (MapReduce, Spark) -&gt; 在HDFS上存储数据, 由YARN分配资源给计算引擎 另一条线是HiveServer2 -&gt; Hive MetaStore Server访问元数据, 通过Thrift提供元数据 (表&#x2F;分区&#x2F;统计), 并将结果持久化到关系型数据库  HMS (Hive Metastore)HMS </div></div></div></a><a class="pagination-related" href="/2025/10/30/Big-Data/Livy/Livy_1_Basic/" title="Livy基础知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-30</div><div class="info-item-2">Livy基础知识</div></div><div class="info-2"><div class="info-item-1">概念理解Livy 解决了什么问题？为什么不直接用 spark-submit？解决了用户提交spark任务的易用性和控制性问题, 使用户能通过HTTP请求向spark提交任务  权限问题: 使用spark-submit, 用户需要登陆上服务器, 使用spark-submit命令提交, 这将spark所在的服务器的访问权限和提交spark任务的权限绑定, 但是实际上提交spark任务的role和访问服务器的role应该是分离的. 易用性问题: 在过去用户需要在本地写好代码, 通过SFTP上传到服务器上, 再通过spark-submit提交任务, 现在用户可以通过jupyter + livy的方式, 在本地编写代码, 动态变更并且随时通过HTTP向Livy提交任务 自动化问题: 直接通过spark-submit提交任务, 无法对于spark任务进行集中管理, 捕获一些指标, 或者进行配置覆盖等其他的自动化的操作, Livy的引入相当于为用户和spark-submit之间注入了一个管理的中间层  Livy 支持哪几种 Session 类型？它们的区别是什么？Session Type分成I...</div></div></div></a><a class="pagination-related" href="/2026/02/08/Big-Data/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E8%A7%88/" title="大数据结构总览"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-08</div><div class="info-item-2">大数据结构总览</div></div><div class="info-2"><div class="info-item-1">大数据结构大数据可以分成五个层次 数据收集:将数据从数据源收集到数据存储层, 常用的组件有关系型, 非关系型, 分布式消息队列三种  关系型: Sqooq&#x2F;Canal, 连接MySQL这种关系型数据库和Hadoop之间的桥梁, Sqool可以全量将数据库中的数据导入到Hadoop中, Canal则能实现增量的导入 非关系型: Flume, 流式数据收集, 比如日志等数据, 经过ETL以后导入到Hadoop中 分布式消息队列: [[Kafka]], 常用作消息总线, 有分布式的高容错的设计, 适配大数据场景  数据存储主要由分布式文件系统和分布式数据库组成  分布式文件系统: HDFS, Hadoop分布式文件系统, 有强大的容错机制, 社区开发了很多种文件格式 分布式数据库: HBase, 构建在HDFS之上的分布式数据库, 提供结构化和半结构化的数据库, 支持列无限拓展  资源管理和服务调度 YARN: 统一资源管理与调度系统, 能够管理集群中的各种资源, 并按照一定策略分配给上层的各类应用. 同时支持灵活的配置, 允许用户按照队列的方式组织和管理资源, 且每个队列的...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">John Doe</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#How-spark-command-is-parsed"><span class="toc-number">1.</span> <span class="toc-text">How spark command is parsed</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E8%84%9A%E6%9C%AC%E5%85%A5%E5%8F%A3%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.</span> <span class="toc-text">shell脚本入口阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.1.</span> <span class="toc-text">整体的流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#entry-point"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">entry point</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E6%89%A7%E8%A1%8Cjava-Launcher%E5%81%9A%E5%87%86%E5%A4%87%E5%92%8C%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">为执行java Launcher做准备和设置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Launcher%E9%98%B6%E6%AE%B5"><span class="toc-number">1.2.</span> <span class="toc-text">Launcher阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A3%E5%BC%8F%E5%90%AF%E5%8A%A8SparkApplication%E5%BA%94%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">正式启动SparkApplication应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#spark%E7%9A%84%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">spark的运行模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E5%88%86%E7%B1%BB%E7%9A%84%E8%AF%86%E5%88%AB"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">对于分类的识别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%A4%B1%E8%B4%A5"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">快速失败</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8"><span class="toc-number">1.4.</span> <span class="toc-text">应用启动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%B0%86%E6%8E%A7%E5%88%B6%E6%9D%83%E4%BA%A4%E7%BB%99%E7%94%A8%E6%88%B7%E4%BB%A3%E7%A0%81"><span class="toc-number">1.4.1.</span> <span class="toc-text">怎么将控制权交给用户代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94"><span class="toc-number">2.</span> <span class="toc-text">问题解答</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" title="Untitled">Untitled</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/Big-Data/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E8%A7%88/" title="大数据结构总览">大数据结构总览</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/How/How_to_Code/" title="Untitled">Untitled</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/How/How_to_Learn_a_Language/" title="如何学习一门语言(以scala为例)">如何学习一门语言(以scala为例)</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/08/Language/Scala%20Basic/" title="Scala基础语法">Scala基础语法</a><time datetime="2026-02-08T11:04:02.565Z" title="Created 2026-02-08 11:04:02">2026-02-08</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
