@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>算法刷题目录</title>
+    <url>/2026/03/12/algorithm/Algorithm-Index/</url>
+    <content><![CDATA[<h2 id="array"><a href="#array" class="headerlink" title="array"></a>array</h2><ul>
+<li><a href="/algorithm/121.%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA/">121.买卖股票的最佳时机</a></li>
+<li><a href="/algorithm/215.%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACk%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/">215.数组中的第k个最大元素</a></li>
+<li><a href="/algorithm/54.%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5/">54.螺旋矩阵</a></li>
+<li><a href="/algorithm/56.%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4/">56.合并区间</a></li>
+<li><a href="/algorithm/560.%E5%92%8C%E4%B8%BA-k-%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/">560.和为-k-的子数组</a></li>
+<li><a href="/algorithm/88.%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84/">88.合并两个有序数组</a></li>
+<li><a href="/algorithm/912.%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84/">912.排序数组</a></li>
+</ul>
+<h2 id="bfs"><a href="#bfs" class="headerlink" title="bfs"></a>bfs</h2><ul>
+<li><a href="/algorithm/102.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/">102.二叉树的层序遍历</a></li>
+<li><a href="/algorithm/103.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%94%AF%E9%BD%BF%E5%BD%A2%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/">103.二叉树的锯齿形层序遍历</a></li>
+</ul>
+<h2 id="binary-search"><a href="#binary-search" class="headerlink" title="binary_search"></a>binary_search</h2><ul>
+<li><a href="/algorithm/34.%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/">34.在排序数组中查找元素的第一个和最后一个位置</a></li>
+<li><a href="/algorithm/4.%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/">4.寻找两个正序数组的中位数</a></li>
+<li><a href="/algorithm/69.x-%E7%9A%84%E5%B9%B3%E6%96%B9%E6%A0%B9/">69.x-的平方根</a></li>
+</ul>
+<h2 id="dfs"><a href="#dfs" class="headerlink" title="dfs"></a>dfs</h2><ul>
+<li><a href="/algorithm/200.%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F/">200.岛屿数量</a></li>
+<li><a href="/algorithm/22.%E6%8B%AC%E5%8F%B7%E7%94%9F%E6%88%90/">22.括号生成</a></li>
+<li><a href="/algorithm/46.%E5%85%A8%E6%8E%92%E5%88%97/">46.全排列</a></li>
+<li><a href="/algorithm/695.%E5%B2%9B%E5%B1%BF%E7%9A%84%E6%9C%80%E5%A4%A7%E9%9D%A2%E7%A7%AF/">695.岛屿的最大面积</a></li>
+</ul>
+<h2 id="dp"><a href="#dp" class="headerlink" title="dp"></a>dp</h2><ul>
+<li><a href="/algorithm/1143.%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97/">1143.最长公共子序列</a></li>
+<li><a href="/algorithm/122.%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA-ii/">122.买卖股票的最佳时机-ii</a></li>
+<li><a href="/algorithm/300.%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/">300.最长递增子序列</a></li>
+<li><a href="/algorithm/322.%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2(%E9%80%92%E5%BD%92)/">322.零钱兑换(递归)</a></li>
+<li><a href="/algorithm/322.%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2(%E9%80%92%E6%8E%A8)/">322.零钱兑换(递推)</a></li>
+<li><a href="/algorithm/53.%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84%E5%92%8C/">53.最大子数组和</a></li>
+<li><a href="/algorithm/64.%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C(%E9%80%92%E5%BD%92)/">64.最小路径和(递归)</a></li>
+<li><a href="/algorithm/64.%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C(%E9%80%92%E6%8E%A8)/">64.最小路径和(递推)</a></li>
+<li><a href="/algorithm/72.%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB(%E9%80%92%E5%BD%92)/">72.编辑距离(递归)</a></li>
+<li><a href="/algorithm/72.%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB(%E9%80%92%E6%8E%A8)/">72.编辑距离(递推)</a></li>
+</ul>
+<h2 id="linkedlist"><a href="#linkedlist" class="headerlink" title="linkedlist"></a>linkedlist</h2><ul>
+<li><a href="/algorithm/141.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/">141.环形链表</a></li>
+<li><a href="/algorithm/143.%E9%87%8D%E6%8E%92%E9%93%BE%E8%A1%A8/">143.重排链表</a></li>
+<li><a href="/algorithm/148.%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/">148.排序链表</a></li>
+<li><a href="/algorithm/19.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%AC-n-%E4%B8%AA%E7%BB%93%E7%82%B9/">19.删除链表的倒数第-n-个结点</a></li>
+<li><a href="/algorithm/206.%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/">206.反转链表</a></li>
+<li><a href="/algorithm/21.%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8/">21.合并两个有序链表</a></li>
+<li><a href="/algorithm/25.k-%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/">25.k-个一组翻转链表</a></li>
+<li><a href="/algorithm/82.%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0-ii/">82.删除排序链表中的重复元素-ii</a></li>
+<li><a href="/algorithm/92.%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8-ii/">92.反转链表-ii</a></li>
+</ul>
+<h2 id="sliding-window"><a href="#sliding-window" class="headerlink" title="sliding_window"></a>sliding_window</h2><ul>
+<li><a href="/algorithm/239.%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC/">239.滑动窗口最大值</a></li>
+<li><a href="/algorithm/3.%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2/">3.无重复字符的最长子串</a></li>
+<li><a href="/algorithm/76.%E6%9C%80%E5%B0%8F%E8%A6%86%E7%9B%96%E5%AD%90%E4%B8%B2/">76.最小覆盖子串</a></li>
+</ul>
+<h2 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h2><ul>
+<li><a href="/algorithm/20.%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7/">20.有效的括号</a></li>
+</ul>
+<h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><ul>
+<li><a href="/algorithm/165.%E6%AF%94%E8%BE%83%E7%89%88%E6%9C%AC%E5%8F%B7/">165.比较版本号</a></li>
+<li><a href="/algorithm/32.%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7/">32.最长有效括号</a></li>
+<li><a href="/algorithm/394.%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/">394.字符串解码</a></li>
+<li><a href="/algorithm/415.%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%8A%A0/">415.字符串相加</a></li>
+<li><a href="/algorithm/43.%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%B9%98/">43.字符串相乘</a></li>
+<li><a href="/algorithm/5.%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">5.最长回文子串</a></li>
+<li><a href="/algorithm/93.%E5%A4%8D%E5%8E%9F-ip-%E5%9C%B0%E5%9D%80/">93.复原-ip-地址</a></li>
+</ul>
+<h2 id="structure"><a href="#structure" class="headerlink" title="structure"></a>structure</h2><ul>
+<li><a href="/algorithm/1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">1.两数之和</a></li>
+<li><a href="/algorithm/128.%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97/">128.最长连续序列</a></li>
+<li><a href="/algorithm/146.lru-%E7%BC%93%E5%AD%98/">146.lru-缓存</a></li>
+<li><a href="/algorithm/232.%E7%94%A8%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97/">232.用栈实现队列</a></li>
+</ul>
+<h2 id="tree"><a href="#tree" class="headerlink" title="tree"></a>tree</h2><ul>
+<li><a href="/algorithm/124.%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/">124.二叉树中的最大路径和</a></li>
+<li><a href="/algorithm/199.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%8F%B3%E8%A7%86%E5%9B%BE/">199.二叉树的右视图</a></li>
+<li><a href="/algorithm/236.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/">236.二叉树的最近公共祖先</a></li>
+</ul>
+<h2 id="two-pointers"><a href="#two-pointers" class="headerlink" title="two_pointers"></a>two_pointers</h2><ul>
+<li><a href="/algorithm/15.%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/">15.三数之和</a></li>
+<li><a href="/algorithm/42.%E6%8E%A5%E9%9B%A8%E6%B0%B4/">42.接雨水</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>Index</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程树</title>
+    <url>/2026/03/11/notes/%E8%BF%9B%E7%A8%8B%E6%A0%91/</url>
+    <content><![CDATA[<h1 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h1><blockquote>
+<p>返回综述: <a href="%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.md">进程管理</a></p>
+</blockquote>
+<h2 id="进程树的数据结构"><a href="#进程树的数据结构" class="headerlink" title="进程树的数据结构"></a>进程树的数据结构</h2><p>在 <code>task_struct</code> 中, 通过以下字段构成一棵<strong>多叉双向树</strong>:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">real_parent</span>;</span> <span class="comment">// 生物学父进程: 谁fork了我</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">parent</span>;</span>     <span class="comment">// 法律上的父进程: 谁来wait我、收我的SIGCHLD</span></span><br><span class="line"><span class="comment">// 通常 real_parent == parent, 仅在 ptrace 调试时不同</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">children</span>;</span> <span class="comment">// 作为父进程时: 子进程链表的哨兵头(入口)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">sibling</span>;</span>  <span class="comment">// 作为子进程时: 挂在父进程children链表上的节点</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">group_leader</span>;</span> <span class="comment">// 线程组的主线程(和进程树无关, 是线程组维度的字段)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="parent-和-real-parent-为什么要有两个-parent"><a href="#parent-和-real-parent-为什么要有两个-parent" class="headerlink" title="parent 和 real_parent, 为什么要有两个 parent?"></a><code>parent</code> 和 <code>real_parent</code>, 为什么要有两个 parent?</h3><p>这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进程.<br>但是在使用调试器的场景下, <code>real_parent</code> 仍然是 fork parent, 但是 <code>parent</code> 指向 ptrace 调试器进程, 这个 <code>parent</code> 会接收 <code>wait</code> 和 <code>SIGCHLD</code> 信号</p>
+<h3 id="children-和-sibling-是怎么构成一棵多叉树的"><a href="#children-和-sibling-是怎么构成一棵多叉树的" class="headerlink" title="children 和 sibling 是怎么构成一棵多叉树的?"></a><code>children</code> 和 <code>sibling</code> 是怎么构成一棵多叉树的?</h3><p>这是一个经典的 Linux 内核侵入式链表设计. 逻辑上等效于 LCRS(Left-Child Right-Sibling) 树:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">parent</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">first_child</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">next_sibling</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>但 LCRS 的写法存在问题:</p>
+<ol>
+<li><code>task_struct</code> 关联了非常多的链表关系(进程树、全局进程列表、线程组等). LCRS 的遍历逻辑是进程树专用的, 每种链表关系都要单独维护一套增删&#x2F;遍历 API. 实际上链表操作是通用的, 应该和具体的使用场景解耦.</li>
+<li>LCRS 通常是单向链表, 删除需要先遍历找前驱, 时间复杂度 O(n)</li>
+<li>不能用动态数组存 <code>children</code>, 因为内核关键路径上绝不能有可能失败的内存分配</li>
+</ol>
+<p>因此 Linux 使用了侵入式链表: 把一个通用的链表节点(<code>list_head</code>)嵌入到数据结构内部:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> *<span class="title">next</span>, *<span class="title">prev</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>每个 <code>task_struct</code> 同时扮演两个角色:</p>
+<ul>
+<li><strong>作为父进程</strong>: <code>children</code> 是子进程链表的哨兵头(入口, 不代表任何子进程)</li>
+<li><strong>作为子进程</strong>: <code>sibling</code> 是挂在父进程 <code>children</code> 链表上的普通节点</li>
+</ul>
+<p><code>children.next</code> 指向第一个子进程的 <code>sibling</code> 地址, 每个子进程的 <code>sibling.next</code> 指向下一个兄弟的 <code>sibling</code> 地址, 最后一个兄弟的 <code>sibling.next</code> 回到父进程的 <code>children</code>, 形成双向循环链表:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">父进程.children ←→ 子A.sibling ←→ 子B.sibling ←→ 子C.sibling ←→ (回到父进程.children)</span><br></pre></td></tr></table></figure>
+
+<h3 id="fork-的时候-怎么将新子进程挂到父进程的进程树上"><a href="#fork-的时候-怎么将新子进程挂到父进程的进程树上" class="headerlink" title="fork 的时候, 怎么将新子进程挂到父进程的进程树上?"></a>fork 的时候, 怎么将新子进程挂到父进程的进程树上?</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// kernel/fork.c</span></span><br><span class="line"><span class="comment">// p 是新创建的子进程, p-&gt;real_parent 是执行fork的父进程</span></span><br><span class="line">list_add_tail(&amp;p-&gt;sibling, &amp;p-&gt;real_parent-&gt;children);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等效于(伪代码):</span></span><br><span class="line"><span class="comment">// 把 p-&gt;sibling 插到 real_parent-&gt;children 链表的尾部</span></span><br><span class="line">tail = parent-&gt;children.prev;</span><br><span class="line">tail-&gt;next = &amp;p-&gt;sibling;</span><br><span class="line">p-&gt;sibling.prev = tail;</span><br><span class="line">p-&gt;sibling.next = &amp;parent-&gt;children;</span><br><span class="line">parent-&gt;children.prev = &amp;p-&gt;sibling;</span><br></pre></td></tr></table></figure>
+
+<h3 id="遍历-怎么找到某个进程的所有子进程"><a href="#遍历-怎么找到某个进程的所有子进程" class="headerlink" title="遍历: 怎么找到某个进程的所有子进程?"></a>遍历: 怎么找到某个进程的所有子进程?</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">child</span>;</span></span><br><span class="line">list_for_each_entry(child, &amp;parent-&gt;children, sibling) &#123;</span><br><span class="line">    <span class="comment">// child 就是每个子进程的 task_struct *</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>list_for_each_entry</code> 展开后等效于:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> *<span class="title">pos</span> =</span> parent-&gt;children.next; <span class="comment">// 从哨兵头的next开始</span></span><br><span class="line"><span class="keyword">while</span> (pos != &amp;parent-&gt;children) &#123;             <span class="comment">// 走回哨兵头就停</span></span><br><span class="line">    child = container_of(pos, <span class="keyword">struct</span> task_struct, sibling);</span><br><span class="line">    <span class="comment">// ... 使用 child ...</span></span><br><span class="line">    pos = pos-&gt;next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="container-of-怎么从-sibling-的地址反推出-task-struct-的地址"><a href="#container-of-怎么从-sibling-的地址反推出-task-struct-的地址" class="headerlink" title="container_of: 怎么从 sibling 的地址反推出 task_struct 的地址?"></a><code>container_of</code>: 怎么从 <code>sibling</code> 的地址反推出 <code>task_struct</code> 的地址?</h3><p><code>list_head</code> 内部没有 data 字段, 它不知道自己属于哪个 <code>task_struct</code>. 但因为 <code>sibling</code> 是嵌在 <code>task_struct</code> 内部的, 它在结构体中的偏移量是编译时确定的常量, 所以: <strong><code>sibling</code> 的地址 - 偏移量 &#x3D; <code>task_struct</code> 的起始地址</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// include/linux/container_of.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> container_of(ptr, type, member) \</span></span><br><span class="line"><span class="meta">    ((type *)((char *)(ptr) - offsetof(type, member)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用法:</span></span><br><span class="line">container_of(&amp;某子进程.sibling, <span class="keyword">struct</span> task_struct, sibling)</span><br><span class="line"><span class="comment">// = &amp;某子进程.sibling 的地址 - sibling在task_struct中的偏移</span></span><br><span class="line"><span class="comment">// = 某子进程 task_struct 的起始地址</span></span><br></pre></td></tr></table></figure>
+
+<p>这就是侵入式链表的核心: <strong>不是链表节点包含数据, 而是数据结构包含链表节点, 通过地址减偏移反推出数据结构地址.</strong></p>
+<hr>
+<h2 id="进程树为什么存在"><a href="#进程树为什么存在" class="headerlink" title="进程树为什么存在"></a>进程树为什么存在</h2><h3 id="为什么内核必须记录-parent、children、sibling-而不是只维护一个-PID-列表"><a href="#为什么内核必须记录-parent、children、sibling-而不是只维护一个-PID-列表" class="headerlink" title="为什么内核必须记录 parent、children、sibling, 而不是只维护一个 PID 列表?"></a>为什么内核必须记录 <code>parent</code>、<code>children</code>、<code>sibling</code>, 而不是只维护一个 PID 列表?</h3><p>只维护了 PID 列表, 相当于对于内核来说只知道有哪些进程, 而不知道这些进程之间的关系, 则需要亲缘关系的时候(如 <code>wait()</code>, 托孤, 信号传播), 都需要遍历 PID 列表来拿到亲缘关系, 时间复杂度 O(n), 但是维护了亲缘关系以后, 就只用遍历子进程, 变成了 O(子进程数)</p>
+<h3 id="这些关系分别支撑了哪些操作-wait、发送信号、回收退出状态、托孤"><a href="#这些关系分别支撑了哪些操作-wait、发送信号、回收退出状态、托孤" class="headerlink" title="这些关系分别支撑了哪些操作: wait、发送信号、回收退出状态、托孤?"></a>这些关系分别支撑了哪些操作: <code>wait</code>、发送信号、回收退出状态、托孤?</h3><ul>
+<li><strong>托孤</strong>: 父进程退出的时候, 在 exit 路径中通过 <code>forget_original_parent()</code> → <code>find_new_reaper()</code> 将自己所有的子进程的 <code>real_parent</code> 改成 init&#x2F;subreaper. 由 init 进程来调用 <code>wait()</code>&#x2F;<code>waitpid()</code> 来完成 <code>task_struct</code> 最后的 PID 资源的回收和 <code>exit_state</code> 的回收. 这个机制依赖于父进程通过 <code>children</code> 链表遍历所有子进程</li>
+<li><strong>信号传播</strong>:<ol>
+<li><code>kill(-pgid, sig)</code> 向整个进程组发信号</li>
+<li>会话断开的时候, 会话 leader(常常是 bash&#x2F;zsh…) 进程退出, 发送 <code>SIGHUP</code> 信号, 沿进程树传播要通知所有的前台进程&#x2F;子进程, 子进程收到后退出, 如果没有树结构, 就只能全局扫描</li>
+<li><code>parent</code> 支撑 <code>SIGCHLD</code>: 子进程退出的时候(<code>do_exit()</code> → <code>exit_notify()</code>), 内核通过 <code>parent</code> 指针找到父进程, 向他发送 <code>SIGCHLD</code> 信号, 通知父进程有个进程退出了, 调用 <code>wait()</code> 回收资源</li>
+</ol>
+</li>
+<li><strong>回收状态&#x2F;<code>wait()</code></strong>: <code>do_wait()</code> 的实现就是遍历 <code>current-&gt;children</code> 链表, 逐个检查子进程的 <code>exit_state</code>, 找到 <code>EXIT_ZOMBIE</code> 的子进程回收, 没有 <code>children</code> 链表, 就无法找到自己的子进程, 可能会产生永久僵尸</li>
+</ul>
+<hr>
+<h2 id="进程树和任务控制的关系"><a href="#进程树和任务控制的关系" class="headerlink" title="进程树和任务控制的关系"></a>进程树和任务控制的关系</h2><h3 id="进程树、进程组、Session-之间是什么关系"><a href="#进程树、进程组、Session-之间是什么关系" class="headerlink" title="进程树、进程组、Session 之间是什么关系?"></a>进程树、进程组、Session 之间是什么关系?</h3><p>三者是<strong>不同维度的组织方式, 层层嵌套但不相同</strong>:</p>
+<ul>
+<li><strong>进程组 (Process Group)</strong>: 由 PGID(Process Group ID) 标识, 通过 <code>task_pgrp()</code> 获取. 同一条管道里的进程共享同一个 PGID. 进程组 leader 的 PID &#x3D;&#x3D; PGID. 注意 PGID 和 TGID(Thread Group ID, 线程组ID) 是两个完全不同的概念.</li>
+<li><strong>进程树 (Process Tree)</strong>: 维护所有进程之间的亲缘关系, 是 <code>fork()</code> 的产物. <code>fork()</code> 创建的子进程会继承父进程的 SID 和 PGID. <code>execve()</code> 不创建新进程, 只替换程序映像, PID&#x2F;PGID&#x2F;SID 保持不变. 进程树关系是自动的、不可变的; 进程组关系是 shell 按作业逻辑主动设置的、可变的.</li>
+<li><strong>Session (会话)</strong>: 一次终端连接, 是最外层的容器, 包含一个或多个进程组. 通过 <code>setsid()</code> 能让一个非 leader 的进程创建一个新的 Session, 并成为这个 Session&#x2F;Group 的 leader. 这也是为什么守护进程要执行 <code>fork()</code> → <code>setsid()</code>: 如果调用者的 PID &#x3D;&#x3D; PGID(即它是进程组 leader), <code>setsid()</code> 会失败, 所以先 fork 出子进程(子进程 PID ≠ 父进程 PGID), 再在子进程中 <code>setsid()</code>. 如果一个 Session leader 终止了, 会发送 <code>SIGHUP</code> 信号到前台进程组.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>进程树</th>
+<th>进程组</th>
+<th>会话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>组织依据</strong></td>
+<td>谁 fork 了谁</td>
+<td>谁在做同一个 job</td>
+<td>谁共享同一个终端</td>
+</tr>
+<tr>
+<td><strong>标识符</strong></td>
+<td>无(通过 <code>parent</code>&#x2F;<code>children</code> 指针)</td>
+<td>PGID</td>
+<td>SID</td>
+</tr>
+<tr>
+<td><strong>建立时机</strong></td>
+<td>fork 时自动建立</td>
+<td>shell 启动 job 时 <code>setpgid()</code></td>
+<td>登录时 <code>setsid()</code></td>
+</tr>
+<tr>
+<td><strong>可否改变</strong></td>
+<td>不可(除 ptrace&#x2F;托孤)</td>
+<td>可以 <code>setpgid()</code></td>
+<td>可以 <code>setsid()</code></td>
+</tr>
+<tr>
+<td><strong>包含关系</strong></td>
+<td>无层级嵌套</td>
+<td>一个会话包含多个进程组</td>
+<td>最外层容器</td>
+</tr>
+</tbody></table>
+<h3 id="为什么-Ctrl-C-SIGINT-、Ctrl-Z-SIGTSTP-往往不是只作用在单个进程上"><a href="#为什么-Ctrl-C-SIGINT-、Ctrl-Z-SIGTSTP-往往不是只作用在单个进程上" class="headerlink" title="为什么 Ctrl+C (SIGINT)、Ctrl+Z (SIGTSTP) 往往不是只作用在单个进程上?"></a>为什么 <code>Ctrl+C</code> (<code>SIGINT</code>)、<code>Ctrl+Z</code> (<code>SIGTSTP</code>) 往往不是只作用在单个进程上?</h3><p>实际上是作用在一整个前台进程组上的. 在最经典的管道场景中, <code>cat file | grep foo | wc -l</code>, 如果只发给一个前台的进程, 就会导致 <code>cat</code> 被终止了, 但是 <code>grep</code>&#x2F;<code>wc</code> 还在运行, 还在往管道里面写数据, 行为就乱了</p>
+<h3 id="这和-shell、前台任务、后台任务有什么关系"><a href="#这和-shell、前台任务、后台任务有什么关系" class="headerlink" title="这和 shell、前台任务、后台任务有什么关系?"></a>这和 shell、前台任务、后台任务有什么关系?</h3><ul>
+<li><strong>shell</strong>: 是作业控制的实现者, 通过进程组和会话机制来管理前台&#x2F;后台任务, 启动时会通过 <code>setsid()</code> 成为 Session leader &#x2F; 进程组 leader</li>
+<li><strong>前台任务</strong>: 是会接受终端输入的一组进程. 如 <code>cat file | grep foo</code>, shell 首先通过 <code>fork()</code> 创建出两个子进程, 然后调用 <code>setpgid()</code> 将这两个进程放到一个进程组里面, 调用 <code>tcsetpgrp()</code> 将这个进程组变成前台进程组. 终端的键盘信号都会发送给前台进程组, shell 自己调用 <code>waitpid()</code> 阻塞等待前台任务完成</li>
+<li><strong>后台任务</strong>: 没有调用 <code>tcsetpgrp()</code> 这一个设置成前台进程组的步骤, 后台进程组不持有前台, 所以 <code>Ctrl+C</code> 不影响它</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>本质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl+Z</code></td>
+<td>终端驱动向前台进程组发 <code>SIGTSTP</code> → 整组暂停</td>
+</tr>
+<tr>
+<td><code>jobs</code></td>
+<td>shell 遍历自己管理的进程组列表, 显示状态</td>
+</tr>
+<tr>
+<td><code>fg %1</code></td>
+<td>shell 调用 <code>tcsetpgrp()</code> 把目标进程组设为前台 + 发 <code>SIGCONT</code> 恢复</td>
+</tr>
+<tr>
+<td><code>bg %1</code></td>
+<td>shell 向目标进程组发 <code>SIGCONT</code>, 但<strong>不</strong>设为前台 → 后台继续运行</td>
+</tr>
+<tr>
+<td><code>kill %1</code></td>
+<td>shell 向目标进程组发 <code>SIGTERM</code></td>
+</tr>
+</tbody></table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>进程树: linux kernel里面为进程之间的亲子关系维护的一颗双向多叉树, 使用linux侵入式链表设计, 进程树对于托孤机制(僵尸清理), 沿亲缘关系的传播的信号来说是不可获取的机制, 比如wait()操作本身就是遍历进程的所有的children, 挨个回收PID和退出状态.</li>
+<li>shell任务控制: 任务分成前台任务和后台任务, 拿管道的运用举例子, 创建任务的步骤是shell fork出来一系列的子进程, 然后setpgid(), 将这些进程放到一个进程组里面. 对于前台进程(比如我们输入的命令), 还有一个额外的设置成前台进程的步骤(tcsetpgrp()), 前台进程会接受键盘信号(Ctrl + C &#x2F; Ctrl +Z). 这些信号传播的最小单元是一个进程组. 无论是前台任务还是后台任务, 都会共享一个session id来代表他们是经由这个session代表的shell进程创建的. shell会执行waitpid()来阻塞式等待, 并且完成最后的资源的清理. shell退出的时候, 会沿进程树的所有子进程的所在的进程组发送SIGHUP.</li>
+<li>守护进程: daemon进程就是一个后台进程, 创建的核心就是要和原来的session解绑(创立新的pgid, sid), 然后不再是shell进程的子进程, 所有流程是fork(leader进程不能setsid) - 父进程不wait(成为孤儿进程, 挂在init下面) - setsid(重制pgid&#x2F;sid) - fork</li>
+<li>僵尸进程: 由父进程不wait()&#x2F;waitpid(), 导致没有执行进程的最后的PID&#x2F;exit_state的回收导致的中间态死亡进程, 大量的僵尸进程会导致PID空间不足</li>
+<li>孤儿进程: 父进程死亡, 子进程就变成了孤儿进程. 父进程exit的时候会调用exit() -&gt; forget_original_parent() -&gt; find_new_reaper()流程将子进程托孤给init&#x2F;subreaper, 这两类进程会定期执行wait()清理僵尸进程.</li>
+</ul>
+]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>进程管理</tag>
+        <tag>进程树</tag>
+        <tag>task_struct</tag>
+        <tag>侵入式链表</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程管理</title>
+    <url>/2026/03/08/notes/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<h1 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程的数据结构是task struct</p>
+<ol>
+<li>cpu资源:<ol>
+<li>调度优先级</li>
+</ol>
+</li>
+<li>内存地址空间资源:<ol>
+<li>mm_struct</li>
+</ol>
+</li>
+<li>打开的文件资源:<ol>
+<li>file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)</li>
+</ol>
+</li>
+</ol>
+<p>进程自己的信息与状态</p>
+<ol>
+<li>进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中<ol>
+<li>如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…</li>
+</ol>
+</li>
+<li>唯一ID<ol>
+<li>pid: 线程级别的id</li>
+<li>gtid: 进程级别的id</li>
+</ol>
+</li>
+<li>文件系统信息 <code>struct fs_struct *fs</code></li>
+<li>namespace</li>
+<li>进程树关系: 该进程在整个进程树里面的位置</li>
+</ol>
+<h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_RUNNING            0x00000000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_INTERRUPTIBLE      0x00000001</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_UNINTERRUPTIBLE    0x00000002</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_STOPPED          0x00000004</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_TRACED           0x00000008</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_DEAD               0x00000010</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_ZOMBIE             0x00000020</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_DEAD               0x00000080</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 组合状态（便利宏）: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_KILLABLE           (TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_STOPPED            (TASK_WAKEKILL | __TASK_STOPPED)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_IDLE               (TASK_UNINTERRUPTIBLE | TASK_NOLOAD)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_NORMAL			(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p>常见状态语义说明:</p>
+<p><strong>存储在task-&gt;state的</strong></p>
+<ul>
+<li>TASK_RUNNING: 进程正在运行队列中, 准备运行&#x2F;正在运行</li>
+<li>TASK_NORAML&#x2F;TASK_INTERRUPTIBLE&#x2F;TASK_UNINTERRUPTIBLE:<ul>
+<li>TASK_NORMAL &#x3D; <code>(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</code> 是这两个状态的综合, 表明进程正在睡眠</li>
+<li>TASK_INTERRUPTIBLE: 进程处于可打断的睡眠状态, 正在等待某个条件满足, 被wake_up唤醒, 或者被信号唤醒. 不会被计入load average</li>
+<li>TASK_UNINTERRUPTIBLE: 进程处于不可中断的睡眠状态, 只能在条件满足时, 被wake_up唤醒, 不能被信号唤醒, 常用于(如磁盘 I&#x2F;O)等不能被中途打断的SLEEP, 这也代表, 在这个状态的进程的数量能一定程度反应当前计算机的物理负载, 这个状态会被计入load average</li>
+<li>TASK_KILLABLE &#x3D; <code>(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</code> 可以被致命信号杀死(SIGKILL)的不可中断睡眠</li>
+<li>__TASK_STOPPED &#x3D; 进程被暂停执行了, 不会被调度. 1. 收到SIGSTOP &#x2F; SIGSTP &#x2F; SIGTTIN &#x2F; SIGTTOU 信号 2. ptrace attach 后发送 SIGSTOP. 常见的进入情景: 1. Ctrl + z 2. debug. 退出的时机: 收到 SIGCONT 信号</li>
+<li>__TASK_TRACED &#x3D; 进程正在被调试器跟踪</li>
+<li>TASK_IDLE (TASK_UNINTERRUPTIBLE | TASK_NOLOAD):<ul>
+<li>语义: TASK_UNINTERRUPTIBLE类似的不可中断睡眠, 但<strong>不计入 load average</strong></li>
+<li>内核中空闲时会运行的 idle线程, 内核中某些无关紧要的等待</li>
+<li>如果 idle线程用TASK_UNINTERRUPTIBLE而包含TASK_NOLOAD会导致load average空长, 不能反应真实物理资源负载</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>存储在task-&gt;exit_code的</strong></p>
+<ul>
+<li>EXIT_ZOMBIE: 僵尸状态<ul>
+<li>语义: 代码已经执行完毕</li>
+<li>进入的时机: 进程调用exit() -&gt; do_exit() -&gt; exit_notify() 中设置 tsk-&gt;exit_state &#x3D; EXIT_ZOMBIE</li>
+<li>退出的时机: 父进程调用 <code>wait</code> &#x2F; <code>waitpid()</code> 读取退出状态 -&gt; <code>wait_task_zombie()</code> -&gt; <code>exit_state</code>中改为 <code>EXIT_DEAD</code> -&gt; <code>task_struct</code> 被释放</li>
+</ul>
+</li>
+<li>EXIT_DEAD (0x10) : 彻底死亡<ul>
+<li>语义: 进程的task_struct正在被回收或者已经被回收</li>
+<li>进入的时机: 父进程 <code>wait()</code> 成功后, 状态从 <code>EXIT_ZOMBIE</code> 变成 <code>EXIT_DEAD</code></li>
+<li>退出的时机: 这是一个瞬态, 存在的时间极短, 之后 <code>task_struct</code> 被回收</li>
+</ul>
+</li>
+</ul>
+<p><strong>常见的进程类型</strong></p>
+<ul>
+<li><p><strong>僵尸进程</strong>: 进程(task_struct)已经被释放, 但是还保留PID和exit_state为EXIT_ZOMBIE</p>
+<ul>
+<li>为什么需要这个状态: 父进程可能需要在进程被关闭以后, 获取进程的PID并检查它的退出码来衡量进程是不是正常退出的</li>
+<li>资源泄漏: 状态为EXIT_ZOMBIE的进程占用一个PID和少量的内核内存. 如果大量堆积, 会导致内核内存泄漏, 或PID耗尽</li>
+<li>怎么产生的: 父进程没有调用wait()或者waitpid()</li>
+<li>解决方式:<ul>
+<li>父进程调用 wait() &#x2F; waitpid()</li>
+<li>设置 signal(SIGCHLD, SIG_IGN) 让内核自动回收 (do_notigy_parent返回true的时候直接设置状态为EXIT_DEAD)</li>
+<li>杀死父进程 -&gt; 僵尸被init(PID&#x3D;1)收养 -&gt; init会自动 <code>wait()</code>清理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>孤儿进程</strong>: 进程的父进程先于子进程被杀死了, 子进程就成为了孤儿进程</p>
+<ul>
+<li>内核会将孤儿进程的父进程指向init, 或者当前 PID namespace 中的 subreaper 进程, init进程会定期调用 <code>wait()</code>来清理</li>
+<li>本身是正常的, 不会造成问题</li>
+</ul>
+</li>
+<li><p><strong>守护进程</strong>: 在后台运行的, 不再与任何终端关联的长期运行的进程. 如 <code>sshd, nginx</code>等</p>
+<ul>
+<li>不是一个内核概念, 而是一个用户空间的编程的概念</li>
+<li>经典的创建过程: double-fork<ul>
+<li><code>fork()</code> - 创建子进程</li>
+<li>父进程退出 - 子进程被托孤给init</li>
+<li>setsid - 创建新的session (和原终端解绑)</li>
+<li>再次 <code>fork()</code> - 确保不会重新获得中断控制能力</li>
+<li>chdir(“&#x2F;) - 避免占用可卸载的文件系统</li>
+<li>关闭&#x2F;重定向 stdin&#x2F;stdout&#x2F;stderr</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程的唯一ID"><a href="#进程的唯一ID" class="headerlink" title="进程的唯一ID"></a>进程的唯一ID</h3><p><strong>tgid和pid, 为什么要有两个ID</strong><br>经典的用途是区分进程和线程, 本身是进程组概念, 父进程和他fork出来的子进程组成一个进程组, 共享一个tgid.<br>他们的id (pid, tgid)会是 (1, 1), (2, 1), (3, 1). 对于操作系统来说, 只有进程这个概念, 线程实际上是一个轻量级进程, 对于操作系统的调度来说, 进程和线程是同等地位的实体, 唯一通过PID来作为唯一标识, 而tgid是标识”进程”而非”线程”的唯一标识.</p>
+<h3 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h3><p>通过 <code>task_struct</code> 中的 <code>parent</code>&#x2F;<code>real_parent</code>、<code>children</code>&#x2F;<code>sibling</code> 字段, 所有进程构成一棵<strong>多叉双向树</strong>. Linux 使用侵入式链表(<code>list_head</code>)而非传统多叉树来实现, 使得增删 O(1)、零内存分配、API 全内核复用.</p>
+<p>进程树支撑了 <code>wait()</code> 回收、托孤、<code>SIGCHLD</code> 通知等核心操作. 进程树与进程组(PGID)、会话(Session) 共同构成了完整的作业控制体系.</p>
+<p><strong>详细内容</strong>: <a href="%E8%BF%9B%E7%A8%8B%E6%A0%91.md">进程树</a></p>
+]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>进程管理</tag>
+        <tag>task_struct</tag>
+      </tags>
+  </entry>
+</search>
