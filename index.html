@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="https://functional.top/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Hexo",
+  "alternateName": [
+    "functional.top"
+  ],
+  "url": "https://functional.top/"
+}</script><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><link rel="canonical" href="https://functional.top/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Hexo',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">Hexo</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/22/kafka/notes/01-core-concepts/" title="01 · Core Concepts">01 · Core Concepts</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></span></div><div class="content">01 · Core Concepts 目标：理解 Kafka 的四个核心抽象及其关系，能画出消息从 produce 到 consume 的完整路径   核心概念TopicTopic 是逻辑概念，是消息的命名分类单位（如 order-events、user-clicks）。Topic 本身不存储数据，真正存储数据的是 partition。 PartitionPartition 是物理存储单元。每个 partition 在磁盘上是一个目录，目录下包含多个 segment 文件（.log、.index、.timeindex）。Kafka 按大小或时间把数据切割成多个 segment，避免单个文件无限增长。 Partition 解决两个问题：  并行度：多个 partition 分布在不同 broker 上，读写可以同时进行，吞吐量线性扩展。消费端同理，N 个 partition 最多支持 N 个消费者并行消费。 水平扩展：partition 是 Kafka 的最小分布单元，不同 partition 可以在不同 broker 上，单个 topic 的数据量不受单台机器限制。  注意：pa...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/22/kafka/notes/02-log-and-pull/" title="02 · 日志抽象与 Push vs Pull">02 · 日志抽象与 Push vs Pull</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></span></div><div class="content">02 · 日志抽象与 Push vs Pull 目标：理解 Kafka 的存储基础——日志抽象，以及消费模型选择 Pull 的设计动机   核心概念一、什么是日志日志是最简单的存储抽象：只追加、全局有序、按时间排列的记录序列。 每条记录追加到末尾，每条记录被分配一个唯一的单调递增序号。这个序号定义了一种”时间”概念——序号小的记录比序号大的旧。 关键性质：这种”时间”与物理时钟无关。 在分布式系统里，不同机器的物理时钟不同步，即使同步了，同一毫秒内发生的两件事也无法用物理时间判断先后。日志序号解决的是全局定序问题——整个系统里所有事件有一个统一的、无歧义的顺序。这是 Kafka 能作为”事件的单一来源”的基础。 注意区分两种”日志”：  应用日志（log4j、syslog）：给人读的非结构化文本 数据日志（Kafka partition）：给程序读的结构化序列，是这里讨论的概念   二、只追加带来的三个好处1. 顺序写性能极高 磁盘随机写慢，顺序写可以接近内存速度。日志只追加意味着所有写入都是顺序的，Kafka 因此能在普通机械硬盘上达到很高的吞吐量。 2. 消息不因消费而删除，...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/22/kafka/notes/04-producer/" title="04 · Producer：幂等写入、事务、Exactly-Once">04 · Producer：幂等写入、事务、Exactly-Once</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></span></div><div class="content">04 · Producer：幂等写入、事务、Exactly-Once 目标：理解 Kafka Producer 如何从 at-least-once 走向 exactly-once，以及幂等和事务的实现机制   核心概念一、问题来源：at-least-once 的重复写入Kafka 默认是 at-least-once：消息不会丢，但可能重复。重复的来源是网络不确定性： 12345Producer 发送消息→ Broker 写入成功→ 网络故障，Producer 没收到确认→ Producer 以为失败，重试→ Broker 收到重复消息，再次写入  Producer 无法区分”broker 没收到”和”broker 收到了但确认没回来”，即使 acks&#x3D;all 也存在这个问题。  二、幂等 Producer：解决单 Partition 的重复写入开启方式：enable.idempotence=true（Kafka 3.0 之后默认开启） 实现机制：PID + Sequence Number  每个 Producer 启动时被分配唯一的 Producer ID（PID） 每...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/22/kafka/notes/03-replication/" title="03 · Replication / ISR / Leader Election">03 · Replication / ISR / Leader Election</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></span></div><div class="content">03 · Replication &#x2F; ISR &#x2F; Leader Election 目标：理解 Kafka 如何通过副本机制保证数据不丢，以及 ISR、Leader Election、acks 的设计取舍   核心概念一、为什么需要副本单台 broker 随时可能挂掉。如果 partition 只存在一台 broker 上，broker 挂了数据就永远丢了。 解决方案是副本（Replica）：每个 partition 在多台 broker 上各存一份。副本数量由 replication factor 控制，比如 replication factor &#x3D; 3，意味着这个 partition 在 3 台不同的 broker 上各有一份完整数据。  二、Leader 和 Follower多个副本里，有且只有一个是 Leader，其余是 Follower。  Leader：负责所有读写请求。Producer 写给 Leader，Consumer 也从 Leader 读。 Follower：唯一职责是从 Leader 同步数据，保持冗余备份，不直接服务读写请求。...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/22/kafka/index/" title="Kafka 学习主干道">Kafka 学习主干道</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-22T17:42:00.010Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></span></div><div class="content">Kafka 学习主干道核心抽象Kafka 是一个持久化的分布式日志系统，所有设计围绕一个核心约束展开：  消息是不可变的、有序的、可重放的日志，消费者通过 offset 自主控制读取位置  从这个约束出发，可以推导出它的所有设计决策：    抽象 一句话    Topic &#x2F; Partition 日志的逻辑分组与物理分片，分片是并发和扩展的基本单位   Offset 消费者在分区日志中的位置指针，由消费者自己管理   Consumer Group 一组消费者共同消费一个 topic，每个分区只被组内一个消费者消费   Replication &#x2F; ISR 分区副本机制，ISR 决定谁有资格成为 leader   Producer Acks 生产者对”写入成功”的定义，决定可靠性与延迟的取舍   Log Segment 分区在磁盘上的物理存储单元，append-only，支持顺序写    主干道节点   # 文件 一句话 状态    1 01-core-concepts.md Topic &#x2F; Partition &#x2F; Offset &#x2F; ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/19/algorithm/Algorithm-Index/" title="算法刷题目录">算法刷题目录</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-19T23:40:22.000Z" title="Created 2026-03-19 23:40:22">2026-03-19</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></span></div><div class="content">array 121.买卖股票的最佳时机 215.数组中的第k个最大元素 54.螺旋矩阵 56.合并区间 560.和为-k-的子数组 88.合并两个有序数组 912.排序数组  bfs 102.二叉树的层序遍历 103.二叉树的锯齿形层序遍历  binary_search 34.在排序数组中查找元素的第一个和最后一个位置 4.寻找两个正序数组的中位数 69.x-的平方根  dfs 200.岛屿数量 22.括号生成 39.组合总和 40.组合总和-ii 46.全排列 695.岛屿的最大面积 79.单词搜索  dp 1143.最长公共子序列 122.买卖股票的最佳时机-ii 152.乘积最大子数组 198.打家劫舍 300.最长递增子序列 322.零钱兑换(递归) 322.零钱兑换(递推) 416.分割等和子集 516.最长回文子序列 53.最大子数组和 64.最小路径和(递归) 64.最小路径和(递推) 70.爬楼梯 72.编辑距离(递归) 72.编辑距离(递推)  graph 207.课程表  linkedlist 141.环形链表 143.重排链表 148.排序链表 160.相交...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/11/network/%E8%BF%9B%E7%A8%8B%E6%A0%91/" title="进程树">进程树</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-11T00:00:00.000Z" title="Created 2026-03-11 00:00:00">2026-03-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/OS/">OS</a></span></div><div class="content">进程树 返回综述: 进程管理  进程树的数据结构在 task_struct 中, 通过以下字段构成一棵多叉双向树: 12345678struct task_struct __rcu *real_parent; // 生物学父进程: 谁fork了我struct task_struct __rcu *parent;     // 法律上的父进程: 谁来wait我、收我的SIGCHLD// 通常 real_parent == parent, 仅在 ptrace 调试时不同struct list_head children; // 作为父进程时: 子进程链表的哨兵头(入口)struct list_head sibling;  // 作为子进程时: 挂在父进程children链表上的节点struct task_struct *group_leader; // 线程组的主线程(和进程树无关, 是线程组维度的字段)  parent 和 real_parent, 为什么要有两个 parent?这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/11/notes/%E8%BF%9B%E7%A8%8B%E6%A0%91/" title="进程树">进程树</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-11T00:00:00.000Z" title="Created 2026-03-11 00:00:00">2026-03-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/OS/">OS</a></span></div><div class="content">进程树 返回综述: 进程管理  进程树的数据结构在 task_struct 中, 通过以下字段构成一棵多叉双向树: 12345678struct task_struct __rcu *real_parent; // 生物学父进程: 谁fork了我struct task_struct __rcu *parent;     // 法律上的父进程: 谁来wait我、收我的SIGCHLD// 通常 real_parent == parent, 仅在 ptrace 调试时不同struct list_head children; // 作为父进程时: 子进程链表的哨兵头(入口)struct list_head sibling;  // 作为子进程时: 挂在父进程children链表上的节点struct task_struct *group_leader; // 线程组的主线程(和进程树无关, 是线程组维度的字段)  parent 和 real_parent, 为什么要有两个 parent?这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/08/network/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="进程管理">进程管理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-08T00:00:00.000Z" title="Created 2026-03-08 00:00:00">2026-03-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/OS/">OS</a></span></div><div class="content">进程管理进程数据结构进程的数据结构是task struct  cpu资源: 调度优先级   内存地址空间资源: mm_struct   打开的文件资源: file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)    进程自己的信息与状态  进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中 如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…   唯一ID pid: 线程级别的id gtid: 进程级别的id   文件系统信息 struct fs_struct *fs namespace 进程树关系: 该进程在整个进程树里面的位置  进程的状态123456789101112131415161718/* Used in tsk-&gt;state: */#define TASK_RUNNING            0x00000000#define TASK_INTERRUPTIBLE      ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/03/08/notes/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="进程管理">进程管理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-08T00:00:00.000Z" title="Created 2026-03-08 00:00:00">2026-03-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/OS/">OS</a></span></div><div class="content">进程管理进程数据结构进程的数据结构是task struct  cpu资源: 调度优先级   内存地址空间资源: mm_struct   打开的文件资源: file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)    进程自己的信息与状态  进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中 如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…   唯一ID pid: 线程级别的id gtid: 进程级别的id   文件系统信息 struct fs_struct *fs namespace 进程树关系: 该进程在整个进程树里面的位置  进程的状态123456789101112131415161718/* Used in tsk-&gt;state: */#define TASK_RUNNING            0x00000000#define TASK_INTERRUPTIBLE      ...</div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/22/kafka/notes/01-core-concepts/" title="01 · Core Concepts">01 · Core Concepts</a><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/22/kafka/notes/02-log-and-pull/" title="02 · 日志抽象与 Push vs Pull">02 · 日志抽象与 Push vs Pull</a><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/22/kafka/notes/04-producer/" title="04 · Producer：幂等写入、事务、Exactly-Once">04 · Producer：幂等写入、事务、Exactly-Once</a><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/22/kafka/notes/03-replication/" title="03 · Replication / ISR / Leader Election">03 · Replication / ISR / Leader Election</a><time datetime="2026-03-22T17:42:00.011Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/22/kafka/index/" title="Kafka 学习主干道">Kafka 学习主干道</a><time datetime="2026-03-22T17:42:00.010Z" title="Created 2026-03-22 17:42:00">2026-03-22</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>Categories</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/OS/"><span class="card-category-list-name">OS</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%AE%97%E6%B3%95/"><span class="card-category-list-name">算法</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/pull/" style="font-size: 1.1em; color: #999">pull</a> <a href="/tags/Linux/" style="font-size: 1.37em; color: #99a4b2">Linux</a> <a href="/tags/Index/" style="font-size: 1.1em; color: #999">Index</a> <a href="/tags/task-struct/" style="font-size: 1.37em; color: #99a4b2">task_struct</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" style="font-size: 1.37em; color: #99a4b2">进程管理</a> <a href="/tags/log/" style="font-size: 1.1em; color: #999">log</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E6%A0%91/" style="font-size: 1.23em; color: #999ea6">进程树</a> <a href="/tags/offset/" style="font-size: 1.1em; color: #999">offset</a> <a href="/tags/consumer-group/" style="font-size: 1.1em; color: #999">consumer-group</a> <a href="/tags/partition/" style="font-size: 1.1em; color: #999">partition</a> <a href="/tags/transaction/" style="font-size: 1.1em; color: #999">transaction</a> <a href="/tags/LSO/" style="font-size: 1.1em; color: #999">LSO</a> <a href="/tags/exactly-once/" style="font-size: 1.1em; color: #999">exactly-once</a> <a href="/tags/producer/" style="font-size: 1.1em; color: #999">producer</a> <a href="/tags/topic/" style="font-size: 1.1em; color: #999">topic</a> <a href="/tags/acks/" style="font-size: 1.1em; color: #999">acks</a> <a href="/tags/distributed-systems/" style="font-size: 1.1em; color: #999">distributed-systems</a> <a href="/tags/%E4%BE%B5%E5%85%A5%E5%BC%8F%E9%93%BE%E8%A1%A8/" style="font-size: 1.23em; color: #999ea6">侵入式链表</a> <a href="/tags/replication/" style="font-size: 1.1em; color: #999">replication</a> <a href="/tags/leader-election/" style="font-size: 1.1em; color: #999">leader-election</a> <a href="/tags/ISR/" style="font-size: 1.1em; color: #999">ISR</a> <a href="/tags/messaging/" style="font-size: 1.1em; color: #999">messaging</a> <a href="/tags/idempotent/" style="font-size: 1.1em; color: #999">idempotent</a> <a href="/tags/kafka/" style="font-size: 1.5em; color: #99a9bf">kafka</a> <a href="/tags/long-poll/" style="font-size: 1.1em; color: #999">long-poll</a> <a href="/tags/append-only/" style="font-size: 1.1em; color: #999">append-only</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              March 2026
+            </span>
+            <span class="card-archive-list-count">10</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">10</div></div><div class="webinfo-item"><div class="item-name">Total Word Count :</div><div class="item-count">16.1k</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-22T17:42:18.153Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="Toggle Between Traditional and Simplified Chinese">简</button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  },
+  processSubtitle: (content, extraContents = []) => {
+    if (true) {
+      const sub = ["The unexamine life is not worth living","Everything I want wants me more","走暗路，耕瘦田，进窄门","太阳可出租, 月亮包退换"].slice()
+
+      if (extraContents.length > 0) {
+        sub.unshift(...extraContents)
+      }
+
+      if (typeof content === 'string') {
+        sub.unshift(content)
+      } else if (Array.isArray(content)) {
+        sub.unshift(...content)
+      }
+
+      sub.length > 0 && typedJSFn.init(sub)
+    } else {
+      document.getElementById('subtitle').textContent = typeof content === 'string' ? content :
+        (Array.isArray(content) && content.length > 0 ? content[0] : '')
+    }
+  }
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  typedJSFn.processSubtitle(["The unexamine life is not worth living","Everything I want wants me more","走暗路，耕瘦田，进窄门","太阳可出租, 月亮包退换"])
+}
+typedJSFn.run(subtitleType)</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="local-search-input"><input placeholder="Search for Posts" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
