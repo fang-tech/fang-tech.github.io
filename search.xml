@@ -1,0 +1,1699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Kafka 学习主干道</title>
+    <url>/2026/03/28/kafka/index/</url>
+    <content><![CDATA[<h1 id="Kafka-学习主干道"><a href="#Kafka-学习主干道" class="headerlink" title="Kafka 学习主干道"></a>Kafka 学习主干道</h1><h2 id="核心抽象"><a href="#核心抽象" class="headerlink" title="核心抽象"></a>核心抽象</h2><p>Kafka 是一个<strong>持久化的分布式日志系统</strong>，所有设计围绕一个核心约束展开：</p>
+<blockquote>
+<p><strong>消息是不可变的、有序的、可重放的日志，消费者通过 offset 自主控制读取位置</strong></p>
+</blockquote>
+<p>从这个约束出发，可以推导出它的所有设计决策：</p>
+<table>
+<thead>
+<tr>
+<th>抽象</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Topic &#x2F; Partition</strong></td>
+<td>日志的逻辑分组与物理分片，分片是并发和扩展的基本单位</td>
+</tr>
+<tr>
+<td><strong>Offset</strong></td>
+<td>消费者在分区日志中的位置指针，由消费者自己管理</td>
+</tr>
+<tr>
+<td><strong>Consumer Group</strong></td>
+<td>一组消费者共同消费一个 topic，每个分区只被组内一个消费者消费</td>
+</tr>
+<tr>
+<td><strong>Replication &#x2F; ISR</strong></td>
+<td>分区副本机制，ISR 决定谁有资格成为 leader</td>
+</tr>
+<tr>
+<td><strong>Producer Acks</strong></td>
+<td>生产者对”写入成功”的定义，决定可靠性与延迟的取舍</td>
+</tr>
+<tr>
+<td><strong>Log Segment</strong></td>
+<td>分区在磁盘上的物理存储单元，append-only，支持顺序写</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="主干道节点"><a href="#主干道节点" class="headerlink" title="主干道节点"></a>主干道节点</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>文件</th>
+<th>内容</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a href="notes/01-core-concepts.md">01-core-concepts.md</a></td>
+<td>Topic &#x2F; Partition &#x2F; Offset &#x2F; Consumer Group &#x2F; Broker</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="notes/02-log-and-pull.md">02-log-and-pull.md</a></td>
+<td>日志抽象、只追加、全局定序、Pull 模式、长轮询</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="notes/03-storage.md">03-storage.md</a></td>
+<td>Segment 结构、Page Cache、零拷贝、Retention、Log Compaction</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="notes/04-producer-internals.md">04-producer-internals.md</a></td>
+<td>key 路由、批量发送、压缩（已合并入 06）</td>
+<td>✅ 已合并</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="notes/05-replication.md">05-replication.md</a></td>
+<td>Replica、ISR、Leader Election、acks、min.insync.replicas</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="notes/06-producer.md">06-producer.md</a></td>
+<td>路由、批量、压缩、幂等、事务、LSO、Exactly-Once</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="notes/07-consumer.md">07-consumer.md</a></td>
+<td>GC、GL、Rebalance、Static Membership、Offset 提交策略</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="notes/08-kraft.md">08-kraft.md</a></td>
+<td>为什么去掉 ZooKeeper，KRaft 元数据管理</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>9</td>
+<td><a href="notes/09-engineering.md">09-engineering.md</a></td>
+<td>Kafka 在真实系统中的定位与工程取舍</td>
+<td>✅ 已完成</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="节点依赖"><a href="#节点依赖" class="headerlink" title="节点依赖"></a>节点依赖</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">01-core-concepts</span><br><span class="line">    ├── 02-storage-design</span><br><span class="line">    ├── 03-replication</span><br><span class="line">    ├── 04-producer</span><br><span class="line">    └── 05-consumer</span><br><span class="line">              └── 06-kraft (可并行)</span><br><span class="line">                      └── 07-engineering</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>distributed-systems</tag>
+        <tag>messaging</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法刷题目录</title>
+    <url>/2026/03/27/algorithm/Algorithm-Index/</url>
+    <content><![CDATA[<h2 id="题目统计"><a href="#题目统计" class="headerlink" title="题目统计"></a>题目统计</h2><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>数量</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>array</strong></td>
+<td>13</td>
+<td>15.48%</td>
+</tr>
+<tr>
+<td><strong>bfs</strong></td>
+<td>2</td>
+<td>2.38%</td>
+</tr>
+<tr>
+<td><strong>binary_search</strong></td>
+<td>3</td>
+<td>3.57%</td>
+</tr>
+<tr>
+<td><strong>dfs</strong></td>
+<td>7</td>
+<td>8.33%</td>
+</tr>
+<tr>
+<td><strong>dp</strong></td>
+<td>17</td>
+<td>20.24%</td>
+</tr>
+<tr>
+<td><strong>graph</strong></td>
+<td>1</td>
+<td>1.19%</td>
+</tr>
+<tr>
+<td><strong>linkedlist</strong></td>
+<td>14</td>
+<td>16.67%</td>
+</tr>
+<tr>
+<td><strong>math</strong></td>
+<td>1</td>
+<td>1.19%</td>
+</tr>
+<tr>
+<td><strong>sliding_window</strong></td>
+<td>4</td>
+<td>4.76%</td>
+</tr>
+<tr>
+<td><strong>stack</strong></td>
+<td>1</td>
+<td>1.19%</td>
+</tr>
+<tr>
+<td><strong>string</strong></td>
+<td>10</td>
+<td>11.90%</td>
+</tr>
+<tr>
+<td><strong>structure</strong></td>
+<td>4</td>
+<td>4.76%</td>
+</tr>
+<tr>
+<td><strong>tree</strong></td>
+<td>4</td>
+<td>4.76%</td>
+</tr>
+<tr>
+<td><strong>two_pointers</strong></td>
+<td>3</td>
+<td>3.57%</td>
+</tr>
+</tbody></table>
+<h2 id="array"><a href="#array" class="headerlink" title="array"></a>array</h2><ul>
+<li><a href="/algorithm/121.%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA/">121.买卖股票的最佳时机</a></li>
+<li><a href="/algorithm/1262.%E5%8F%AF%E8%A2%AB%E4%B8%89%E6%95%B4%E9%99%A4%E7%9A%84%E6%9C%80%E5%A4%A7%E5%92%8C/">1262.可被三整除的最大和</a></li>
+<li><a href="/algorithm/16.%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%84%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/">16.最接近的三数之和</a></li>
+<li><a href="/algorithm/215.%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACk%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/">215.数组中的第k个最大元素</a></li>
+<li><a href="/algorithm/2946.%E5%BE%AA%E7%8E%AF%E7%A7%BB%E4%BD%8D%E5%90%8E%E7%9A%84%E7%9F%A9%E9%98%B5%E7%9B%B8%E4%BC%BC%E6%A3%80%E6%9F%A5/">2946.循环移位后的矩阵相似检查</a></li>
+<li><a href="/algorithm/31.%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97/">31.下一个排列</a></li>
+<li><a href="/algorithm/41.%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/">41.缺失的第一个正数</a></li>
+<li><a href="/algorithm/54.%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5/">54.螺旋矩阵</a></li>
+<li><a href="/algorithm/56.%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4/">56.合并区间</a></li>
+<li><a href="/algorithm/560.%E5%92%8C%E4%B8%BA-k-%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/">560.和为-k-的子数组</a></li>
+<li><a href="/algorithm/704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">704.二分查找</a></li>
+<li><a href="/algorithm/88.%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84/">88.合并两个有序数组</a></li>
+<li><a href="/algorithm/912.%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84/">912.排序数组</a></li>
+</ul>
+<h2 id="bfs"><a href="#bfs" class="headerlink" title="bfs"></a>bfs</h2><ul>
+<li><a href="/algorithm/102.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/">102.二叉树的层序遍历</a></li>
+<li><a href="/algorithm/103.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%94%AF%E9%BD%BF%E5%BD%A2%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/">103.二叉树的锯齿形层序遍历</a></li>
+</ul>
+<h2 id="binary-search"><a href="#binary-search" class="headerlink" title="binary_search"></a>binary_search</h2><ul>
+<li><a href="/algorithm/34.%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/">34.在排序数组中查找元素的第一个和最后一个位置</a></li>
+<li><a href="/algorithm/4.%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/">4.寻找两个正序数组的中位数</a></li>
+<li><a href="/algorithm/69.x-%E7%9A%84%E5%B9%B3%E6%96%B9%E6%A0%B9/">69.x-的平方根</a></li>
+</ul>
+<h2 id="dfs"><a href="#dfs" class="headerlink" title="dfs"></a>dfs</h2><ul>
+<li><a href="/algorithm/200.%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F/">200.岛屿数量</a></li>
+<li><a href="/algorithm/22.%E6%8B%AC%E5%8F%B7%E7%94%9F%E6%88%90/">22.括号生成</a></li>
+<li><a href="/algorithm/39.%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C/">39.组合总和</a></li>
+<li><a href="/algorithm/40.%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C-ii/">40.组合总和-ii</a></li>
+<li><a href="/algorithm/46.%E5%85%A8%E6%8E%92%E5%88%97/">46.全排列</a></li>
+<li><a href="/algorithm/695.%E5%B2%9B%E5%B1%BF%E7%9A%84%E6%9C%80%E5%A4%A7%E9%9D%A2%E7%A7%AF/">695.岛屿的最大面积</a></li>
+<li><a href="/algorithm/79.%E5%8D%95%E8%AF%8D%E6%90%9C%E7%B4%A2/">79.单词搜索</a></li>
+</ul>
+<h2 id="dp"><a href="#dp" class="headerlink" title="dp"></a>dp</h2><ul>
+<li><a href="/algorithm/1143.%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97/">1143.最长公共子序列</a></li>
+<li><a href="/algorithm/122.%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA-ii/">122.买卖股票的最佳时机-ii</a></li>
+<li><a href="/algorithm/152.%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/">152.乘积最大子数组</a></li>
+<li><a href="/algorithm/198.%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/">198.打家劫舍</a></li>
+<li><a href="/algorithm/213.%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D-ii/">213.打家劫舍-ii</a></li>
+<li><a href="/algorithm/300.%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/">300.最长递增子序列</a></li>
+<li><a href="/algorithm/322.%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2(%E9%80%92%E5%BD%92)/">322.零钱兑换(递归)</a></li>
+<li><a href="/algorithm/322.%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2(%E9%80%92%E6%8E%A8)/">322.零钱兑换(递推)</a></li>
+<li><a href="/algorithm/416.%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86/">416.分割等和子集</a></li>
+<li><a href="/algorithm/516.%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E5%BA%8F%E5%88%97/">516.最长回文子序列</a></li>
+<li><a href="/algorithm/53.%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84%E5%92%8C/">53.最大子数组和</a></li>
+<li><a href="/algorithm/64.%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C(%E9%80%92%E5%BD%92)/">64.最小路径和(递归)</a></li>
+<li><a href="/algorithm/64.%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C(%E9%80%92%E6%8E%A8)/">64.最小路径和(递推)</a></li>
+<li><a href="/algorithm/70.%E7%88%AC%E6%A5%BC%E6%A2%AF/">70.爬楼梯</a></li>
+<li><a href="/algorithm/72.%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB(%E9%80%92%E5%BD%92)/">72.编辑距离(递归)</a></li>
+<li><a href="/algorithm/72.%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB(%E9%80%92%E6%8E%A8)/">72.编辑距离(递推)</a></li>
+<li><a href="/algorithm/97.%E4%BA%A4%E9%94%99%E5%AD%97%E7%AC%A6%E4%B8%B2/">97.交错字符串</a></li>
+</ul>
+<h2 id="graph"><a href="#graph" class="headerlink" title="graph"></a>graph</h2><ul>
+<li><a href="/algorithm/207.%E8%AF%BE%E7%A8%8B%E8%A1%A8/">207.课程表</a></li>
+</ul>
+<h2 id="linkedlist"><a href="#linkedlist" class="headerlink" title="linkedlist"></a>linkedlist</h2><ul>
+<li><a href="/algorithm/141.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/">141.环形链表</a></li>
+<li><a href="/algorithm/142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8-ii/">142.环形链表-ii</a></li>
+<li><a href="/algorithm/143.%E9%87%8D%E6%8E%92%E9%93%BE%E8%A1%A8/">143.重排链表</a></li>
+<li><a href="/algorithm/148.%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/">148.排序链表</a></li>
+<li><a href="/algorithm/160.%E7%9B%B8%E4%BA%A4%E9%93%BE%E8%A1%A8/">160.相交链表</a></li>
+<li><a href="/algorithm/19.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%AC-n-%E4%B8%AA%E7%BB%93%E7%82%B9/">19.删除链表的倒数第-n-个结点</a></li>
+<li><a href="/algorithm/2.%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/">2.两数相加</a></li>
+<li><a href="/algorithm/206.%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/">206.反转链表</a></li>
+<li><a href="/algorithm/21.%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8/">21.合并两个有序链表</a></li>
+<li><a href="/algorithm/234.%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8/">234.回文链表</a></li>
+<li><a href="/algorithm/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B9/">24.两两交换链表中的节点</a></li>
+<li><a href="/algorithm/25.k-%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/">25.k-个一组翻转链表</a></li>
+<li><a href="/algorithm/82.%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0-ii/">82.删除排序链表中的重复元素-ii</a></li>
+<li><a href="/algorithm/92.%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8-ii/">92.反转链表-ii</a></li>
+</ul>
+<h2 id="math"><a href="#math" class="headerlink" title="math"></a>math</h2><ul>
+<li><a href="/algorithm/470.%E7%94%A8-rand-7-%E5%AE%9E%E7%8E%B0-rand-10/">470.用-rand-7-实现-rand-10</a></li>
+</ul>
+<h2 id="sliding-window"><a href="#sliding-window" class="headerlink" title="sliding_window"></a>sliding_window</h2><ul>
+<li><a href="/algorithm/209.%E9%95%BF%E5%BA%A6%E6%9C%80%E5%B0%8F%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/">209.长度最小的子数组</a></li>
+<li><a href="/algorithm/239.%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC/">239.滑动窗口最大值</a></li>
+<li><a href="/algorithm/3.%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2/">3.无重复字符的最长子串</a></li>
+<li><a href="/algorithm/76.%E6%9C%80%E5%B0%8F%E8%A6%86%E7%9B%96%E5%AD%90%E4%B8%B2/">76.最小覆盖子串</a></li>
+</ul>
+<h2 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h2><ul>
+<li><a href="/algorithm/20.%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7/">20.有效的括号</a></li>
+</ul>
+<h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><ul>
+<li><a href="/algorithm/14.%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%89%8D%E7%BC%80/">14.最长公共前缀</a></li>
+<li><a href="/algorithm/151.%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%9A%84%E5%8D%95%E8%AF%8D/">151.反转字符串中的单词</a></li>
+<li><a href="/algorithm/165.%E6%AF%94%E8%BE%83%E7%89%88%E6%9C%AC%E5%8F%B7/">165.比较版本号</a></li>
+<li><a href="/algorithm/179.%E6%9C%80%E5%A4%A7%E6%95%B0/">179.最大数</a></li>
+<li><a href="/algorithm/32.%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7/">32.最长有效括号</a></li>
+<li><a href="/algorithm/394.%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/">394.字符串解码</a></li>
+<li><a href="/algorithm/415.%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%8A%A0/">415.字符串相加</a></li>
+<li><a href="/algorithm/43.%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%B9%98/">43.字符串相乘</a></li>
+<li><a href="/algorithm/5.%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">5.最长回文子串</a></li>
+<li><a href="/algorithm/93.%E5%A4%8D%E5%8E%9F-ip-%E5%9C%B0%E5%9D%80/">93.复原-ip-地址</a></li>
+</ul>
+<h2 id="structure"><a href="#structure" class="headerlink" title="structure"></a>structure</h2><ul>
+<li><a href="/algorithm/1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">1.两数之和</a></li>
+<li><a href="/algorithm/128.%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97/">128.最长连续序列</a></li>
+<li><a href="/algorithm/146.lru-%E7%BC%93%E5%AD%98/">146.lru-缓存</a></li>
+<li><a href="/algorithm/232.%E7%94%A8%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97/">232.用栈实现队列</a></li>
+</ul>
+<h2 id="tree"><a href="#tree" class="headerlink" title="tree"></a>tree</h2><ul>
+<li><a href="/algorithm/124.%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/">124.二叉树中的最大路径和</a></li>
+<li><a href="/algorithm/199.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%8F%B3%E8%A7%86%E5%9B%BE/">199.二叉树的右视图</a></li>
+<li><a href="/algorithm/236.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/">236.二叉树的最近公共祖先</a></li>
+<li><a href="/algorithm/662.%E4%BA%8C%E5%8F%89%E6%A0%91%E6%9C%80%E5%A4%A7%E5%AE%BD%E5%BA%A6/">662.二叉树最大宽度</a></li>
+</ul>
+<h2 id="two-pointers"><a href="#two-pointers" class="headerlink" title="two_pointers"></a>two_pointers</h2><ul>
+<li><a href="/algorithm/15.%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/">15.三数之和</a></li>
+<li><a href="/algorithm/283.%E7%A7%BB%E5%8A%A8%E9%9B%B6/">283.移动零</a></li>
+<li><a href="/algorithm/42.%E6%8E%A5%E9%9B%A8%E6%B0%B4/">42.接雨水</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>Index</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程树</title>
+    <url>/2026/03/11/network/%E8%BF%9B%E7%A8%8B%E6%A0%91/</url>
+    <content><![CDATA[<h1 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h1><blockquote>
+<p>返回综述: <a href="%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.md">进程管理</a></p>
+</blockquote>
+<h2 id="进程树的数据结构"><a href="#进程树的数据结构" class="headerlink" title="进程树的数据结构"></a>进程树的数据结构</h2><p>在 <code>task_struct</code> 中, 通过以下字段构成一棵<strong>多叉双向树</strong>:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">real_parent</span>;</span> <span class="comment">// 生物学父进程: 谁fork了我</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">parent</span>;</span>     <span class="comment">// 法律上的父进程: 谁来wait我、收我的SIGCHLD</span></span><br><span class="line"><span class="comment">// 通常 real_parent == parent, 仅在 ptrace 调试时不同</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">children</span>;</span> <span class="comment">// 作为父进程时: 子进程链表的哨兵头(入口)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">sibling</span>;</span>  <span class="comment">// 作为子进程时: 挂在父进程children链表上的节点</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">group_leader</span>;</span> <span class="comment">// 线程组的主线程(和进程树无关, 是线程组维度的字段)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="parent-和-real-parent-为什么要有两个-parent"><a href="#parent-和-real-parent-为什么要有两个-parent" class="headerlink" title="parent 和 real_parent, 为什么要有两个 parent?"></a><code>parent</code> 和 <code>real_parent</code>, 为什么要有两个 parent?</h3><p>这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进程.<br>但是在使用调试器的场景下, <code>real_parent</code> 仍然是 fork parent, 但是 <code>parent</code> 指向 ptrace 调试器进程, 这个 <code>parent</code> 会接收 <code>wait</code> 和 <code>SIGCHLD</code> 信号</p>
+<h3 id="children-和-sibling-是怎么构成一棵多叉树的"><a href="#children-和-sibling-是怎么构成一棵多叉树的" class="headerlink" title="children 和 sibling 是怎么构成一棵多叉树的?"></a><code>children</code> 和 <code>sibling</code> 是怎么构成一棵多叉树的?</h3><p>这是一个经典的 Linux 内核侵入式链表设计. 逻辑上等效于 LCRS(Left-Child Right-Sibling) 树:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">parent</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">first_child</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">next_sibling</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>但 LCRS 的写法存在问题:</p>
+<ol>
+<li><code>task_struct</code> 关联了非常多的链表关系(进程树、全局进程列表、线程组等). LCRS 的遍历逻辑是进程树专用的, 每种链表关系都要单独维护一套增删&#x2F;遍历 API. 实际上链表操作是通用的, 应该和具体的使用场景解耦.</li>
+<li>LCRS 通常是单向链表, 删除需要先遍历找前驱, 时间复杂度 O(n)</li>
+<li>不能用动态数组存 <code>children</code>, 因为内核关键路径上绝不能有可能失败的内存分配</li>
+</ol>
+<p>因此 Linux 使用了侵入式链表: 把一个通用的链表节点(<code>list_head</code>)嵌入到数据结构内部:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> *<span class="title">next</span>, *<span class="title">prev</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>每个 <code>task_struct</code> 同时扮演两个角色:</p>
+<ul>
+<li><strong>作为父进程</strong>: <code>children</code> 是子进程链表的哨兵头(入口, 不代表任何子进程)</li>
+<li><strong>作为子进程</strong>: <code>sibling</code> 是挂在父进程 <code>children</code> 链表上的普通节点</li>
+</ul>
+<p><code>children.next</code> 指向第一个子进程的 <code>sibling</code> 地址, 每个子进程的 <code>sibling.next</code> 指向下一个兄弟的 <code>sibling</code> 地址, 最后一个兄弟的 <code>sibling.next</code> 回到父进程的 <code>children</code>, 形成双向循环链表:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">父进程.children ←→ 子A.sibling ←→ 子B.sibling ←→ 子C.sibling ←→ (回到父进程.children)</span><br></pre></td></tr></table></figure>
+
+<h3 id="fork-的时候-怎么将新子进程挂到父进程的进程树上"><a href="#fork-的时候-怎么将新子进程挂到父进程的进程树上" class="headerlink" title="fork 的时候, 怎么将新子进程挂到父进程的进程树上?"></a>fork 的时候, 怎么将新子进程挂到父进程的进程树上?</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// kernel/fork.c</span></span><br><span class="line"><span class="comment">// p 是新创建的子进程, p-&gt;real_parent 是执行fork的父进程</span></span><br><span class="line">list_add_tail(&amp;p-&gt;sibling, &amp;p-&gt;real_parent-&gt;children);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等效于(伪代码):</span></span><br><span class="line"><span class="comment">// 把 p-&gt;sibling 插到 real_parent-&gt;children 链表的尾部</span></span><br><span class="line">tail = parent-&gt;children.prev;</span><br><span class="line">tail-&gt;next = &amp;p-&gt;sibling;</span><br><span class="line">p-&gt;sibling.prev = tail;</span><br><span class="line">p-&gt;sibling.next = &amp;parent-&gt;children;</span><br><span class="line">parent-&gt;children.prev = &amp;p-&gt;sibling;</span><br></pre></td></tr></table></figure>
+
+<h3 id="遍历-怎么找到某个进程的所有子进程"><a href="#遍历-怎么找到某个进程的所有子进程" class="headerlink" title="遍历: 怎么找到某个进程的所有子进程?"></a>遍历: 怎么找到某个进程的所有子进程?</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">child</span>;</span></span><br><span class="line">list_for_each_entry(child, &amp;parent-&gt;children, sibling) &#123;</span><br><span class="line">    <span class="comment">// child 就是每个子进程的 task_struct *</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>list_for_each_entry</code> 展开后等效于:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> *<span class="title">pos</span> =</span> parent-&gt;children.next; <span class="comment">// 从哨兵头的next开始</span></span><br><span class="line"><span class="keyword">while</span> (pos != &amp;parent-&gt;children) &#123;             <span class="comment">// 走回哨兵头就停</span></span><br><span class="line">    child = container_of(pos, <span class="keyword">struct</span> task_struct, sibling);</span><br><span class="line">    <span class="comment">// ... 使用 child ...</span></span><br><span class="line">    pos = pos-&gt;next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="container-of-怎么从-sibling-的地址反推出-task-struct-的地址"><a href="#container-of-怎么从-sibling-的地址反推出-task-struct-的地址" class="headerlink" title="container_of: 怎么从 sibling 的地址反推出 task_struct 的地址?"></a><code>container_of</code>: 怎么从 <code>sibling</code> 的地址反推出 <code>task_struct</code> 的地址?</h3><p><code>list_head</code> 内部没有 data 字段, 它不知道自己属于哪个 <code>task_struct</code>. 但因为 <code>sibling</code> 是嵌在 <code>task_struct</code> 内部的, 它在结构体中的偏移量是编译时确定的常量, 所以: <strong><code>sibling</code> 的地址 - 偏移量 &#x3D; <code>task_struct</code> 的起始地址</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// include/linux/container_of.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> container_of(ptr, type, member) \</span></span><br><span class="line"><span class="meta">    ((type *)((char *)(ptr) - offsetof(type, member)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用法:</span></span><br><span class="line">container_of(&amp;某子进程.sibling, <span class="keyword">struct</span> task_struct, sibling)</span><br><span class="line"><span class="comment">// = &amp;某子进程.sibling 的地址 - sibling在task_struct中的偏移</span></span><br><span class="line"><span class="comment">// = 某子进程 task_struct 的起始地址</span></span><br></pre></td></tr></table></figure>
+
+<p>这就是侵入式链表的核心: <strong>不是链表节点包含数据, 而是数据结构包含链表节点, 通过地址减偏移反推出数据结构地址.</strong></p>
+<hr>
+<h2 id="进程树为什么存在"><a href="#进程树为什么存在" class="headerlink" title="进程树为什么存在"></a>进程树为什么存在</h2><h3 id="为什么内核必须记录-parent、children、sibling-而不是只维护一个-PID-列表"><a href="#为什么内核必须记录-parent、children、sibling-而不是只维护一个-PID-列表" class="headerlink" title="为什么内核必须记录 parent、children、sibling, 而不是只维护一个 PID 列表?"></a>为什么内核必须记录 <code>parent</code>、<code>children</code>、<code>sibling</code>, 而不是只维护一个 PID 列表?</h3><p>只维护了 PID 列表, 相当于对于内核来说只知道有哪些进程, 而不知道这些进程之间的关系, 则需要亲缘关系的时候(如 <code>wait()</code>, 托孤, 信号传播), 都需要遍历 PID 列表来拿到亲缘关系, 时间复杂度 O(n), 但是维护了亲缘关系以后, 就只用遍历子进程, 变成了 O(子进程数)</p>
+<h3 id="这些关系分别支撑了哪些操作-wait、发送信号、回收退出状态、托孤"><a href="#这些关系分别支撑了哪些操作-wait、发送信号、回收退出状态、托孤" class="headerlink" title="这些关系分别支撑了哪些操作: wait、发送信号、回收退出状态、托孤?"></a>这些关系分别支撑了哪些操作: <code>wait</code>、发送信号、回收退出状态、托孤?</h3><ul>
+<li><strong>托孤</strong>: 父进程退出的时候, 在 exit 路径中通过 <code>forget_original_parent()</code> → <code>find_new_reaper()</code> 将自己所有的子进程的 <code>real_parent</code> 改成 init&#x2F;subreaper. 由 init 进程来调用 <code>wait()</code>&#x2F;<code>waitpid()</code> 来完成 <code>task_struct</code> 最后的 PID 资源的回收和 <code>exit_state</code> 的回收. 这个机制依赖于父进程通过 <code>children</code> 链表遍历所有子进程</li>
+<li><strong>信号传播</strong>:<ol>
+<li><code>kill(-pgid, sig)</code> 向整个进程组发信号</li>
+<li>会话断开的时候, 会话 leader(常常是 bash&#x2F;zsh…) 进程退出, 发送 <code>SIGHUP</code> 信号, 沿进程树传播要通知所有的前台进程&#x2F;子进程, 子进程收到后退出, 如果没有树结构, 就只能全局扫描</li>
+<li><code>parent</code> 支撑 <code>SIGCHLD</code>: 子进程退出的时候(<code>do_exit()</code> → <code>exit_notify()</code>), 内核通过 <code>parent</code> 指针找到父进程, 向他发送 <code>SIGCHLD</code> 信号, 通知父进程有个进程退出了, 调用 <code>wait()</code> 回收资源</li>
+</ol>
+</li>
+<li><strong>回收状态&#x2F;<code>wait()</code></strong>: <code>do_wait()</code> 的实现就是遍历 <code>current-&gt;children</code> 链表, 逐个检查子进程的 <code>exit_state</code>, 找到 <code>EXIT_ZOMBIE</code> 的子进程回收, 没有 <code>children</code> 链表, 就无法找到自己的子进程, 可能会产生永久僵尸</li>
+</ul>
+<hr>
+<h2 id="进程树和任务控制的关系"><a href="#进程树和任务控制的关系" class="headerlink" title="进程树和任务控制的关系"></a>进程树和任务控制的关系</h2><h3 id="进程树、进程组、Session-之间是什么关系"><a href="#进程树、进程组、Session-之间是什么关系" class="headerlink" title="进程树、进程组、Session 之间是什么关系?"></a>进程树、进程组、Session 之间是什么关系?</h3><p>三者是<strong>不同维度的组织方式, 层层嵌套但不相同</strong>:</p>
+<ul>
+<li><strong>进程组 (Process Group)</strong>: 由 PGID(Process Group ID) 标识, 通过 <code>task_pgrp()</code> 获取. 同一条管道里的进程共享同一个 PGID. 进程组 leader 的 PID &#x3D;&#x3D; PGID. 注意 PGID 和 TGID(Thread Group ID, 线程组ID) 是两个完全不同的概念.</li>
+<li><strong>进程树 (Process Tree)</strong>: 维护所有进程之间的亲缘关系, 是 <code>fork()</code> 的产物. <code>fork()</code> 创建的子进程会继承父进程的 SID 和 PGID. <code>execve()</code> 不创建新进程, 只替换程序映像, PID&#x2F;PGID&#x2F;SID 保持不变. 进程树关系是自动的、不可变的; 进程组关系是 shell 按作业逻辑主动设置的、可变的.</li>
+<li><strong>Session (会话)</strong>: 一次终端连接, 是最外层的容器, 包含一个或多个进程组. 通过 <code>setsid()</code> 能让一个非 leader 的进程创建一个新的 Session, 并成为这个 Session&#x2F;Group 的 leader. 这也是为什么守护进程要执行 <code>fork()</code> → <code>setsid()</code>: 如果调用者的 PID &#x3D;&#x3D; PGID(即它是进程组 leader), <code>setsid()</code> 会失败, 所以先 fork 出子进程(子进程 PID ≠ 父进程 PGID), 再在子进程中 <code>setsid()</code>. 如果一个 Session leader 终止了, 会发送 <code>SIGHUP</code> 信号到前台进程组.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>进程树</th>
+<th>进程组</th>
+<th>会话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>组织依据</strong></td>
+<td>谁 fork 了谁</td>
+<td>谁在做同一个 job</td>
+<td>谁共享同一个终端</td>
+</tr>
+<tr>
+<td><strong>标识符</strong></td>
+<td>无(通过 <code>parent</code>&#x2F;<code>children</code> 指针)</td>
+<td>PGID</td>
+<td>SID</td>
+</tr>
+<tr>
+<td><strong>建立时机</strong></td>
+<td>fork 时自动建立</td>
+<td>shell 启动 job 时 <code>setpgid()</code></td>
+<td>登录时 <code>setsid()</code></td>
+</tr>
+<tr>
+<td><strong>可否改变</strong></td>
+<td>不可(除 ptrace&#x2F;托孤)</td>
+<td>可以 <code>setpgid()</code></td>
+<td>可以 <code>setsid()</code></td>
+</tr>
+<tr>
+<td><strong>包含关系</strong></td>
+<td>无层级嵌套</td>
+<td>一个会话包含多个进程组</td>
+<td>最外层容器</td>
+</tr>
+</tbody></table>
+<h3 id="为什么-Ctrl-C-SIGINT-、Ctrl-Z-SIGTSTP-往往不是只作用在单个进程上"><a href="#为什么-Ctrl-C-SIGINT-、Ctrl-Z-SIGTSTP-往往不是只作用在单个进程上" class="headerlink" title="为什么 Ctrl+C (SIGINT)、Ctrl+Z (SIGTSTP) 往往不是只作用在单个进程上?"></a>为什么 <code>Ctrl+C</code> (<code>SIGINT</code>)、<code>Ctrl+Z</code> (<code>SIGTSTP</code>) 往往不是只作用在单个进程上?</h3><p>实际上是作用在一整个前台进程组上的. 在最经典的管道场景中, <code>cat file | grep foo | wc -l</code>, 如果只发给一个前台的进程, 就会导致 <code>cat</code> 被终止了, 但是 <code>grep</code>&#x2F;<code>wc</code> 还在运行, 还在往管道里面写数据, 行为就乱了</p>
+<h3 id="这和-shell、前台任务、后台任务有什么关系"><a href="#这和-shell、前台任务、后台任务有什么关系" class="headerlink" title="这和 shell、前台任务、后台任务有什么关系?"></a>这和 shell、前台任务、后台任务有什么关系?</h3><ul>
+<li><strong>shell</strong>: 是作业控制的实现者, 通过进程组和会话机制来管理前台&#x2F;后台任务, 启动时会通过 <code>setsid()</code> 成为 Session leader &#x2F; 进程组 leader</li>
+<li><strong>前台任务</strong>: 是会接受终端输入的一组进程. 如 <code>cat file | grep foo</code>, shell 首先通过 <code>fork()</code> 创建出两个子进程, 然后调用 <code>setpgid()</code> 将这两个进程放到一个进程组里面, 调用 <code>tcsetpgrp()</code> 将这个进程组变成前台进程组. 终端的键盘信号都会发送给前台进程组, shell 自己调用 <code>waitpid()</code> 阻塞等待前台任务完成</li>
+<li><strong>后台任务</strong>: 没有调用 <code>tcsetpgrp()</code> 这一个设置成前台进程组的步骤, 后台进程组不持有前台, 所以 <code>Ctrl+C</code> 不影响它</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>本质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl+Z</code></td>
+<td>终端驱动向前台进程组发 <code>SIGTSTP</code> → 整组暂停</td>
+</tr>
+<tr>
+<td><code>jobs</code></td>
+<td>shell 遍历自己管理的进程组列表, 显示状态</td>
+</tr>
+<tr>
+<td><code>fg %1</code></td>
+<td>shell 调用 <code>tcsetpgrp()</code> 把目标进程组设为前台 + 发 <code>SIGCONT</code> 恢复</td>
+</tr>
+<tr>
+<td><code>bg %1</code></td>
+<td>shell 向目标进程组发 <code>SIGCONT</code>, 但<strong>不</strong>设为前台 → 后台继续运行</td>
+</tr>
+<tr>
+<td><code>kill %1</code></td>
+<td>shell 向目标进程组发 <code>SIGTERM</code></td>
+</tr>
+</tbody></table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>进程树: linux kernel里面为进程之间的亲子关系维护的一颗双向多叉树, 使用linux侵入式链表设计, 进程树对于托孤机制(僵尸清理), 沿亲缘关系的传播的信号来说是不可获取的机制, 比如wait()操作本身就是遍历进程的所有的children, 挨个回收PID和退出状态.</li>
+<li>shell任务控制: 任务分成前台任务和后台任务, 拿管道的运用举例子, 创建任务的步骤是shell fork出来一系列的子进程, 然后setpgid(), 将这些进程放到一个进程组里面. 对于前台进程(比如我们输入的命令), 还有一个额外的设置成前台进程的步骤(tcsetpgrp()), 前台进程会接受键盘信号(Ctrl + C &#x2F; Ctrl +Z). 这些信号传播的最小单元是一个进程组. 无论是前台任务还是后台任务, 都会共享一个session id来代表他们是经由这个session代表的shell进程创建的. shell会执行waitpid()来阻塞式等待, 并且完成最后的资源的清理. shell退出的时候, 会沿进程树的所有子进程的所在的进程组发送SIGHUP.</li>
+<li>守护进程: daemon进程就是一个后台进程, 创建的核心就是要和原来的session解绑(创立新的pgid, sid), 然后不再是shell进程的子进程, 所有流程是fork(leader进程不能setsid) - 父进程不wait(成为孤儿进程, 挂在init下面) - setsid(重制pgid&#x2F;sid) - fork</li>
+<li>僵尸进程: 由父进程不wait()&#x2F;waitpid(), 导致没有执行进程的最后的PID&#x2F;exit_state的回收导致的中间态死亡进程, 大量的僵尸进程会导致PID空间不足</li>
+<li>孤儿进程: 父进程死亡, 子进程就变成了孤儿进程. 父进程exit的时候会调用exit() -&gt; forget_original_parent() -&gt; find_new_reaper()流程将子进程托孤给init&#x2F;subreaper, 这两类进程会定期执行wait()清理僵尸进程.</li>
+</ul>
+]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>进程管理</tag>
+        <tag>进程树</tag>
+        <tag>task_struct</tag>
+        <tag>侵入式链表</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程管理</title>
+    <url>/2026/03/08/network/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<h1 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程的数据结构是task struct</p>
+<ol>
+<li>cpu资源:<ol>
+<li>调度优先级</li>
+</ol>
+</li>
+<li>内存地址空间资源:<ol>
+<li>mm_struct</li>
+</ol>
+</li>
+<li>打开的文件资源:<ol>
+<li>file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)</li>
+</ol>
+</li>
+</ol>
+<p>进程自己的信息与状态</p>
+<ol>
+<li>进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中<ol>
+<li>如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…</li>
+</ol>
+</li>
+<li>唯一ID<ol>
+<li>pid: 线程级别的id</li>
+<li>gtid: 进程级别的id</li>
+</ol>
+</li>
+<li>文件系统信息 <code>struct fs_struct *fs</code></li>
+<li>namespace</li>
+<li>进程树关系: 该进程在整个进程树里面的位置</li>
+</ol>
+<h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_RUNNING            0x00000000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_INTERRUPTIBLE      0x00000001</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_UNINTERRUPTIBLE    0x00000002</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_STOPPED          0x00000004</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_TRACED           0x00000008</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_DEAD               0x00000010</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_ZOMBIE             0x00000020</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_DEAD               0x00000080</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 组合状态（便利宏）: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_KILLABLE           (TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_STOPPED            (TASK_WAKEKILL | __TASK_STOPPED)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_IDLE               (TASK_UNINTERRUPTIBLE | TASK_NOLOAD)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_NORMAL			(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p>常见状态语义说明:</p>
+<p><strong>存储在task-&gt;state的</strong></p>
+<ul>
+<li>TASK_RUNNING: 进程正在运行队列中, 准备运行&#x2F;正在运行</li>
+<li>TASK_NORAML&#x2F;TASK_INTERRUPTIBLE&#x2F;TASK_UNINTERRUPTIBLE:<ul>
+<li>TASK_NORMAL &#x3D; <code>(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</code> 是这两个状态的综合, 表明进程正在睡眠</li>
+<li>TASK_INTERRUPTIBLE: 进程处于可打断的睡眠状态, 正在等待某个条件满足, 被wake_up唤醒, 或者被信号唤醒. 不会被计入load average</li>
+<li>TASK_UNINTERRUPTIBLE: 进程处于不可中断的睡眠状态, 只能在条件满足时, 被wake_up唤醒, 不能被信号唤醒, 常用于(如磁盘 I&#x2F;O)等不能被中途打断的SLEEP, 这也代表, 在这个状态的进程的数量能一定程度反应当前计算机的物理负载, 这个状态会被计入load average</li>
+<li>TASK_KILLABLE &#x3D; <code>(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</code> 可以被致命信号杀死(SIGKILL)的不可中断睡眠</li>
+<li>__TASK_STOPPED &#x3D; 进程被暂停执行了, 不会被调度. 1. 收到SIGSTOP &#x2F; SIGSTP &#x2F; SIGTTIN &#x2F; SIGTTOU 信号 2. ptrace attach 后发送 SIGSTOP. 常见的进入情景: 1. Ctrl + z 2. debug. 退出的时机: 收到 SIGCONT 信号</li>
+<li>__TASK_TRACED &#x3D; 进程正在被调试器跟踪</li>
+<li>TASK_IDLE (TASK_UNINTERRUPTIBLE | TASK_NOLOAD):<ul>
+<li>语义: TASK_UNINTERRUPTIBLE类似的不可中断睡眠, 但<strong>不计入 load average</strong></li>
+<li>内核中空闲时会运行的 idle线程, 内核中某些无关紧要的等待</li>
+<li>如果 idle线程用TASK_UNINTERRUPTIBLE而包含TASK_NOLOAD会导致load average空长, 不能反应真实物理资源负载</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>存储在task-&gt;exit_code的</strong></p>
+<ul>
+<li>EXIT_ZOMBIE: 僵尸状态<ul>
+<li>语义: 代码已经执行完毕</li>
+<li>进入的时机: 进程调用exit() -&gt; do_exit() -&gt; exit_notify() 中设置 tsk-&gt;exit_state &#x3D; EXIT_ZOMBIE</li>
+<li>退出的时机: 父进程调用 <code>wait</code> &#x2F; <code>waitpid()</code> 读取退出状态 -&gt; <code>wait_task_zombie()</code> -&gt; <code>exit_state</code>中改为 <code>EXIT_DEAD</code> -&gt; <code>task_struct</code> 被释放</li>
+</ul>
+</li>
+<li>EXIT_DEAD (0x10) : 彻底死亡<ul>
+<li>语义: 进程的task_struct正在被回收或者已经被回收</li>
+<li>进入的时机: 父进程 <code>wait()</code> 成功后, 状态从 <code>EXIT_ZOMBIE</code> 变成 <code>EXIT_DEAD</code></li>
+<li>退出的时机: 这是一个瞬态, 存在的时间极短, 之后 <code>task_struct</code> 被回收</li>
+</ul>
+</li>
+</ul>
+<p><strong>常见的进程类型</strong></p>
+<ul>
+<li><p><strong>僵尸进程</strong>: 进程(task_struct)已经被释放, 但是还保留PID和exit_state为EXIT_ZOMBIE</p>
+<ul>
+<li>为什么需要这个状态: 父进程可能需要在进程被关闭以后, 获取进程的PID并检查它的退出码来衡量进程是不是正常退出的</li>
+<li>资源泄漏: 状态为EXIT_ZOMBIE的进程占用一个PID和少量的内核内存. 如果大量堆积, 会导致内核内存泄漏, 或PID耗尽</li>
+<li>怎么产生的: 父进程没有调用wait()或者waitpid()</li>
+<li>解决方式:<ul>
+<li>父进程调用 wait() &#x2F; waitpid()</li>
+<li>设置 signal(SIGCHLD, SIG_IGN) 让内核自动回收 (do_notigy_parent返回true的时候直接设置状态为EXIT_DEAD)</li>
+<li>杀死父进程 -&gt; 僵尸被init(PID&#x3D;1)收养 -&gt; init会自动 <code>wait()</code>清理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>孤儿进程</strong>: 进程的父进程先于子进程被杀死了, 子进程就成为了孤儿进程</p>
+<ul>
+<li>内核会将孤儿进程的父进程指向init, 或者当前 PID namespace 中的 subreaper 进程, init进程会定期调用 <code>wait()</code>来清理</li>
+<li>本身是正常的, 不会造成问题</li>
+</ul>
+</li>
+<li><p><strong>守护进程</strong>: 在后台运行的, 不再与任何终端关联的长期运行的进程. 如 <code>sshd, nginx</code>等</p>
+<ul>
+<li>不是一个内核概念, 而是一个用户空间的编程的概念</li>
+<li>经典的创建过程: double-fork<ul>
+<li><code>fork()</code> - 创建子进程</li>
+<li>父进程退出 - 子进程被托孤给init</li>
+<li>setsid - 创建新的session (和原终端解绑)</li>
+<li>再次 <code>fork()</code> - 确保不会重新获得中断控制能力</li>
+<li>chdir(“&#x2F;) - 避免占用可卸载的文件系统</li>
+<li>关闭&#x2F;重定向 stdin&#x2F;stdout&#x2F;stderr</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程的唯一ID"><a href="#进程的唯一ID" class="headerlink" title="进程的唯一ID"></a>进程的唯一ID</h3><p><strong>tgid和pid, 为什么要有两个ID</strong><br>经典的用途是区分进程和线程, 本身是进程组概念, 父进程和他fork出来的子进程组成一个进程组, 共享一个tgid.<br>他们的id (pid, tgid)会是 (1, 1), (2, 1), (3, 1). 对于操作系统来说, 只有进程这个概念, 线程实际上是一个轻量级进程, 对于操作系统的调度来说, 进程和线程是同等地位的实体, 唯一通过PID来作为唯一标识, 而tgid是标识”进程”而非”线程”的唯一标识.</p>
+<h3 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h3><p>通过 <code>task_struct</code> 中的 <code>parent</code>&#x2F;<code>real_parent</code>、<code>children</code>&#x2F;<code>sibling</code> 字段, 所有进程构成一棵<strong>多叉双向树</strong>. Linux 使用侵入式链表(<code>list_head</code>)而非传统多叉树来实现, 使得增删 O(1)、零内存分配、API 全内核复用.</p>
+<p>进程树支撑了 <code>wait()</code> 回收、托孤、<code>SIGCHLD</code> 通知等核心操作. 进程树与进程组(PGID)、会话(Session) 共同构成了完整的作业控制体系.</p>
+<p><strong>详细内容</strong>: <a href="%E8%BF%9B%E7%A8%8B%E6%A0%91.md">进程树</a></p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><h3 id="运行队列-struct-rq"><a href="#运行队列-struct-rq" class="headerlink" title="运行队列 struct rq"></a>运行队列 <code>struct rq</code></h3><p>内核声明了一个per-CPU变量: <code>runqueues</code>, 每个CPU都有自己的rq变量, 通过<code>cpu_rq(cpu)</code>等宏能执行拿到第N号CPU的运行队列指针等操作.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DECLARE_PER_CPU_SHARED_ALIGNED(<span class="keyword">struct</span> rq, runqueues);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> cpu_rq(cpu)		(&amp;per_cpu(runqueues, (cpu)))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> this_rq()		this_cpu_ptr(&amp;runqueues)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> task_rq(p)		cpu_rq(task_cpu(p))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> cpu_curr(cpu)		(cpu_rq(cpu)-&gt;curr)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> raw_rq()		raw_cpu_ptr(&amp;runqueues)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这个数据结构嵌入了<code>cfs_rq</code>, <code>rt_rq</code>, <code>dl_rq</code>三个内部运行队列(注意这里是嵌入, 这三个字段不是指针). 这意味着 rq本身就包含了所有调度类各自的运行队列数据. 每个调度类管自己的调度队列.</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rq</span> &#123;</span></span><br><span class="line">	<span class="type">raw_spinlock_t</span>		__lock; <span class="comment">// 自旋锁, 保护整个队列的并发访问</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span>	*<span class="title">curr</span>;</span> <span class="comment">// 当前正在运行的进程</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cfs_rq</span>		<span class="title">cfs</span>;</span> <span class="comment">// cfs rq, 完全公平调度队列, 直接嵌入</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rt_rq</span>		<span class="title">rt</span>;</span> <span class="comment">// real time rq, 实时调度队列, 直接嵌入</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">dl_rq</span>		<span class="title">dl</span>;</span> <span class="comment">// deadline rq, 强实时调度队列, 有完成截止时间, 直接嵌入</span></span><br><span class="line"></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span>		nr_running; <span class="comment">// 一个CPU上最多有多少进程可以是running状态</span></span><br><span class="line">	u64			nr_switches; <span class="comment">// 上下文切换的次数</span></span><br><span class="line">  <span class="comment">// 其他...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="调度类-struct-sched-class"><a href="#调度类-struct-sched-class" class="headerlink" title="调度类 - struct sched_class"></a>调度类 - <code>struct sched_class</code></h3><p>调度类本身是一个虚函数表, 里面定义了一系列的虚函数(接口), 里面的各个函数实际上是函数指针. 可以把调度类就看作是一个interface&#x2F;vitrual class.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span> &#123;</span></span><br><span class="line">  <span class="comment">// 把一个进程加入到该调度类的子队列</span></span><br><span class="line">	<span class="type">void</span> (*enqueue_task) (<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line">  <span class="comment">// 新进程唤醒的时候, 检查是否应该要抢占当前进程</span></span><br><span class="line">	<span class="type">void</span> (*check_preempt_curr)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line">  <span class="comment">// 把一个进程移除到该调度类的子队列</span></span><br><span class="line">	<span class="type">void</span> (*dequeue_task) (<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 从该调度类中选出下一个要运行的进程</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *(*<span class="title">pick_next_task</span>)(<span class="keyword">struct</span> <span class="title">rq</span> *<span class="title">rq</span>);</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 当前进程被换下前的清理工作, 比如对于cfs调度器来说, 就会重新计算vruntime, 然后重新放回cfs.timeline(红黑树)里面</span></span><br><span class="line">	<span class="type">void</span> (*put_prev_task)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p);</span><br><span class="line">  <span class="comment">// 新进程被换上前的初始化工作</span></span><br><span class="line">	<span class="type">void</span> (*set_next_task)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">bool</span> first);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 每个时钟tick时被调用, 检查时间片/vruntime</span></span><br><span class="line">	<span class="type">void</span> (*task_tick)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> queued);</span><br><span class="line">  <span class="comment">// 更新当前进程的运行时间</span></span><br><span class="line">  <span class="type">void</span> (*update_curr)(<span class="keyword">struct</span> rq *rq);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调度类的实现类有五个</p>
+<ol>
+<li>stop_sched_class</li>
+<li>dl_sched_class</li>
+<li>rt_sched_class</li>
+<li>fair_sched_class</li>
+<li>idle_sched_class</li>
+</ol>
+<p>这五个类实现了上面的各个函数, 使用不同的策略和子队列.<br>每个task_struct里面都一个sched_class字段, 指向这个进程对应的调度类全局实例(看成是静态类即可)</p>
+<p>在rq挑选下一个任务的时候, 会按照上面的顺序遍历所有的调度类, 尝试调用他们各自的pick_next_task.<br>如果调度到的不是NULL, 返回找到的任务.</p>
+<h3 id="调度的整体运行流程"><a href="#调度的整体运行流程" class="headerlink" title="调度的整体运行流程"></a>调度的整体运行流程</h3><blockquote>
+<p><code>rq</code>是容器, <code>sched_class</code>是行为, 子队列 (cfs_rq, rt_rq, dl_rq) 是各调度类在容器内的私有存储队列. 三者通过<code>task_struct.sched_class</code>桥接</p>
+</blockquote>
+<p><strong>1. 进程入队: 从唤醒到进入到子队列里面</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">try_wake_up(task_struct* p)</span><br><span class="line">  -&gt; activate_task(rq, p, flags)</span><br><span class="line">    -&gt; enqueue_task(rq, p, flags)</span><br><span class="line">      -&gt; p-&gt;sched_class-&gt;enqueue_task</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果这里的进程是普通的进程, 这里的p-&gt;sched_class就是fair_sched_class,  p-&gt;sched_class-&gt;enqueue_task最后调用的就是enqueue_task_fair(), 这个函数会将p插入到cfs rq中的红黑树子队列中</li>
+<li>如果p是RT进程, 实际调用的就是enqueue_task_rt()</li>
+</ul>
+<p><strong>2. 进程出队: 睡眠或退出</strong></p>
+<p>__schedule()<br>  -&gt; deactivate_task(rq, prev, DEQUEUE_SLEEP)<br>    -&gt; dequeue_task(rq, prev, flags)<br>      -&gt; p-&gt;sched_class-&gt;dequeue_task(rq, p, flags)</p>
+<p><strong>3. 选择下一个进程: pick_next_task的两条路径</strong></p>
+<p><em>这里的pick_next_task并不是调度类里面的这个函数, 而是sched.h里面的一个文件</em></p>
+<p>__scheduler()<br>  -&gt; pick_next_task(rq, prev, &amp;rf)<br>    -&gt; __pick_next_task(rq, prev, rf)</p>
+<p><strong>快速路径</strong></p>
+<p>rq-&gt;nr_running &#x3D;&#x3D; rq-&gt;cfs.h_nr_running ? (全部进程都是normal&#x2F;CFS进程)<br>  -&gt; pick_next_task_fair(rq, prev, rf)<br>    -&gt; 从rq-&gt;cfs.tasks_timeline 取出来最左边的节点</p>
+<p><strong>慢速路径</strong></p>
+<p>for_each_class(class)<br>  class-&gt;pick_next_task(rq)<br>  -&gt; stop_sched_class.pick_next_task(rq) -&gt; 检查 rq-&gt;stop<br>  -&gt; dl_sched_class.pick_next_task(rq)   -&gt; 检查 rq-&gt;dl 红黑树<br>  -&gt; rt_sched_class.pick_next_task(rq)   -&gt; 检查 rq-&gt;rt 优先级数组<br>  -&gt; fair_sched_class.pick_next_task(rq) -&gt; 检查 rq-&gt;cfs 红黑树<br>  -&gt; idle_sched_class.pick_next_task(rq) -&gt; 返回 rq-&gt;idle（兜底）</p>
+<p>for_each_class是一个宏, 会遍历所有的sched_class, 尝试调用每个调度类自己实现的pick_next_task, 直到返回的不是NULL, 返回. 这样就构造出来了不同rq&#x2F;调度器之间的优先级问题.</p>
+<h3 id="将task-struct挂载在运行队列上"><a href="#将task-struct挂载在运行队列上" class="headerlink" title="将task_struct挂载在运行队列上"></a>将task_struct挂载在运行队列上</h3><p><em>这里主要聚焦的是, rq中的子队列, 比如cfs, 是把task_struct直接存在里面的吗, 是怎么挂载上去的?</em></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span>&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>		<span class="title">se</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span>		<span class="title">rt</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span>		<span class="title">dl</span>;</span></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span>	*<span class="title">sched_class</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样是侵入式数据结构设计, 通过将这几个嵌入式的字段挂载在task_struct中, 通过container_of来取出task_struct.<br>同时rb_node嵌入到sched_entity中, 来将这个数据结构挂在红黑树上</p>
+<p><em>为什么不直接操作task_struct呢?</em></p>
+<p>在cgroup分组调度下, CFS需要把“一组进程”当成一个整体来调度, sched_entity可以代表一个进程, 也可以代表一个进程组.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">load_weight</span>		<span class="title">load</span>;</span> <span class="comment">// 该实体的权重, 通过nice值转化出来的, CFS通过这个计算出来应该分到多少CPU时间</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span>			<span class="title">run_node</span>;</span> <span class="comment">//  红黑树节点, 挂在rq.cfs_rq-&gt;task_timeline上</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>		<span class="title">group_node</span>;</span> <span class="comment">// 挂在rq-&gt;cfs_tasks链表上, 用于SMP均衡负载</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span>			on_rq; <span class="comment">// 是否在运行队列里面</span></span><br><span class="line"></span><br><span class="line">	u64				exec_start; <span class="comment">// 当前这一轮开始执行的时间戳, 每次tick或调度的时候更新</span></span><br><span class="line">	u64				sum_exec_runtime; <span class="comment">// 累计实际的运行时间</span></span><br><span class="line">	u64				vruntime; <span class="comment">// 虚拟运行时间, 值越小越优先被选中</span></span><br><span class="line">	u64				prev_sum_exec_runtime; <span class="comment">// 上次调度时候实际运行时间的快照, 用来算, 这次用了多少的时间片</span></span><br><span class="line">	u64				nr_migrations; <span class="comment">// 这个entity被迁移到其他的cpu上的次数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>sched_entity 是 CFS 调度器的操作单元，嵌入在 task_struct.se 中。它通过 run_node 挂在 cfs_rq 的红黑树上，以 vruntime 为排序键。CFS 选人就是取 vruntime 最小的 sched_entity，再通过 container_of 反推到 task_struct。分组调度下，一个 sched_entity 可以代表整个 task_group，通过 parent&#x2F;cfs_rq&#x2F;my_q 构成层级树。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>进程管理</tag>
+        <tag>task_struct</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程树</title>
+    <url>/2026/03/11/notes/%E8%BF%9B%E7%A8%8B%E6%A0%91/</url>
+    <content><![CDATA[<h1 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h1><blockquote>
+<p>返回综述: <a href="%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.md">进程管理</a></p>
+</blockquote>
+<h2 id="进程树的数据结构"><a href="#进程树的数据结构" class="headerlink" title="进程树的数据结构"></a>进程树的数据结构</h2><p>在 <code>task_struct</code> 中, 通过以下字段构成一棵<strong>多叉双向树</strong>:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">real_parent</span>;</span> <span class="comment">// 生物学父进程: 谁fork了我</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">parent</span>;</span>     <span class="comment">// 法律上的父进程: 谁来wait我、收我的SIGCHLD</span></span><br><span class="line"><span class="comment">// 通常 real_parent == parent, 仅在 ptrace 调试时不同</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">children</span>;</span> <span class="comment">// 作为父进程时: 子进程链表的哨兵头(入口)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">sibling</span>;</span>  <span class="comment">// 作为子进程时: 挂在父进程children链表上的节点</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">group_leader</span>;</span> <span class="comment">// 线程组的主线程(和进程树无关, 是线程组维度的字段)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="parent-和-real-parent-为什么要有两个-parent"><a href="#parent-和-real-parent-为什么要有两个-parent" class="headerlink" title="parent 和 real_parent, 为什么要有两个 parent?"></a><code>parent</code> 和 <code>real_parent</code>, 为什么要有两个 parent?</h3><p>这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进程.<br>但是在使用调试器的场景下, <code>real_parent</code> 仍然是 fork parent, 但是 <code>parent</code> 指向 ptrace 调试器进程, 这个 <code>parent</code> 会接收 <code>wait</code> 和 <code>SIGCHLD</code> 信号</p>
+<h3 id="children-和-sibling-是怎么构成一棵多叉树的"><a href="#children-和-sibling-是怎么构成一棵多叉树的" class="headerlink" title="children 和 sibling 是怎么构成一棵多叉树的?"></a><code>children</code> 和 <code>sibling</code> 是怎么构成一棵多叉树的?</h3><p>这是一个经典的 Linux 内核侵入式链表设计. 逻辑上等效于 LCRS(Left-Child Right-Sibling) 树:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">parent</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">first_child</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tree_node</span> *<span class="title">next_sibling</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>但 LCRS 的写法存在问题:</p>
+<ol>
+<li><code>task_struct</code> 关联了非常多的链表关系(进程树、全局进程列表、线程组等). LCRS 的遍历逻辑是进程树专用的, 每种链表关系都要单独维护一套增删&#x2F;遍历 API. 实际上链表操作是通用的, 应该和具体的使用场景解耦.</li>
+<li>LCRS 通常是单向链表, 删除需要先遍历找前驱, 时间复杂度 O(n)</li>
+<li>不能用动态数组存 <code>children</code>, 因为内核关键路径上绝不能有可能失败的内存分配</li>
+</ol>
+<p>因此 Linux 使用了侵入式链表: 把一个通用的链表节点(<code>list_head</code>)嵌入到数据结构内部:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> *<span class="title">next</span>, *<span class="title">prev</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>每个 <code>task_struct</code> 同时扮演两个角色:</p>
+<ul>
+<li><strong>作为父进程</strong>: <code>children</code> 是子进程链表的哨兵头(入口, 不代表任何子进程)</li>
+<li><strong>作为子进程</strong>: <code>sibling</code> 是挂在父进程 <code>children</code> 链表上的普通节点</li>
+</ul>
+<p><code>children.next</code> 指向第一个子进程的 <code>sibling</code> 地址, 每个子进程的 <code>sibling.next</code> 指向下一个兄弟的 <code>sibling</code> 地址, 最后一个兄弟的 <code>sibling.next</code> 回到父进程的 <code>children</code>, 形成双向循环链表:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">父进程.children ←→ 子A.sibling ←→ 子B.sibling ←→ 子C.sibling ←→ (回到父进程.children)</span><br></pre></td></tr></table></figure>
+
+<h3 id="fork-的时候-怎么将新子进程挂到父进程的进程树上"><a href="#fork-的时候-怎么将新子进程挂到父进程的进程树上" class="headerlink" title="fork 的时候, 怎么将新子进程挂到父进程的进程树上?"></a>fork 的时候, 怎么将新子进程挂到父进程的进程树上?</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// kernel/fork.c</span></span><br><span class="line"><span class="comment">// p 是新创建的子进程, p-&gt;real_parent 是执行fork的父进程</span></span><br><span class="line">list_add_tail(&amp;p-&gt;sibling, &amp;p-&gt;real_parent-&gt;children);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等效于(伪代码):</span></span><br><span class="line"><span class="comment">// 把 p-&gt;sibling 插到 real_parent-&gt;children 链表的尾部</span></span><br><span class="line">tail = parent-&gt;children.prev;</span><br><span class="line">tail-&gt;next = &amp;p-&gt;sibling;</span><br><span class="line">p-&gt;sibling.prev = tail;</span><br><span class="line">p-&gt;sibling.next = &amp;parent-&gt;children;</span><br><span class="line">parent-&gt;children.prev = &amp;p-&gt;sibling;</span><br></pre></td></tr></table></figure>
+
+<h3 id="遍历-怎么找到某个进程的所有子进程"><a href="#遍历-怎么找到某个进程的所有子进程" class="headerlink" title="遍历: 怎么找到某个进程的所有子进程?"></a>遍历: 怎么找到某个进程的所有子进程?</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">child</span>;</span></span><br><span class="line">list_for_each_entry(child, &amp;parent-&gt;children, sibling) &#123;</span><br><span class="line">    <span class="comment">// child 就是每个子进程的 task_struct *</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>list_for_each_entry</code> 展开后等效于:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> *<span class="title">pos</span> =</span> parent-&gt;children.next; <span class="comment">// 从哨兵头的next开始</span></span><br><span class="line"><span class="keyword">while</span> (pos != &amp;parent-&gt;children) &#123;             <span class="comment">// 走回哨兵头就停</span></span><br><span class="line">    child = container_of(pos, <span class="keyword">struct</span> task_struct, sibling);</span><br><span class="line">    <span class="comment">// ... 使用 child ...</span></span><br><span class="line">    pos = pos-&gt;next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="container-of-怎么从-sibling-的地址反推出-task-struct-的地址"><a href="#container-of-怎么从-sibling-的地址反推出-task-struct-的地址" class="headerlink" title="container_of: 怎么从 sibling 的地址反推出 task_struct 的地址?"></a><code>container_of</code>: 怎么从 <code>sibling</code> 的地址反推出 <code>task_struct</code> 的地址?</h3><p><code>list_head</code> 内部没有 data 字段, 它不知道自己属于哪个 <code>task_struct</code>. 但因为 <code>sibling</code> 是嵌在 <code>task_struct</code> 内部的, 它在结构体中的偏移量是编译时确定的常量, 所以: <strong><code>sibling</code> 的地址 - 偏移量 &#x3D; <code>task_struct</code> 的起始地址</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// include/linux/container_of.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> container_of(ptr, type, member) \</span></span><br><span class="line"><span class="meta">    ((type *)((char *)(ptr) - offsetof(type, member)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用法:</span></span><br><span class="line">container_of(&amp;某子进程.sibling, <span class="keyword">struct</span> task_struct, sibling)</span><br><span class="line"><span class="comment">// = &amp;某子进程.sibling 的地址 - sibling在task_struct中的偏移</span></span><br><span class="line"><span class="comment">// = 某子进程 task_struct 的起始地址</span></span><br></pre></td></tr></table></figure>
+
+<p>这就是侵入式链表的核心: <strong>不是链表节点包含数据, 而是数据结构包含链表节点, 通过地址减偏移反推出数据结构地址.</strong></p>
+<hr>
+<h2 id="进程树为什么存在"><a href="#进程树为什么存在" class="headerlink" title="进程树为什么存在"></a>进程树为什么存在</h2><h3 id="为什么内核必须记录-parent、children、sibling-而不是只维护一个-PID-列表"><a href="#为什么内核必须记录-parent、children、sibling-而不是只维护一个-PID-列表" class="headerlink" title="为什么内核必须记录 parent、children、sibling, 而不是只维护一个 PID 列表?"></a>为什么内核必须记录 <code>parent</code>、<code>children</code>、<code>sibling</code>, 而不是只维护一个 PID 列表?</h3><p>只维护了 PID 列表, 相当于对于内核来说只知道有哪些进程, 而不知道这些进程之间的关系, 则需要亲缘关系的时候(如 <code>wait()</code>, 托孤, 信号传播), 都需要遍历 PID 列表来拿到亲缘关系, 时间复杂度 O(n), 但是维护了亲缘关系以后, 就只用遍历子进程, 变成了 O(子进程数)</p>
+<h3 id="这些关系分别支撑了哪些操作-wait、发送信号、回收退出状态、托孤"><a href="#这些关系分别支撑了哪些操作-wait、发送信号、回收退出状态、托孤" class="headerlink" title="这些关系分别支撑了哪些操作: wait、发送信号、回收退出状态、托孤?"></a>这些关系分别支撑了哪些操作: <code>wait</code>、发送信号、回收退出状态、托孤?</h3><ul>
+<li><strong>托孤</strong>: 父进程退出的时候, 在 exit 路径中通过 <code>forget_original_parent()</code> → <code>find_new_reaper()</code> 将自己所有的子进程的 <code>real_parent</code> 改成 init&#x2F;subreaper. 由 init 进程来调用 <code>wait()</code>&#x2F;<code>waitpid()</code> 来完成 <code>task_struct</code> 最后的 PID 资源的回收和 <code>exit_state</code> 的回收. 这个机制依赖于父进程通过 <code>children</code> 链表遍历所有子进程</li>
+<li><strong>信号传播</strong>:<ol>
+<li><code>kill(-pgid, sig)</code> 向整个进程组发信号</li>
+<li>会话断开的时候, 会话 leader(常常是 bash&#x2F;zsh…) 进程退出, 发送 <code>SIGHUP</code> 信号, 沿进程树传播要通知所有的前台进程&#x2F;子进程, 子进程收到后退出, 如果没有树结构, 就只能全局扫描</li>
+<li><code>parent</code> 支撑 <code>SIGCHLD</code>: 子进程退出的时候(<code>do_exit()</code> → <code>exit_notify()</code>), 内核通过 <code>parent</code> 指针找到父进程, 向他发送 <code>SIGCHLD</code> 信号, 通知父进程有个进程退出了, 调用 <code>wait()</code> 回收资源</li>
+</ol>
+</li>
+<li><strong>回收状态&#x2F;<code>wait()</code></strong>: <code>do_wait()</code> 的实现就是遍历 <code>current-&gt;children</code> 链表, 逐个检查子进程的 <code>exit_state</code>, 找到 <code>EXIT_ZOMBIE</code> 的子进程回收, 没有 <code>children</code> 链表, 就无法找到自己的子进程, 可能会产生永久僵尸</li>
+</ul>
+<hr>
+<h2 id="进程树和任务控制的关系"><a href="#进程树和任务控制的关系" class="headerlink" title="进程树和任务控制的关系"></a>进程树和任务控制的关系</h2><h3 id="进程树、进程组、Session-之间是什么关系"><a href="#进程树、进程组、Session-之间是什么关系" class="headerlink" title="进程树、进程组、Session 之间是什么关系?"></a>进程树、进程组、Session 之间是什么关系?</h3><p>三者是<strong>不同维度的组织方式, 层层嵌套但不相同</strong>:</p>
+<ul>
+<li><strong>进程组 (Process Group)</strong>: 由 PGID(Process Group ID) 标识, 通过 <code>task_pgrp()</code> 获取. 同一条管道里的进程共享同一个 PGID. 进程组 leader 的 PID &#x3D;&#x3D; PGID. 注意 PGID 和 TGID(Thread Group ID, 线程组ID) 是两个完全不同的概念.</li>
+<li><strong>进程树 (Process Tree)</strong>: 维护所有进程之间的亲缘关系, 是 <code>fork()</code> 的产物. <code>fork()</code> 创建的子进程会继承父进程的 SID 和 PGID. <code>execve()</code> 不创建新进程, 只替换程序映像, PID&#x2F;PGID&#x2F;SID 保持不变. 进程树关系是自动的、不可变的; 进程组关系是 shell 按作业逻辑主动设置的、可变的.</li>
+<li><strong>Session (会话)</strong>: 一次终端连接, 是最外层的容器, 包含一个或多个进程组. 通过 <code>setsid()</code> 能让一个非 leader 的进程创建一个新的 Session, 并成为这个 Session&#x2F;Group 的 leader. 这也是为什么守护进程要执行 <code>fork()</code> → <code>setsid()</code>: 如果调用者的 PID &#x3D;&#x3D; PGID(即它是进程组 leader), <code>setsid()</code> 会失败, 所以先 fork 出子进程(子进程 PID ≠ 父进程 PGID), 再在子进程中 <code>setsid()</code>. 如果一个 Session leader 终止了, 会发送 <code>SIGHUP</code> 信号到前台进程组.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>进程树</th>
+<th>进程组</th>
+<th>会话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>组织依据</strong></td>
+<td>谁 fork 了谁</td>
+<td>谁在做同一个 job</td>
+<td>谁共享同一个终端</td>
+</tr>
+<tr>
+<td><strong>标识符</strong></td>
+<td>无(通过 <code>parent</code>&#x2F;<code>children</code> 指针)</td>
+<td>PGID</td>
+<td>SID</td>
+</tr>
+<tr>
+<td><strong>建立时机</strong></td>
+<td>fork 时自动建立</td>
+<td>shell 启动 job 时 <code>setpgid()</code></td>
+<td>登录时 <code>setsid()</code></td>
+</tr>
+<tr>
+<td><strong>可否改变</strong></td>
+<td>不可(除 ptrace&#x2F;托孤)</td>
+<td>可以 <code>setpgid()</code></td>
+<td>可以 <code>setsid()</code></td>
+</tr>
+<tr>
+<td><strong>包含关系</strong></td>
+<td>无层级嵌套</td>
+<td>一个会话包含多个进程组</td>
+<td>最外层容器</td>
+</tr>
+</tbody></table>
+<h3 id="为什么-Ctrl-C-SIGINT-、Ctrl-Z-SIGTSTP-往往不是只作用在单个进程上"><a href="#为什么-Ctrl-C-SIGINT-、Ctrl-Z-SIGTSTP-往往不是只作用在单个进程上" class="headerlink" title="为什么 Ctrl+C (SIGINT)、Ctrl+Z (SIGTSTP) 往往不是只作用在单个进程上?"></a>为什么 <code>Ctrl+C</code> (<code>SIGINT</code>)、<code>Ctrl+Z</code> (<code>SIGTSTP</code>) 往往不是只作用在单个进程上?</h3><p>实际上是作用在一整个前台进程组上的. 在最经典的管道场景中, <code>cat file | grep foo | wc -l</code>, 如果只发给一个前台的进程, 就会导致 <code>cat</code> 被终止了, 但是 <code>grep</code>&#x2F;<code>wc</code> 还在运行, 还在往管道里面写数据, 行为就乱了</p>
+<h3 id="这和-shell、前台任务、后台任务有什么关系"><a href="#这和-shell、前台任务、后台任务有什么关系" class="headerlink" title="这和 shell、前台任务、后台任务有什么关系?"></a>这和 shell、前台任务、后台任务有什么关系?</h3><ul>
+<li><strong>shell</strong>: 是作业控制的实现者, 通过进程组和会话机制来管理前台&#x2F;后台任务, 启动时会通过 <code>setsid()</code> 成为 Session leader &#x2F; 进程组 leader</li>
+<li><strong>前台任务</strong>: 是会接受终端输入的一组进程. 如 <code>cat file | grep foo</code>, shell 首先通过 <code>fork()</code> 创建出两个子进程, 然后调用 <code>setpgid()</code> 将这两个进程放到一个进程组里面, 调用 <code>tcsetpgrp()</code> 将这个进程组变成前台进程组. 终端的键盘信号都会发送给前台进程组, shell 自己调用 <code>waitpid()</code> 阻塞等待前台任务完成</li>
+<li><strong>后台任务</strong>: 没有调用 <code>tcsetpgrp()</code> 这一个设置成前台进程组的步骤, 后台进程组不持有前台, 所以 <code>Ctrl+C</code> 不影响它</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>本质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl+Z</code></td>
+<td>终端驱动向前台进程组发 <code>SIGTSTP</code> → 整组暂停</td>
+</tr>
+<tr>
+<td><code>jobs</code></td>
+<td>shell 遍历自己管理的进程组列表, 显示状态</td>
+</tr>
+<tr>
+<td><code>fg %1</code></td>
+<td>shell 调用 <code>tcsetpgrp()</code> 把目标进程组设为前台 + 发 <code>SIGCONT</code> 恢复</td>
+</tr>
+<tr>
+<td><code>bg %1</code></td>
+<td>shell 向目标进程组发 <code>SIGCONT</code>, 但<strong>不</strong>设为前台 → 后台继续运行</td>
+</tr>
+<tr>
+<td><code>kill %1</code></td>
+<td>shell 向目标进程组发 <code>SIGTERM</code></td>
+</tr>
+</tbody></table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>进程树: linux kernel里面为进程之间的亲子关系维护的一颗双向多叉树, 使用linux侵入式链表设计, 进程树对于托孤机制(僵尸清理), 沿亲缘关系的传播的信号来说是不可获取的机制, 比如wait()操作本身就是遍历进程的所有的children, 挨个回收PID和退出状态.</li>
+<li>shell任务控制: 任务分成前台任务和后台任务, 拿管道的运用举例子, 创建任务的步骤是shell fork出来一系列的子进程, 然后setpgid(), 将这些进程放到一个进程组里面. 对于前台进程(比如我们输入的命令), 还有一个额外的设置成前台进程的步骤(tcsetpgrp()), 前台进程会接受键盘信号(Ctrl + C &#x2F; Ctrl +Z). 这些信号传播的最小单元是一个进程组. 无论是前台任务还是后台任务, 都会共享一个session id来代表他们是经由这个session代表的shell进程创建的. shell会执行waitpid()来阻塞式等待, 并且完成最后的资源的清理. shell退出的时候, 会沿进程树的所有子进程的所在的进程组发送SIGHUP.</li>
+<li>守护进程: daemon进程就是一个后台进程, 创建的核心就是要和原来的session解绑(创立新的pgid, sid), 然后不再是shell进程的子进程, 所有流程是fork(leader进程不能setsid) - 父进程不wait(成为孤儿进程, 挂在init下面) - setsid(重制pgid&#x2F;sid) - fork</li>
+<li>僵尸进程: 由父进程不wait()&#x2F;waitpid(), 导致没有执行进程的最后的PID&#x2F;exit_state的回收导致的中间态死亡进程, 大量的僵尸进程会导致PID空间不足</li>
+<li>孤儿进程: 父进程死亡, 子进程就变成了孤儿进程. 父进程exit的时候会调用exit() -&gt; forget_original_parent() -&gt; find_new_reaper()流程将子进程托孤给init&#x2F;subreaper, 这两类进程会定期执行wait()清理僵尸进程.</li>
+</ul>
+]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>进程管理</tag>
+        <tag>进程树</tag>
+        <tag>task_struct</tag>
+        <tag>侵入式链表</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程管理</title>
+    <url>/2026/03/08/notes/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<h1 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程的数据结构是task struct</p>
+<ol>
+<li>cpu资源:<ol>
+<li>调度优先级</li>
+</ol>
+</li>
+<li>内存地址空间资源:<ol>
+<li>mm_struct</li>
+</ol>
+</li>
+<li>打开的文件资源:<ol>
+<li>file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)</li>
+</ol>
+</li>
+</ol>
+<p>进程自己的信息与状态</p>
+<ol>
+<li>进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中<ol>
+<li>如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…</li>
+</ol>
+</li>
+<li>唯一ID<ol>
+<li>pid: 线程级别的id</li>
+<li>gtid: 进程级别的id</li>
+</ol>
+</li>
+<li>文件系统信息 <code>struct fs_struct *fs</code></li>
+<li>namespace</li>
+<li>进程树关系: 该进程在整个进程树里面的位置</li>
+</ol>
+<h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_RUNNING            0x00000000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_INTERRUPTIBLE      0x00000001</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_UNINTERRUPTIBLE    0x00000002</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_STOPPED          0x00000004</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_TRACED           0x00000008</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_DEAD               0x00000010</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_ZOMBIE             0x00000020</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_DEAD               0x00000080</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 组合状态（便利宏）: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_KILLABLE           (TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_STOPPED            (TASK_WAKEKILL | __TASK_STOPPED)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_IDLE               (TASK_UNINTERRUPTIBLE | TASK_NOLOAD)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_NORMAL			(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p>常见状态语义说明:</p>
+<p><strong>存储在task-&gt;state的</strong></p>
+<ul>
+<li>TASK_RUNNING: 进程正在运行队列中, 准备运行&#x2F;正在运行</li>
+<li>TASK_NORAML&#x2F;TASK_INTERRUPTIBLE&#x2F;TASK_UNINTERRUPTIBLE:<ul>
+<li>TASK_NORMAL &#x3D; <code>(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</code> 是这两个状态的综合, 表明进程正在睡眠</li>
+<li>TASK_INTERRUPTIBLE: 进程处于可打断的睡眠状态, 正在等待某个条件满足, 被wake_up唤醒, 或者被信号唤醒. 不会被计入load average</li>
+<li>TASK_UNINTERRUPTIBLE: 进程处于不可中断的睡眠状态, 只能在条件满足时, 被wake_up唤醒, 不能被信号唤醒, 常用于(如磁盘 I&#x2F;O)等不能被中途打断的SLEEP, 这也代表, 在这个状态的进程的数量能一定程度反应当前计算机的物理负载, 这个状态会被计入load average</li>
+<li>TASK_KILLABLE &#x3D; <code>(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</code> 可以被致命信号杀死(SIGKILL)的不可中断睡眠</li>
+<li>__TASK_STOPPED &#x3D; 进程被暂停执行了, 不会被调度. 1. 收到SIGSTOP &#x2F; SIGSTP &#x2F; SIGTTIN &#x2F; SIGTTOU 信号 2. ptrace attach 后发送 SIGSTOP. 常见的进入情景: 1. Ctrl + z 2. debug. 退出的时机: 收到 SIGCONT 信号</li>
+<li>__TASK_TRACED &#x3D; 进程正在被调试器跟踪</li>
+<li>TASK_IDLE (TASK_UNINTERRUPTIBLE | TASK_NOLOAD):<ul>
+<li>语义: TASK_UNINTERRUPTIBLE类似的不可中断睡眠, 但<strong>不计入 load average</strong></li>
+<li>内核中空闲时会运行的 idle线程, 内核中某些无关紧要的等待</li>
+<li>如果 idle线程用TASK_UNINTERRUPTIBLE而包含TASK_NOLOAD会导致load average空长, 不能反应真实物理资源负载</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>存储在task-&gt;exit_code的</strong></p>
+<ul>
+<li>EXIT_ZOMBIE: 僵尸状态<ul>
+<li>语义: 代码已经执行完毕</li>
+<li>进入的时机: 进程调用exit() -&gt; do_exit() -&gt; exit_notify() 中设置 tsk-&gt;exit_state &#x3D; EXIT_ZOMBIE</li>
+<li>退出的时机: 父进程调用 <code>wait</code> &#x2F; <code>waitpid()</code> 读取退出状态 -&gt; <code>wait_task_zombie()</code> -&gt; <code>exit_state</code>中改为 <code>EXIT_DEAD</code> -&gt; <code>task_struct</code> 被释放</li>
+</ul>
+</li>
+<li>EXIT_DEAD (0x10) : 彻底死亡<ul>
+<li>语义: 进程的task_struct正在被回收或者已经被回收</li>
+<li>进入的时机: 父进程 <code>wait()</code> 成功后, 状态从 <code>EXIT_ZOMBIE</code> 变成 <code>EXIT_DEAD</code></li>
+<li>退出的时机: 这是一个瞬态, 存在的时间极短, 之后 <code>task_struct</code> 被回收</li>
+</ul>
+</li>
+</ul>
+<p><strong>常见的进程类型</strong></p>
+<ul>
+<li><p><strong>僵尸进程</strong>: 进程(task_struct)已经被释放, 但是还保留PID和exit_state为EXIT_ZOMBIE</p>
+<ul>
+<li>为什么需要这个状态: 父进程可能需要在进程被关闭以后, 获取进程的PID并检查它的退出码来衡量进程是不是正常退出的</li>
+<li>资源泄漏: 状态为EXIT_ZOMBIE的进程占用一个PID和少量的内核内存. 如果大量堆积, 会导致内核内存泄漏, 或PID耗尽</li>
+<li>怎么产生的: 父进程没有调用wait()或者waitpid()</li>
+<li>解决方式:<ul>
+<li>父进程调用 wait() &#x2F; waitpid()</li>
+<li>设置 signal(SIGCHLD, SIG_IGN) 让内核自动回收 (do_notigy_parent返回true的时候直接设置状态为EXIT_DEAD)</li>
+<li>杀死父进程 -&gt; 僵尸被init(PID&#x3D;1)收养 -&gt; init会自动 <code>wait()</code>清理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>孤儿进程</strong>: 进程的父进程先于子进程被杀死了, 子进程就成为了孤儿进程</p>
+<ul>
+<li>内核会将孤儿进程的父进程指向init, 或者当前 PID namespace 中的 subreaper 进程, init进程会定期调用 <code>wait()</code>来清理</li>
+<li>本身是正常的, 不会造成问题</li>
+</ul>
+</li>
+<li><p><strong>守护进程</strong>: 在后台运行的, 不再与任何终端关联的长期运行的进程. 如 <code>sshd, nginx</code>等</p>
+<ul>
+<li>不是一个内核概念, 而是一个用户空间的编程的概念</li>
+<li>经典的创建过程: double-fork<ul>
+<li><code>fork()</code> - 创建子进程</li>
+<li>父进程退出 - 子进程被托孤给init</li>
+<li>setsid - 创建新的session (和原终端解绑)</li>
+<li>再次 <code>fork()</code> - 确保不会重新获得中断控制能力</li>
+<li>chdir(“&#x2F;) - 避免占用可卸载的文件系统</li>
+<li>关闭&#x2F;重定向 stdin&#x2F;stdout&#x2F;stderr</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程的唯一ID"><a href="#进程的唯一ID" class="headerlink" title="进程的唯一ID"></a>进程的唯一ID</h3><p><strong>tgid和pid, 为什么要有两个ID</strong><br>经典的用途是区分进程和线程, 本身是进程组概念, 父进程和他fork出来的子进程组成一个进程组, 共享一个tgid.<br>他们的id (pid, tgid)会是 (1, 1), (2, 1), (3, 1). 对于操作系统来说, 只有进程这个概念, 线程实际上是一个轻量级进程, 对于操作系统的调度来说, 进程和线程是同等地位的实体, 唯一通过PID来作为唯一标识, 而tgid是标识”进程”而非”线程”的唯一标识.</p>
+<h3 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h3><p>通过 <code>task_struct</code> 中的 <code>parent</code>&#x2F;<code>real_parent</code>、<code>children</code>&#x2F;<code>sibling</code> 字段, 所有进程构成一棵<strong>多叉双向树</strong>. Linux 使用侵入式链表(<code>list_head</code>)而非传统多叉树来实现, 使得增删 O(1)、零内存分配、API 全内核复用.</p>
+<p>进程树支撑了 <code>wait()</code> 回收、托孤、<code>SIGCHLD</code> 通知等核心操作. 进程树与进程组(PGID)、会话(Session) 共同构成了完整的作业控制体系.</p>
+<p><strong>详细内容</strong>: <a href="%E8%BF%9B%E7%A8%8B%E6%A0%91.md">进程树</a></p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><h3 id="运行队列-struct-rq"><a href="#运行队列-struct-rq" class="headerlink" title="运行队列 struct rq"></a>运行队列 <code>struct rq</code></h3><p>内核声明了一个per-CPU变量: <code>runqueues</code>, 每个CPU都有自己的rq变量, 通过<code>cpu_rq(cpu)</code>等宏能执行拿到第N号CPU的运行队列指针等操作.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DECLARE_PER_CPU_SHARED_ALIGNED(<span class="keyword">struct</span> rq, runqueues);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> cpu_rq(cpu)		(&amp;per_cpu(runqueues, (cpu)))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> this_rq()		this_cpu_ptr(&amp;runqueues)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> task_rq(p)		cpu_rq(task_cpu(p))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> cpu_curr(cpu)		(cpu_rq(cpu)-&gt;curr)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> raw_rq()		raw_cpu_ptr(&amp;runqueues)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这个数据结构嵌入了<code>cfs_rq</code>, <code>rt_rq</code>, <code>dl_rq</code>三个内部运行队列(注意这里是嵌入, 这三个字段不是指针). 这意味着 rq本身就包含了所有调度类各自的运行队列数据. 每个调度类管自己的调度队列.</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rq</span> &#123;</span></span><br><span class="line">	<span class="type">raw_spinlock_t</span>		__lock; <span class="comment">// 自旋锁, 保护整个队列的并发访问</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span>	*<span class="title">curr</span>;</span> <span class="comment">// 当前正在运行的进程</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cfs_rq</span>		<span class="title">cfs</span>;</span> <span class="comment">// cfs rq, 完全公平调度队列, 直接嵌入</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rt_rq</span>		<span class="title">rt</span>;</span> <span class="comment">// real time rq, 实时调度队列, 直接嵌入</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">dl_rq</span>		<span class="title">dl</span>;</span> <span class="comment">// deadline rq, 强实时调度队列, 有完成截止时间, 直接嵌入</span></span><br><span class="line"></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span>		nr_running; <span class="comment">// 一个CPU上最多有多少进程可以是running状态</span></span><br><span class="line">	u64			nr_switches; <span class="comment">// 上下文切换的次数</span></span><br><span class="line">  <span class="comment">// 其他...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="调度类-struct-sched-class"><a href="#调度类-struct-sched-class" class="headerlink" title="调度类 - struct sched_class"></a>调度类 - <code>struct sched_class</code></h3><p>调度类本身是一个虚函数表, 里面定义了一系列的虚函数(接口), 里面的各个函数实际上是函数指针. 可以把调度类就看作是一个interface&#x2F;vitrual class.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span> &#123;</span></span><br><span class="line">  <span class="comment">// 把一个进程加入到该调度类的子队列</span></span><br><span class="line">	<span class="type">void</span> (*enqueue_task) (<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line">  <span class="comment">// 新进程唤醒的时候, 检查是否应该要抢占当前进程</span></span><br><span class="line">	<span class="type">void</span> (*check_preempt_curr)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line">  <span class="comment">// 把一个进程移除到该调度类的子队列</span></span><br><span class="line">	<span class="type">void</span> (*dequeue_task) (<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 从该调度类中选出下一个要运行的进程</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *(*<span class="title">pick_next_task</span>)(<span class="keyword">struct</span> <span class="title">rq</span> *<span class="title">rq</span>);</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 当前进程被换下前的清理工作, 比如对于cfs调度器来说, 就会重新计算vruntime, 然后重新放回cfs.timeline(红黑树)里面</span></span><br><span class="line">	<span class="type">void</span> (*put_prev_task)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p);</span><br><span class="line">  <span class="comment">// 新进程被换上前的初始化工作</span></span><br><span class="line">	<span class="type">void</span> (*set_next_task)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">bool</span> first);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 每个时钟tick时被调用, 检查时间片/vruntime</span></span><br><span class="line">	<span class="type">void</span> (*task_tick)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> queued);</span><br><span class="line">  <span class="comment">// 更新当前进程的运行时间</span></span><br><span class="line">  <span class="type">void</span> (*update_curr)(<span class="keyword">struct</span> rq *rq);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调度类的实现类有五个</p>
+<ol>
+<li>stop_sched_class</li>
+<li>dl_sched_class</li>
+<li>rt_sched_class</li>
+<li>fair_sched_class</li>
+<li>idle_sched_class</li>
+</ol>
+<p>这五个类实现了上面的各个函数, 使用不同的策略和子队列.<br>每个task_struct里面都一个sched_class字段, 指向这个进程对应的调度类全局实例(看成是静态类即可)</p>
+<p>在rq挑选下一个任务的时候, 会按照上面的顺序遍历所有的调度类, 尝试调用他们各自的pick_next_task.<br>如果调度到的不是NULL, 返回找到的任务.</p>
+<h3 id="调度的整体运行流程"><a href="#调度的整体运行流程" class="headerlink" title="调度的整体运行流程"></a>调度的整体运行流程</h3><blockquote>
+<p><code>rq</code>是容器, <code>sched_class</code>是行为, 子队列 (cfs_rq, rt_rq, dl_rq) 是各调度类在容器内的私有存储队列. 三者通过<code>task_struct.sched_class</code>桥接</p>
+</blockquote>
+<p><strong>1. 进程入队: 从唤醒到进入到子队列里面</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">try_wake_up(task_struct* p)</span><br><span class="line">  -&gt; activate_task(rq, p, flags)</span><br><span class="line">    -&gt; enqueue_task(rq, p, flags)</span><br><span class="line">      -&gt; p-&gt;sched_class-&gt;enqueue_task</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果这里的进程是普通的进程, 这里的p-&gt;sched_class就是fair_sched_class,  p-&gt;sched_class-&gt;enqueue_task最后调用的就是enqueue_task_fair(), 这个函数会将p插入到cfs rq中的红黑树子队列中</li>
+<li>如果p是RT进程, 实际调用的就是enqueue_task_rt()</li>
+</ul>
+<p><strong>2. 进程出队: 睡眠或退出</strong></p>
+<p>__schedule()<br>  -&gt; deactivate_task(rq, prev, DEQUEUE_SLEEP)<br>    -&gt; dequeue_task(rq, prev, flags)<br>      -&gt; p-&gt;sched_class-&gt;dequeue_task(rq, p, flags)</p>
+<p><strong>3. 选择下一个进程: pick_next_task的两条路径</strong></p>
+<p><em>这里的pick_next_task并不是调度类里面的这个函数, 而是sched.h里面的一个文件</em></p>
+<p>__scheduler()<br>  -&gt; pick_next_task(rq, prev, &amp;rf)<br>    -&gt; __pick_next_task(rq, prev, rf)</p>
+<p><strong>快速路径</strong></p>
+<p>rq-&gt;nr_running &#x3D;&#x3D; rq-&gt;cfs.h_nr_running ? (全部进程都是normal&#x2F;CFS进程)<br>  -&gt; pick_next_task_fair(rq, prev, rf)<br>    -&gt; 从rq-&gt;cfs.tasks_timeline 取出来最左边的节点</p>
+<p><strong>慢速路径</strong></p>
+<p>for_each_class(class)<br>  class-&gt;pick_next_task(rq)<br>  -&gt; stop_sched_class.pick_next_task(rq) -&gt; 检查 rq-&gt;stop<br>  -&gt; dl_sched_class.pick_next_task(rq)   -&gt; 检查 rq-&gt;dl 红黑树<br>  -&gt; rt_sched_class.pick_next_task(rq)   -&gt; 检查 rq-&gt;rt 优先级数组<br>  -&gt; fair_sched_class.pick_next_task(rq) -&gt; 检查 rq-&gt;cfs 红黑树<br>  -&gt; idle_sched_class.pick_next_task(rq) -&gt; 返回 rq-&gt;idle（兜底）</p>
+<p>for_each_class是一个宏, 会遍历所有的sched_class, 尝试调用每个调度类自己实现的pick_next_task, 直到返回的不是NULL, 返回. 这样就构造出来了不同rq&#x2F;调度器之间的优先级问题.</p>
+<h3 id="将task-struct挂载在运行队列上"><a href="#将task-struct挂载在运行队列上" class="headerlink" title="将task_struct挂载在运行队列上"></a>将task_struct挂载在运行队列上</h3><p><em>这里主要聚焦的是, rq中的子队列, 比如cfs, 是把task_struct直接存在里面的吗, 是怎么挂载上去的?</em></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span>&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>		<span class="title">se</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span>		<span class="title">rt</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span>		<span class="title">dl</span>;</span></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span>	*<span class="title">sched_class</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样是侵入式数据结构设计, 通过将这几个嵌入式的字段挂载在task_struct中, 通过container_of来取出task_struct.<br>同时rb_node嵌入到sched_entity中, 来将这个数据结构挂在红黑树上</p>
+<p><em>为什么不直接操作task_struct呢?</em></p>
+<p>在cgroup分组调度下, CFS需要把“一组进程”当成一个整体来调度, sched_entity可以代表一个进程, 也可以代表一个进程组.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">load_weight</span>		<span class="title">load</span>;</span> <span class="comment">// 该实体的权重, 通过nice值转化出来的, CFS通过这个计算出来应该分到多少CPU时间</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span>			<span class="title">run_node</span>;</span> <span class="comment">//  红黑树节点, 挂在rq.cfs_rq-&gt;task_timeline上</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>		<span class="title">group_node</span>;</span> <span class="comment">// 挂在rq-&gt;cfs_tasks链表上, 用于SMP均衡负载</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span>			on_rq; <span class="comment">// 是否在运行队列里面</span></span><br><span class="line"></span><br><span class="line">	u64				exec_start; <span class="comment">// 当前这一轮开始执行的时间戳, 每次tick或调度的时候更新</span></span><br><span class="line">	u64				sum_exec_runtime; <span class="comment">// 累计实际的运行时间</span></span><br><span class="line">	u64				vruntime; <span class="comment">// 虚拟运行时间, 值越小越优先被选中</span></span><br><span class="line">	u64				prev_sum_exec_runtime; <span class="comment">// 上次调度时候实际运行时间的快照, 用来算, 这次用了多少的时间片</span></span><br><span class="line">	u64				nr_migrations; <span class="comment">// 这个entity被迁移到其他的cpu上的次数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>sched_entity 是 CFS 调度器的操作单元，嵌入在 task_struct.se 中。它通过 run_node 挂在 cfs_rq 的红黑树上，以 vruntime 为排序键。CFS 选人就是取 vruntime 最小的 sched_entity，再通过 container_of 反推到 task_struct。分组调度下，一个 sched_entity 可以代表整个 task_group，通过 parent&#x2F;cfs_rq&#x2F;my_q 构成层级树。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>进程管理</tag>
+        <tag>task_struct</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>02 · 日志抽象与 Push vs Pull</title>
+    <url>/2026/03/28/kafka/notes/02-log-and-pull/</url>
+    <content><![CDATA[<h1 id="02-·-日志抽象与-Push-vs-Pull"><a href="#02-·-日志抽象与-Push-vs-Pull" class="headerlink" title="02 · 日志抽象与 Push vs Pull"></a>02 · 日志抽象与 Push vs Pull</h1><blockquote>
+<p><strong>目标</strong>：理解 Kafka 的存储基础——日志抽象，以及消费模型选择 Pull 的设计动机</p>
+</blockquote>
+<hr>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="一、什么是日志"><a href="#一、什么是日志" class="headerlink" title="一、什么是日志"></a>一、什么是日志</h3><p>日志是最简单的存储抽象：<strong>只追加、全局有序、按时间排列的记录序列。</strong></p>
+<p>每条记录追加到末尾，每条记录被分配一个唯一的单调递增序号。这个序号定义了一种”时间”概念——序号小的记录比序号大的旧。</p>
+<p><strong>关键性质：这种”时间”与物理时钟无关。</strong></p>
+<p>在分布式系统里，不同机器的物理时钟不同步，即使同步了，同一毫秒内发生的两件事也无法用物理时间判断先后。日志序号解决的是<strong>全局定序</strong>问题——整个系统里所有事件有一个统一的、无歧义的顺序。这是 Kafka 能作为”事件的单一来源”的基础。</p>
+<p>注意区分两种”日志”：</p>
+<ul>
+<li><strong>应用日志</strong>（log4j、syslog）：给人读的非结构化文本</li>
+<li><strong>数据日志</strong>（Kafka partition）：给程序读的结构化序列，是这里讨论的概念</li>
+</ul>
+<hr>
+<h3 id="二、只追加带来的三个好处"><a href="#二、只追加带来的三个好处" class="headerlink" title="二、只追加带来的三个好处"></a>二、只追加带来的三个好处</h3><p><strong>1. 顺序写性能极高</strong></p>
+<p>磁盘随机写慢，顺序写可以接近内存速度。日志只追加意味着所有写入都是顺序的，Kafka 因此能在普通机械硬盘上达到很高的吞吐量。</p>
+<p><strong>2. 消息不因消费而删除，天然支持重放</strong></p>
+<p>传统队列消费一条删一条。Kafka 的 partition 只追加，消息按 retention 策略保留（如 7 天）。重放不是 Kafka 特意实现的功能，而是日志本来就不删的自然结果——结合 offset 机制，回退 offset 即可重放。</p>
+<p><strong>3. offset 是一个整数就够了</strong></p>
+<p>只追加保证了日志是连续递增的有序序列。offset 作为分界线，能将序列精确地划分成两部分：offset 之前是已消费的，offset 之后是未消费的。</p>
+<p>如果日志可以修改或删除过去的消息，这个分界线就会失效——offset 左边的内容可能已经变了，一个整数无法再准确表达消费进度。</p>
+<hr>
+<h3 id="三、Push-vs-Pull"><a href="#三、Push-vs-Pull" class="headerlink" title="三、Push vs Pull"></a>三、Push vs Pull</h3><p><strong>Push 模式的根本问题：broker 控制速率，消费者被动接收。</strong></p>
+<p>生产速率超过消费速率时，消费者会被压垮。要解决这个问题，broker 需要感知每个消费者的处理能力并动态调整——类似 TCP 的流量控制，实现复杂，且不同消费者能力差异大，broker 很难精确控制。</p>
+<p><strong>Pull 模式的优点：消费者自己控制节奏。</strong></p>
+<p>消费者落后了慢慢追，能力强就多拉，broker 完全不需要感知消费者状态。同时天然支持批量拉取——每次拉取当前 offset 之后所有可用消息，批量大小由消费者决定。</p>
+<p><strong>Pull 模式引入的新问题：空轮询。</strong></p>
+<p>broker 没有数据时，消费者不断发请求，broker 不断回”没有数据”，白白消耗资源。</p>
+<p><strong>Kafka 的解决方案：长轮询（long poll）。</strong></p>
+<p>消费者发出请求后，如果 broker 暂时没有数据，请求阻塞等待，直到有数据或超时才返回。保留了 Pull 的优点，同时避免了空轮询的浪费。</p>
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>LinkedIn 工程博客 — The Log</strong>：<a href="https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying%EF%BC%88Part">https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying（Part</a> One: What is a log?）</li>
+<li><strong>Kafka 设计文档 — Push vs Pull</strong>：<a href="https://kafka.apache.org/42/design/design/%EF%BC%88%E6%89%BE">https://kafka.apache.org/42/design/design/（找</a> <code>The Consumer → Push vs. pull</code>）</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>log</tag>
+        <tag>append-only</tag>
+        <tag>pull</tag>
+        <tag>long-poll</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>01 · Core Concepts</title>
+    <url>/2026/03/28/kafka/notes/01-core-concepts/</url>
+    <content><![CDATA[<h1 id="01-·-Core-Concepts"><a href="#01-·-Core-Concepts" class="headerlink" title="01 · Core Concepts"></a>01 · Core Concepts</h1><blockquote>
+<p><strong>目标</strong>：理解 Kafka 的四个核心抽象及其关系，能画出消息从 produce 到 consume 的完整路径</p>
+</blockquote>
+<hr>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="Topic"><a href="#Topic" class="headerlink" title="Topic"></a>Topic</h3><p>Topic 是逻辑概念，是消息的命名分类单位（如 <code>order-events</code>、<code>user-clicks</code>）。Topic 本身不存储数据，真正存储数据的是 partition。</p>
+<h3 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h3><p>Partition 是物理存储单元。每个 partition 在磁盘上是一个<strong>目录</strong>，目录下包含多个 segment 文件（<code>.log</code>、<code>.index</code>、<code>.timeindex</code>）。Kafka 按大小或时间把数据切割成多个 segment，避免单个文件无限增长。</p>
+<p>Partition 解决两个问题：</p>
+<ul>
+<li><strong>并行度</strong>：多个 partition 分布在不同 broker 上，读写可以同时进行，吞吐量线性扩展。消费端同理，N 个 partition 最多支持 N 个消费者并行消费。</li>
+<li><strong>水平扩展</strong>：partition 是 Kafka 的最小分布单元，不同 partition 可以在不同 broker 上，单个 topic 的数据量不受单台机器限制。</li>
+</ul>
+<p>注意：<strong>partition 内部消息严格有序，partition 之间没有顺序保证。</strong> 相同 key 的消息会路由到同一个 partition，这是实现”同一实体的事件有序”的机制。</p>
+<h3 id="Offset"><a href="#Offset" class="headerlink" title="Offset"></a>Offset</h3><p>Offset 是消费者在 partition 中的位置指针，是一个递增整数，存在于 <strong>partition 级</strong>（不是 topic 级）。</p>
+<p><strong>Offset 由消费者自己管理，不是 broker 管。</strong> 消费者定期把当前 offset checkpoint 到 Kafka 内部的特殊 topic <code>__consumer_offsets</code>，崩溃重启后从上次 checkpoint 的位置继续消费。</p>
+<p>传统消息系统让 broker 追踪消费状态，带来两难困境：</p>
+<ul>
+<li>broker 立刻标记已消费 → consumer 崩溃会丢消息</li>
+<li>等 consumer 确认 → 确认前崩溃会重复消费，且 broker 要为每条消息维护多个状态，性能差</li>
+</ul>
+<p>Kafka 的解法让状态极简：每个 partition 只需一个整数。代价是 <strong>at-least-once</strong> 语义——消息不会丢，但可能重复消费（处理完但提交 offset 前崩溃）。Exactly-once 需要额外机制（幂等 producer + 事务）。</p>
+<p>Offset 带来的副作用也是核心特性：<strong>消费者可以主动倒回任意 offset 重放历史消息</strong>，传统队列消费后即删除做不到这点。</p>
+<h3 id="Consumer-Group"><a href="#Consumer-Group" class="headerlink" title="Consumer Group"></a>Consumer Group</h3><p>Consumer Group 是一组消费者的逻辑分组，共同消费一个 topic。</p>
+<p><strong>核心规则：同一个 group 内，每个 partition 同一时刻只被一个消费者消费。</strong></p>
+<p>这个约束是 offset 能用单个整数表示的前提——如果多个消费者同时消费同一个 partition，就需要复杂协调机制，状态就不再是一个简单数字了。</p>
+<p>两种消费模式：</p>
+<ul>
+<li><strong>组内（负载均衡）</strong>：partition 在组内消费者间分配，每条消息只被一个消费者处理。消费者数量不能超过 partition 数量，超出的消费者会 idle（没有 partition 可分配）。</li>
+<li><strong>组间（广播）</strong>：不同 group 独立维护各自的 offset，同一条消息对每个 group 完整可见。</li>
+</ul>
+<p>判断是否同一个 group 的标准：<strong>这些消费者是在协作处理同一件事（用同一个 group），还是独立处理不同的事（用不同的 group）？</strong></p>
+<p>例：库存系统和物流系统都消费 <code>order-events</code>，它们是<strong>不同的 group</strong>——各自需要完整看到所有订单事件，互不影响。</p>
+<hr>
+<h2 id="消息从-produce-到-consume-的完整路径"><a href="#消息从-produce-到-consume-的完整路径" class="headerlink" title="消息从 produce 到 consume 的完整路径"></a>消息从 produce 到 consume 的完整路径</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Producer</span><br><span class="line">  → 按 key 路由到指定 partition（相同 key → 同一 partition）</span><br><span class="line">  → 写入 broker 上的 partition（append-only log）</span><br><span class="line">  → Consumer 从 broker pull 数据（指定 offset）</span><br><span class="line">  → 处理消息</span><br><span class="line">  → 提交新的 offset 到 __consumer_offsets</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>Kafka 官方文档 — Introduction</strong>：<a href="https://kafka.apache.org/42/getting-started/introduction">https://kafka.apache.org/42/getting-started/introduction</a></li>
+<li><strong>Kafka 设计文档 — The Consumer</strong>：<a href="https://kafka.apache.org/42/design/design/%EF%BC%88%E6%89%BE">https://kafka.apache.org/42/design/design/（找</a> <code>The Consumer → Consumer Position</code>）</li>
+<li><strong>LinkedIn 工程博客 — The Log</strong>：<a href="https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying">https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying</a></li>
+</ol>
+<hr>
+<h2 id="CLI-验证"><a href="#CLI-验证" class="headerlink" title="CLI 验证"></a>CLI 验证</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 进入容器（apache/kafka:4.2.0）</span></span><br><span class="line">docker <span class="built_in">exec</span> -it &lt;container-name&gt; bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建 topic，3 个 partition</span></span><br><span class="line">/opt/kafka/bin/kafka-topics.sh --create --topic test-topic \</span><br><span class="line">  --partitions 3 --replication-factor 1 \</span><br><span class="line">  --bootstrap-server localhost:9092</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 partition 分布</span></span><br><span class="line">/opt/kafka/bin/kafka-topics.sh --describe --topic test-topic \</span><br><span class="line">  --bootstrap-server localhost:9092</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 consumer group offset 状态</span></span><br><span class="line">/opt/kafka/bin/kafka-consumer-groups.sh --describe --group group-A \</span><br><span class="line">  --bootstrap-server localhost:9092</span><br><span class="line"><span class="comment"># 观察：CURRENT-OFFSET / LOG-END-OFFSET / LAG 三个字段</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>topic</tag>
+        <tag>partition</tag>
+        <tag>offset</tag>
+        <tag>consumer-group</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>05 · Replication / ISR / Leader Election</title>
+    <url>/2026/03/28/kafka/notes/05-replication/</url>
+    <content><![CDATA[<h1 id="03-·-Replication-ISR-Leader-Election"><a href="#03-·-Replication-ISR-Leader-Election" class="headerlink" title="03 · Replication &#x2F; ISR &#x2F; Leader Election"></a>03 · Replication &#x2F; ISR &#x2F; Leader Election</h1><blockquote>
+<p><strong>目标</strong>：理解 Kafka 如何通过副本机制保证数据不丢，以及 ISR、Leader Election、acks 的设计取舍</p>
+</blockquote>
+<hr>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="一、为什么需要副本"><a href="#一、为什么需要副本" class="headerlink" title="一、为什么需要副本"></a>一、为什么需要副本</h3><p>单台 broker 随时可能挂掉。如果 partition 只存在一台 broker 上，broker 挂了数据就永远丢了。</p>
+<p>解决方案是副本（Replica）：每个 partition 在多台 broker 上各存一份。副本数量由 <code>replication factor</code> 控制，比如 replication factor &#x3D; 3，意味着这个 partition 在 3 台不同的 broker 上各有一份完整数据。</p>
+<hr>
+<h3 id="二、Leader-和-Follower"><a href="#二、Leader-和-Follower" class="headerlink" title="二、Leader 和 Follower"></a>二、Leader 和 Follower</h3><p>多个副本里，有且只有一个是 <strong>Leader</strong>，其余是 <strong>Follower</strong>。</p>
+<ul>
+<li><strong>Leader</strong>：负责所有读写请求。Producer 写给 Leader，Consumer 也从 Leader 读。</li>
+<li><strong>Follower</strong>：唯一职责是从 Leader 同步数据，保持冗余备份，不直接服务读写请求。</li>
+</ul>
+<p><strong>为什么不让 Follower 分担读请求？</strong></p>
+<p>从 Follower 读不会读到”错误的数据”（日志只追加，已同步的数据和 Leader 完全一致），但会读到<strong>滞后的视图</strong>——Follower 可能还没同步到最新的几条消息。要解决这个问题需要引入复杂的一致性协议。Kafka 的取舍是用”只读 Leader”换实现的简洁性。</p>
+<p>（Kafka 2.4 之后引入了有条件的 Follower 读，是进阶内容。）</p>
+<hr>
+<h3 id="三、ISR"><a href="#三、ISR" class="headerlink" title="三、ISR"></a>三、ISR</h3><p><strong>ISR（In-Sync Replicas）</strong> 是与 Leader 保持同步的副本集合，是一个动态维护的列表。</p>
+<p>Follower 持续从 Leader 拉取数据。如果某个 Follower 落后超过阈值（<code>replica.lag.time.max.ms</code>），就会被踢出 ISR。追上之后重新加入。</p>
+<p>注意：ISR 只保证”没有落后超过阈值”，不保证和 Leader 完全一致。新 Leader 选出后，可能有少量还未同步的消息丢失。</p>
+<p><strong>ISR 的核心作用：只有 ISR 里的副本才有资格成为新的 Leader。</strong></p>
+<hr>
+<h3 id="四、Leader-Election"><a href="#四、Leader-Election" class="headerlink" title="四、Leader Election"></a>四、Leader Election</h3><p>当 Leader 所在的 broker 挂掉，Kafka 从 ISR 里选一个 Follower 升级为新 Leader，Producer 和 Consumer 自动切换。</p>
+<p><strong>如果 ISR 为空怎么办？</strong> 由 <code>unclean.leader.election.enable</code> 控制：</p>
+<ul>
+<li><strong>false（默认）</strong>：只允许从 ISR 里选 Leader。ISR 为空时 partition 直接不可用——Producer 写入异常，Consumer 消费失败，直到原 Leader 的 broker 恢复上线。宁可不可用，也不丢数据。</li>
+<li><strong>true</strong>：允许从 ISR 之外的落后副本选 Leader。Partition 继续服务，但可能有大量数据丢失。保证了可用性，牺牲了数据完整性。</li>
+</ul>
+<p>这是<strong>可用性 vs 数据完整性</strong>的经典取舍，Kafka 默认优先保数据。</p>
+<hr>
+<h3 id="五、acks：Producer-对”写入成功”的定义"><a href="#五、acks：Producer-对”写入成功”的定义" class="headerlink" title="五、acks：Producer 对”写入成功”的定义"></a>五、acks：Producer 对”写入成功”的定义</h3><table>
+<thead>
+<tr>
+<th>acks</th>
+<th>含义</th>
+<th>风险</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>发出去就认为成功，不等任何确认</td>
+<td>可能丢消息</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Leader 写入成功即返回</td>
+<td>Leader 挂了但 Follower 未同步，消息丢失</td>
+</tr>
+<tr>
+<td>all（-1）</td>
+<td>ISR 里所有副本写入成功才返回</td>
+<td>延迟高，ISR 缩小时可能阻塞写入</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>acks&#x3D;0 &#x2F; 1</strong>：最大化性能，接受数据丢失风险</li>
+<li><strong>acks&#x3D;all</strong>：最大化数据持久性，接受更高延迟和潜在的可用性下降</li>
+</ul>
+<p>注意：acks&#x3D;all 不等于绝对不丢。如果 ISR 里只剩一个副本，acks&#x3D;all 退化成 acks&#x3D;1。真正强持久性需要同时配置 <code>min.insync.replicas &gt;= 2</code>，保证 ISR 里至少有 2 个副本才允许写入。</p>
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>Kafka 设计文档 — Replication</strong>：<a href="https://kafka.apache.org/42/design/design/%EF%BC%88%E6%89%BE">https://kafka.apache.org/42/design/design/（找</a> <code>Replication</code> 章节）</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>replication</tag>
+        <tag>ISR</tag>
+        <tag>leader-election</tag>
+        <tag>acks</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction</title>
+    <url>/2026/03/28/kafka/notes/03-storage/</url>
+    <content><![CDATA[<h1 id="03-·-存储设计：Segment、Page-Cache、零拷贝、Retention、Log-Compaction"><a href="#03-·-存储设计：Segment、Page-Cache、零拷贝、Retention、Log-Compaction" class="headerlink" title="03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction"></a>03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction</h1><blockquote>
+<p><strong>目标</strong>：理解 Kafka partition 在磁盘上的物理结构，以及高性能背后的存储设计</p>
+</blockquote>
+<hr>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="一、Segment：Partition-的物理存储单元"><a href="#一、Segment：Partition-的物理存储单元" class="headerlink" title="一、Segment：Partition 的物理存储单元"></a>一、Segment：Partition 的物理存储单元</h3><p>一个 partition 目录下有多组文件，每组对应一个 Segment：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/data/kafka/order-events-0/</span><br><span class="line">├── 00000000000000000000.log        ← segment 1 的消息数据</span><br><span class="line">├── 00000000000000000000.index      ← segment 1 的 offset 稀疏索引</span><br><span class="line">├── 00000000000000000000.timeindex  ← segment 1 的时间索引</span><br><span class="line">├── 00000000000001048576.log        ← segment 2</span><br><span class="line">├── 00000000000001048576.index</span><br><span class="line">├── 00000000000001048576.timeindex</span><br><span class="line">└── ...</span><br></pre></td></tr></table></figure>
+
+<p>文件名是该 segment <strong>第一条消息的 offset</strong>，光看文件名就知道每个 segment 的起始位置。</p>
+<p><strong>三种文件的作用：</strong></p>
+<ul>
+<li><strong><code>.log</code></strong>：真正存消息，append-only，消息按顺序写入</li>
+<li><strong><code>.index</code></strong>：稀疏 offset 索引，不是每条消息都有记录，而是每隔若干字节记一条，用于快速定位消息的物理位置</li>
+<li><strong><code>.timeindex</code></strong>：按时间戳索引，用于按时间查找消息</li>
+</ul>
+<p><strong>Segment 切割的触发条件（满足任意一个）：</strong></p>
+<ul>
+<li>文件大小达到 <code>log.segment.bytes</code>（默认 1GB）</li>
+<li>最新一条消息的时间超过 <code>log.segment.ms</code>（默认 7 天）</li>
+<li><code>.index</code> 文件满了（<code>log.index.size.max.bytes</code>，默认 10MB）</li>
+</ul>
+<p><strong>为什么切割成多个 segment：</strong></p>
+<ol>
+<li><strong>删除高效</strong>：Retention 到期时直接删整个 segment 文件，O(1) 操作，不需要在大文件里截断</li>
+<li><strong>查找高效</strong>：根据 offset 快速定位 segment，再用索引缩小范围，最后顺序扫描</li>
+</ol>
+<p><strong>完整的 offset 查找流程：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">目标 offset</span><br><span class="line">→ 根据 segment 文件名（起始 offset）二分定位到对应 segment</span><br><span class="line">→ 在该 segment 的 .index 文件里二分找到最近的稀疏索引点</span><br><span class="line">→ 从索引点对应的物理位置开始顺序扫描 .log 文件</span><br><span class="line">→ 找到目标 offset 的消息</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="二、Page-Cache：为什么不在-JVM-堆内缓存"><a href="#二、Page-Cache：为什么不在-JVM-堆内缓存" class="headerlink" title="二、Page Cache：为什么不在 JVM 堆内缓存"></a>二、Page Cache：为什么不在 JVM 堆内缓存</h3><p>Kafka 刻意不在 JVM 堆内维护消息缓存，而是直接写入文件系统，依赖 OS 的 page cache。</p>
+<p><strong>三个好处：</strong></p>
+<ol>
+<li><strong>避免 GC 压力</strong>：JVM 对象内存开销通常是原始数据的 2 倍，大堆导致 GC 停顿严重。依赖 page cache 几乎不带来额外开销</li>
+<li><strong>OS 缓存管理更智能</strong>：OS 自动做预读（read-ahead）和延迟写（write-behind），不需要 Kafka 自己实现</li>
+<li><strong>进程重启不丢缓存</strong>：broker 重启时 JVM 堆缓存全部丢失，但 OS page cache 还在，重启后无需重新预热</li>
+</ol>
+<p><strong>实际效果</strong>：大多数情况下 Consumer 消费的消息还在 page cache 里，拉取时根本不需要读磁盘，延迟极低。</p>
+<hr>
+<h3 id="三、零拷贝（sendfile）"><a href="#三、零拷贝（sendfile）" class="headerlink" title="三、零拷贝（sendfile）"></a>三、零拷贝（sendfile）</h3><p><strong>传统文件发送：四次拷贝</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">磁盘 → 内核 page cache（DMA）→ 用户空间缓冲区（CPU）→ Socket 缓冲区（CPU）→ 网卡（DMA）</span><br></pre></td></tr></table></figure>
+
+<p>两次 CPU 拷贝 + 两次用户态↔内核态上下文切换。</p>
+<p><strong>Kafka 使用 sendfile（Java: <code>FileChannel.transferTo</code>）：两次拷贝</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">磁盘 → 内核 page cache（DMA）→ 网卡（DMA）</span><br></pre></td></tr></table></figure>
+
+<p>数据完全在内核空间流转，<strong>CPU 拷贝从 2 次变成 0 次</strong>。”零拷贝”的”零”指的是零次 CPU 拷贝，不是零次 DMA 拷贝。</p>
+<p><strong>为什么 Kafka 能用零拷贝：</strong></p>
+<p>前提是 broker 不需要修改消息内容，只是透传。所有消息处理（压缩、加密等）都交给 Producer 和 Consumer 两端，broker 保持”哑管道”。如果 broker 需要解密或转换消息，数据必须进入用户空间，零拷贝就无法使用。</p>
+<hr>
+<h3 id="四、Retention：按时间-大小整段删除"><a href="#四、Retention：按时间-大小整段删除" class="headerlink" title="四、Retention：按时间&#x2F;大小整段删除"></a>四、Retention：按时间&#x2F;大小整段删除</h3><p>消息不因消费而删除，按 Retention 策略保留：</p>
+<ul>
+<li><strong>按时间</strong>（<code>log.retention.hours</code>，默认 168 小时）：segment 内最新消息超过保留时间，整个 segment 被删除</li>
+<li><strong>按大小</strong>（<code>log.retention.bytes</code>）：partition 总大小超过阈值，从最旧的 segment 开始删除</li>
+</ul>
+<p>删除单位是整个 segment 文件，高效且简单。</p>
+<hr>
+<h3 id="五、Log-Compaction：按-key-保留最新值"><a href="#五、Log-Compaction：按-key-保留最新值" class="headerlink" title="五、Log Compaction：按 key 保留最新值"></a>五、Log Compaction：按 key 保留最新值</h3><p>对每个 key，只保留最新的那条消息，旧值被后台线程清理。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">写入：key=user1,value=A → key=user1,value=B → key=user1,value=C</span><br><span class="line">Compaction 后：key=user1,value=C</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除操作</strong>：写入 value&#x3D;null 的消息（tombstone），Compaction 后该 key 从 log 里消失。</p>
+<p><strong>Retention vs Log Compaction：</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Retention</th>
+<th>Log Compaction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>删除依据</td>
+<td>时间 &#x2F; 大小</td>
+<td>key 的旧值被新值覆盖</td>
+</tr>
+<tr>
+<td>保留内容</td>
+<td>一段时间内的所有消息</td>
+<td>每个 key 的最新值</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>事件流（订单、点击、日志）</td>
+<td>状态流（配置、用户信息）</td>
+</tr>
+<tr>
+<td>配置</td>
+<td><code>log.retention.hours</code></td>
+<td><code>log.cleanup.policy=compact</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>Kafka 设计文档 — Persistence</strong>：<a href="https://kafka.apache.org/42/design/design/%EF%BC%88%E6%89%BE">https://kafka.apache.org/42/design/design/（找</a> <code>Persistence</code> 章节）</li>
+<li><strong>Kafka 设计文档 — Log Compaction</strong>：<a href="https://kafka.apache.org/42/design/design/%EF%BC%88%E6%89%BE">https://kafka.apache.org/42/design/design/（找</a> <code>Log Compaction</code> 章节）</li>
+<li><strong>Kafka 实现文档 — Log</strong>：<a href="https://kafka.apache.org/42/implementation/log/">https://kafka.apache.org/42/implementation/log/</a></li>
+<li><strong>Kafka 实现文档 — Network Layer</strong>：<a href="https://kafka.apache.org/42/implementation/network-layer/">https://kafka.apache.org/42/implementation/network-layer/</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>storage</tag>
+        <tag>segment</tag>
+        <tag>page-cache</tag>
+        <tag>zero-copy</tag>
+        <tag>retention</tag>
+        <tag>log-compaction</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>06 · Producer：路由、批量、压缩、幂等、事务、Exactly-Once</title>
+    <url>/2026/03/28/kafka/notes/06-producer/</url>
+    <content><![CDATA[<h1 id="06-·-Producer：路由、批量、压缩、幂等、事务、Exactly-Once"><a href="#06-·-Producer：路由、批量、压缩、幂等、事务、Exactly-Once" class="headerlink" title="06 · Producer：路由、批量、压缩、幂等、事务、Exactly-Once"></a>06 · Producer：路由、批量、压缩、幂等、事务、Exactly-Once</h1><blockquote>
+<p><strong>目标</strong>：理解 Producer 的完整工作机制——从消息如何路由、如何提升吞吐，到如何保证数据可靠性</p>
+</blockquote>
+<hr>
+<h2 id="一、key-路由：消息写入哪个-Partition"><a href="#一、key-路由：消息写入哪个-Partition" class="headerlink" title="一、key 路由：消息写入哪个 Partition"></a>一、key 路由：消息写入哪个 Partition</h2><p>Producer 直接把消息发给目标 partition 的 leader broker，没有中间路由层。路由方式有三种：</p>
+<p><strong>1. 指定 key（语义分区）</strong><br>对 key 做哈希映射到某个 partition。相同 key 的消息永远进同一个 partition，实现<strong>局部保序</strong>。</p>
+<p>局部保序的核心价值：<strong>让有因果关系的事件在消费侧天然有序，简化业务逻辑。</strong></p>
+<p>例：用 order_id 作为 key，同一个订单的”创建、支付、发货”三个事件全在同一个 partition，消费者按顺序读就能拿到完整的状态变更序列，不需要跨 partition 聚合。</p>
+<p><strong>2. 随机分配（无 key）</strong><br>消息随机分配到各个 partition，实现负载均衡，不保证顺序。</p>
+<p><strong>3. 自定义分区函数</strong><br>完全覆盖默认的 hash 策略，实现业务定制的路由逻辑。</p>
+<hr>
+<h2 id="二、批量发送：用延迟换吞吐"><a href="#二、批量发送：用延迟换吞吐" class="headerlink" title="二、批量发送：用延迟换吞吐"></a>二、批量发送：用延迟换吞吐</h2><p>Producer 不是每条消息单独发一次网络请求，而是在内存里积累一批消息，满足条件后一次性发出。</p>
+<p>两个触发条件（满足任意一个就发送）：</p>
+<ul>
+<li><strong><code>batch.size</code></strong>（默认 16KB）：积累的消息达到这个大小</li>
+<li><strong><code>linger.ms</code></strong>（默认 0ms）：等待时间超过这个值</li>
+</ul>
+<p>调大 <code>linger.ms</code> 会引入少量延迟，但让更多消息积累进同一个 batch，吞吐量更高。<strong>核心取舍：用少量额外延迟换更高吞吐。</strong></p>
+<hr>
+<h2 id="三、端到端批量压缩"><a href="#三、端到端批量压缩" class="headerlink" title="三、端到端批量压缩"></a>三、端到端批量压缩</h2><p>压缩率取决于数据中的重复内容。批量压缩比单条压缩效率高得多，消息之间的相似内容（字段名、重复 key 等）可以被充分利用。</p>
+<p><strong>压缩数据的生命周期：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Producer 批量压缩</span><br><span class="line">→ 发给 Broker（压缩状态）</span><br><span class="line">→ Broker 解压验证（只做校验，不存明文）</span><br><span class="line">→ 以压缩形式写入磁盘</span><br><span class="line">→ 以压缩形式发给 Consumer</span><br><span class="line">→ Consumer 解压</span><br></pre></td></tr></table></figure>
+
+<p>数据在磁盘和网络传输中全程保持压缩状态。支持算法：GZIP、Snappy、LZ4、ZStandard。</p>
+<p><strong>与零拷贝的关系：互补，不冲突。</strong> 压缩在 Producer 端完成，Broker 收到的已经是压缩好的数据，Broker 不修改内容，Broker → Consumer 这段依然可以用零拷贝。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Producer（压缩）→ Broker（零拷贝透传）→ Consumer（解压）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、at-least-once-的重复写入问题"><a href="#四、at-least-once-的重复写入问题" class="headerlink" title="四、at-least-once 的重复写入问题"></a>四、at-least-once 的重复写入问题</h2><p>Kafka 默认是 at-least-once：消息不会丢，但可能重复。重复来源是网络不确定性：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Producer 发送消息 → Broker 写入成功</span><br><span class="line">→ 网络故障，Producer 没收到确认</span><br><span class="line">→ Producer 以为失败，重试</span><br><span class="line">→ Broker 收到重复消息，再次写入</span><br></pre></td></tr></table></figure>
+
+<p>即使 acks&#x3D;all 也存在这个问题——Producer 无法区分”broker 没收到”和”broker 收到了但确认没回来”。</p>
+<hr>
+<h2 id="五、幂等-Producer：解决单-Partition-的重复写入"><a href="#五、幂等-Producer：解决单-Partition-的重复写入" class="headerlink" title="五、幂等 Producer：解决单 Partition 的重复写入"></a>五、幂等 Producer：解决单 Partition 的重复写入</h2><p>开启方式：<code>enable.idempotence=true</code>（Kafka 3.0 之后默认开启）</p>
+<p><strong>实现机制：PID + Sequence Number</strong></p>
+<ul>
+<li>每个 Producer 启动时被分配唯一的 Producer ID（PID）</li>
+<li>每条消息发送时携带单调递增的序列号</li>
+<li>Broker 收到消息时检查 PID + Sequence Number：第一次见到正常写入，已写入过则丢弃但返回成功</li>
+</ul>
+<p><strong>两个限制：</strong></p>
+<ol>
+<li>只保证<strong>单个 partition</strong> 内的幂等性</li>
+<li>PID 是 session 级别的，Producer 重启后幂等性失效</li>
+</ol>
+<hr>
+<h2 id="六、事务：跨-Partition-的原子写入"><a href="#六、事务：跨-Partition-的原子写入" class="headerlink" title="六、事务：跨 Partition 的原子写入"></a>六、事务：跨 Partition 的原子写入</h2><p>事务解决跨 partition 的原子性——一批消息要么全部对 Consumer 可见，要么全部不可见。</p>
+<p><strong>Transaction Coordinator（TC）</strong> 是 broker 上的组件，负责协调事务状态。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Producer 开启事务 → 向 TC 注册 transactional.id</span><br><span class="line">→ 写入多个 partition 的消息（带事务标记）</span><br><span class="line">→ 向 TC 提交事务</span><br><span class="line">→ TC 指示各 partition 追加 COMMIT 控制消息</span><br><span class="line">→ Broker 将该事务从未完成列表移除 → LSO 推进</span><br><span class="line">→ read_committed 的 Consumer 才能看到这批消息</span><br></pre></td></tr></table></figure>
+
+<p>失败时 abort，各 partition 追加 ABORT 控制消息，Consumer 跳过。COMMIT&#x2F;ABORT 都是追加到 log 末尾的控制消息，不修改原有消息。</p>
+<hr>
+<h2 id="七、LSO（Last-Stable-Offset）"><a href="#七、LSO（Last-Stable-Offset）" class="headerlink" title="七、LSO（Last Stable Offset）"></a>七、LSO（Last Stable Offset）</h2><p>Broker 维护 LSO &#x3D; 所有未完成事务中最早那条消息的 offset。</p>
+<p><code>read_committed</code> 的 Consumer 只能读到 LSO 之前的消息。<strong>关键风险：长时间未提交的事务会阻塞所有 <code>read_committed</code> Consumer。</strong> 事务必须尽量短。</p>
+<hr>
+<h2 id="八、Exactly-Once"><a href="#八、Exactly-Once" class="headerlink" title="八、Exactly-Once"></a>八、Exactly-Once</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">enable.idempotence=true</span><br><span class="line">+ transactional.id=&lt;唯一ID&gt;</span><br><span class="line">+ isolation.level=read_committed（Consumer 侧）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、三种语义对比"><a href="#九、三种语义对比" class="headerlink" title="九、三种语义对比"></a>九、三种语义对比</h2><table>
+<thead>
+<tr>
+<th>语义</th>
+<th>配置</th>
+<th>可能丢消息</th>
+<th>可能重复</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>at-most-once</td>
+<td>acks&#x3D;0</td>
+<td>是</td>
+<td>否</td>
+<td>日志、监控等可丢场景</td>
+</tr>
+<tr>
+<td>at-least-once</td>
+<td>acks&#x3D;1 或 all，无幂等</td>
+<td>否</td>
+<td>是</td>
+<td>大多数业务场景，消费端自己做幂等</td>
+</tr>
+<tr>
+<td>exactly-once</td>
+<td>幂等 + 事务 + read_committed</td>
+<td>否</td>
+<td>否</td>
+<td>金融、账务等不能容忍重复的场景</td>
+</tr>
+</tbody></table>
+<p>大多数场景用 at-least-once，在消费端做幂等处理（如数据库唯一键约束）往往比开启 Kafka 事务更简单、开销更小。</p>
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>Kafka 设计文档 — The Producer</strong>：<a href="https://kafka.apache.org/42/design/design/">https://kafka.apache.org/42/design/design/</a></li>
+<li><strong>Kafka 设计文档 — Efficiency</strong>：<a href="https://kafka.apache.org/42/design/design/">https://kafka.apache.org/42/design/design/</a></li>
+<li><strong>Kafka 设计文档 — Exactly Once Semantics</strong>：<a href="https://kafka.apache.org/42/design/design/">https://kafka.apache.org/42/design/design/</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>producer</tag>
+        <tag>routing</tag>
+        <tag>batching</tag>
+        <tag>compression</tag>
+        <tag>idempotent</tag>
+        <tag>transaction</tag>
+        <tag>exactly-once</tag>
+        <tag>LSO</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>07 · Consumer：Rebalance 与 Offset 提交策略</title>
+    <url>/2026/03/28/kafka/notes/07-consumer/</url>
+    <content><![CDATA[<h1 id="05-·-Consumer：Rebalance-与-Offset-提交策略"><a href="#05-·-Consumer：Rebalance-与-Offset-提交策略" class="headerlink" title="05 · Consumer：Rebalance 与 Offset 提交策略"></a>05 · Consumer：Rebalance 与 Offset 提交策略</h1><blockquote>
+<p><strong>目标</strong>：理解 Consumer Group 如何协调 partition 分配，以及 offset 提交策略的取舍</p>
+</blockquote>
+<hr>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="一、Group-Coordinator-与-Group-Leader"><a href="#一、Group-Coordinator-与-Group-Leader" class="headerlink" title="一、Group Coordinator 与 Group Leader"></a>一、Group Coordinator 与 Group Leader</h3><p><strong>Group Coordinator（GC）</strong>：某个 Broker 上的组件，负责管理 Consumer Group 的成员关系和协调流程。不负责计算分配方案，只负责协调过程和下发结果。</p>
+<p><strong>Group Leader（GL）</strong>：Coordinator 从 JoinGroup 的成员中选出的一个 Consumer，负责计算 partition 分配方案，计算完成后发回给 Coordinator，再由 Coordinator 通知所有成员。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Consumer 启动</span><br><span class="line">→ 找到 Group Coordinator（特定 broker）</span><br><span class="line">→ 发送 JoinGroup 请求</span><br><span class="line">→ Coordinator 选出 Group Leader</span><br><span class="line">→ Group Leader 计算 partition 分配方案</span><br><span class="line">→ 发回给 Coordinator</span><br><span class="line">→ Coordinator 把方案下发给所有 Consumer</span><br><span class="line">→ 每个 Consumer 开始消费分配到的 partition</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么由 Group Leader 计算而不是 Coordinator？</strong><br>分配策略是可插拔的（轮询、按 key、自定义等），放在客户端计算更灵活，Coordinator 只需协调流程，不需要理解业务分配逻辑。</p>
+<hr>
+<h3 id="二、Rebalance：触发时机与代价"><a href="#二、Rebalance：触发时机与代价" class="headerlink" title="二、Rebalance：触发时机与代价"></a>二、Rebalance：触发时机与代价</h3><p><strong>触发时机：</strong></p>
+<ul>
+<li>有新的 Consumer 加入 group</li>
+<li>有 Consumer 正常离开 group</li>
+<li>Consumer 心跳超时（Coordinator 认为它已死）</li>
+<li>Group 订阅的 topic 新增或减少 partition</li>
+</ul>
+<p><strong>心跳超时是最常见的坑：</strong> Consumer 没有崩溃，只是处理一批消息太慢，长时间没发心跳，Coordinator 认为它死了，触发 Rebalance，把它的 partition 分给别人。Consumer 处理完想提交 offset，发现自己已经不属于这个 group 了，提交失败。解决方式是合理配置 <code>max.poll.interval.ms</code> 和 <code>session.timeout.ms</code>。</p>
+<p><strong>经典协议的全局同步屏障（Kafka 4.0 之前）：</strong></p>
+<p>Rebalance 开始时，所有 Consumer 必须停止消费，等所有成员重新发送 JoinGroup，Group Leader 重新计算分配方案，Coordinator 下发，所有成员响应，才能继续消费。</p>
+<p>代价高的两个原因：</p>
+<ol>
+<li><strong>范围太大</strong>：任何一个成员的变化都让整个 group 全部停下来</li>
+<li><strong>等最慢的节点</strong>：整个过程需要等所有成员响应，group 越大，越容易遇到慢节点，整体耗时越长</li>
+</ol>
+<p><strong>Kafka 4.0 新协议（KIP-848）：</strong></p>
+<p>增量式分配，只调整受影响的 partition，未受影响的 Consumer 继续消费，不再需要全局同步屏障。配置 <code>group.protocol=consumer</code>，Kafka 4.0 默认开启。</p>
+<hr>
+<h3 id="三、Offset-提交策略"><a href="#三、Offset-提交策略" class="headerlink" title="三、Offset 提交策略"></a>三、Offset 提交策略</h3><p>Consumer 消费后需要提交 offset 到 <code>__consumer_offsets</code>。</p>
+<p><strong>1. 自动提交（enable.auto.commit&#x3D;true，默认）</strong></p>
+<p>每隔 <code>auto.commit.interval.ms</code>（默认 5000ms）在后台自动提交。</p>
+<p>两个问题：</p>
+<ul>
+<li><strong>重复消费</strong>：两次提交之间 Consumer 崩溃，这段时间的消息重启后重新消费（at-least-once）</li>
+<li><strong>消息丢失（更严重）</strong>：消息被拉下来还在异步处理中，自动提交定时器触发，offset 提交成功，Consumer 崩溃。重启后从新 offset 继续，那批还没处理完的消息永远丢失——消息被提交了但没处理完</li>
+</ul>
+<p><strong>2. 手动提交</strong></p>
+<ul>
+<li><strong>commitSync（同步提交）</strong>：处理完一批后调用，阻塞等待提交成功再继续。安全不丢，但吞吐低。</li>
+<li><strong>commitAsync（异步提交）</strong>：提交请求发出后不等结果，继续处理下一批。吞吐高，但失败时<strong>不自动重试</strong>——用旧 offset 重试可能覆盖已成功提交的新 offset，导致重复消费。</li>
+</ul>
+<p><strong>实践中的结合方式：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">正常消费循环：commitAsync（保持吞吐）</span><br><span class="line">Consumer 关闭时：commitSync（确保最后一次提交成功）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="四、auto-offset-reset"><a href="#四、auto-offset-reset" class="headerlink" title="四、auto.offset.reset"></a>四、auto.offset.reset</h3><p>新 Consumer Group 第一次消费，或 offset 已过期被清理时的行为：</p>
+<table>
+<thead>
+<tr>
+<th>配置值</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>latest（默认）</td>
+<td>从当前最新消息开始，历史消息全部忽略</td>
+</tr>
+<tr>
+<td>earliest</td>
+<td>从最早消息开始，消费所有历史</td>
+</tr>
+<tr>
+<td>none</td>
+<td>直接抛异常，要求必须有已知 offset</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="五、Static-Membership：减少不必要的-Rebalance"><a href="#五、Static-Membership：减少不必要的-Rebalance" class="headerlink" title="五、Static Membership：减少不必要的 Rebalance"></a>五、Static Membership：减少不必要的 Rebalance</h3><p><strong>问题背景：</strong></p>
+<p>默认情况下，Consumer 每次重启（滚动部署、JVM crash）都会触发两次 Rebalance——旧成员离开一次，新成员加入一次。对有状态的流处理应用（Kafka Streams）代价极高，不仅消费暂停，本地处理状态还要重新构建。</p>
+<p><strong>解法：给每个 Consumer 实例配置持久化的 Group Instance ID</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ConsumerConfig.GROUP_INSTANCE_ID_CONFIG = &quot;consumer-instance-1&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Coordinator 识别这个固定 ID：</p>
+<ul>
+<li><strong>Consumer 重启</strong>：Coordinator 发现是同一个 Instance ID 回来了，不触发 Rebalance，直接恢复之前的 partition 分配</li>
+<li><strong>Consumer 真正离线</strong>（超过 <code>session.timeout.ms</code>）：才会触发 Rebalance</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>动态 Membership（默认）</th>
+<th>Static Membership</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Consumer 重启</td>
+<td>触发 Rebalance</td>
+<td>不触发 Rebalance</td>
+</tr>
+<tr>
+<td>partition 分配</td>
+<td>重启后重新分配</td>
+<td>重启后恢复原有分配</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>无状态消费者</td>
+<td>有状态流处理、滚动部署</td>
+</tr>
+</tbody></table>
+<p>注意：同一 group 内 Instance ID 必须唯一，重复会导致旧实例被强制踢出。需要 broker 版本 &gt;&#x3D; 2.3。</p>
+<p><strong>等待期间的取舍：</strong></p>
+<p>Static Membership 下，Consumer 重启回来之前，对应的 partition 暂时没有消费者，消息堆积，LAG 增加。这是有意识的取舍：</p>
+<ul>
+<li><strong>用单个 partition 的短暂空窗</strong>，换<strong>整个 group 不需要 Rebalance</strong></li>
+<li>能接受短暂堆积但不能接受 Rebalance 代价（有状态流处理）→ 用 Static Membership</li>
+<li>不能接受任何堆积（高实时性无状态消费）→ 用默认动态 Membership</li>
+</ul>
+<p>等待时间就是 <code>session.timeout.ms</code>，不是额外的新配置。Coordinator 在这个窗口期内，如果同一 Instance ID 回来了，直接恢复原分配；超时才判定死亡并触发 Rebalance。</p>
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>Kafka 4.0 Consumer Rebalance Protocol</strong>：<a href="https://kafka.apache.org/42/operations/consumer-rebalance-protocol/">https://kafka.apache.org/42/operations/consumer-rebalance-protocol/</a></li>
+<li><strong>Kafka Consumer 配置</strong>：<a href="https://kafka.apache.org/42/configuration/consumer-configs/">https://kafka.apache.org/42/configuration/consumer-configs/</a></li>
+<li><strong>Kafka 设计文档 — Static Membership</strong>：<a href="https://kafka.apache.org/42/design/design/%EF%BC%88%E6%89%BE">https://kafka.apache.org/42/design/design/（找</a> <code>The Consumer</code> → <code>Static Membership</code>）</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>offset</tag>
+        <tag>consumer</tag>
+        <tag>rebalance</tag>
+        <tag>static-membership</tag>
+        <tag>group-coordinator</tag>
+        <tag>commit</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>08 · KRaft：为什么去掉 ZooKeeper，元数据如何管理</title>
+    <url>/2026/03/28/kafka/notes/08-kraft/</url>
+    <content><![CDATA[<h1 id="08-·-KRaft：为什么去掉-ZooKeeper，元数据如何管理"><a href="#08-·-KRaft：为什么去掉-ZooKeeper，元数据如何管理" class="headerlink" title="08 · KRaft：为什么去掉 ZooKeeper，元数据如何管理"></a>08 · KRaft：为什么去掉 ZooKeeper，元数据如何管理</h1><blockquote>
+<p><strong>目标</strong>：理解 ZooKeeper 模式的根本问题，以及 KRaft 如何用内部机制替代它</p>
+</blockquote>
+<hr>
+<h2 id="一、ZooKeeper-模式是什么"><a href="#一、ZooKeeper-模式是什么" class="headerlink" title="一、ZooKeeper 模式是什么"></a>一、ZooKeeper 模式是什么</h2><p>Kafka 4.0 之前，集群元数据（哪些 broker 在线、partition leader 是谁、ISR 列表、topic 配置）由外部的 <strong>ZooKeeper</strong> 集群管理。运维 Kafka 意味着同时运维两套系统。</p>
+<hr>
+<h2 id="二、ZooKeeper-模式的三个核心问题"><a href="#二、ZooKeeper-模式的三个核心问题" class="headerlink" title="二、ZooKeeper 模式的三个核心问题"></a>二、ZooKeeper 模式的三个核心问题</h2><p><strong>1. 元数据状态经常不一致</strong></p>
+<p>ZooKeeper 用 watch 机制监控元数据变化，但 watch 机制性能有限，经常导致 ZooKeeper 里的元数据和 broker 内存里的状态不同步。同时，ZooKeeper 的推送通知不是原子操作，可能有些 broker 收到了变更，有些没收到，导致不同 broker 对集群状态的认知出现分歧。</p>
+<p><strong>2. 扩展性瓶颈</strong></p>
+<p>所有元数据都存在 ZooKeeper 里，ZooKeeper 的容量和性能成了 Kafka 集群规模的上限，直接限制了单个集群能支持的 partition 数量。</p>
+<p><strong>3. 运维复杂</strong></p>
+<p>两套系统意味着两套配置、监控、安全策略和故障排查流程，资源消耗大，部署维护成本高。</p>
+<hr>
+<h2 id="三、KRaft-的解法"><a href="#三、KRaft-的解法" class="headerlink" title="三、KRaft 的解法"></a>三、KRaft 的解法</h2><p><strong>不再依赖外部系统，用 Kafka 内部的 Controller 节点和 Raft 协议管理元数据。</strong></p>
+<p>元数据存成一个 <strong>metadata log</strong>，本质上就是一个内部 topic：</p>
+<ul>
+<li><strong>Producer</strong>：Active Controller（负责写入元数据变更）</li>
+<li><strong>Consumer</strong>：所有 broker（主动 pull，订阅元数据更新）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ZooKeeper 模式：Kafka ←→ ZooKeeper（外部推送）</span><br><span class="line">KRaft 模式：  broker（pull）← metadata log ← Controller（内置 Raft）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、Controller-Quorum-与-Raft"><a href="#四、Controller-Quorum-与-Raft" class="headerlink" title="四、Controller Quorum 与 Raft"></a>四、Controller Quorum 与 Raft</h2><p>通常选 3 或 5 个节点作为 controller，用 Raft 协议选出一个 Active Controller 处理所有元数据写入，其他 controller 是 follower。</p>
+<p><strong>为什么选奇数？</strong> Raft 是多数派协议，奇数个节点总能出现多数派：</p>
+<ul>
+<li>3 个 controller：容忍 1 个节点故障</li>
+<li>5 个 controller：容忍 2 个节点故障</li>
+<li>偶数节点（如 4 个）：容忍 1 个故障，但成本比 3 个高，没有额外收益</li>
+</ul>
+<p>Raft 保证 metadata log 的全局写入顺序一致，所有 broker 看到的元数据变更顺序完全相同。</p>
+<hr>
+<h2 id="五、元数据一致性：KRaft-vs-ZooKeeper"><a href="#五、元数据一致性：KRaft-vs-ZooKeeper" class="headerlink" title="五、元数据一致性：KRaft vs ZooKeeper"></a>五、元数据一致性：KRaft vs ZooKeeper</h2><p><strong>ZooKeeper 模式的不一致是结构性的</strong>：推送机制本身不保证所有 broker 同时收到变更，可能出现”跳着应用”的情况。</p>
+<p><strong>KRaft 的不一致是暂时性的</strong>：broker 按顺序消费 metadata log，可能落后几条 entry，但最终会追上，且追上过程是有序的，不会出现跳过或乱序。</p>
+<p><strong>原子性的边界</strong>：单条 metadata log entry 是原子的（Raft 多数派提交保证），但跨多条 entry 的逻辑操作没有跨条目的原子性。这比 ZooKeeper 的推送更可靠，但不是完全的事务语义。</p>
+<hr>
+<h2 id="六、KRaft-带来的改进"><a href="#六、KRaft-带来的改进" class="headerlink" title="六、KRaft 带来的改进"></a>六、KRaft 带来的改进</h2><table>
+<thead>
+<tr>
+<th></th>
+<th>ZooKeeper 模式</th>
+<th>KRaft 模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>外部依赖</td>
+<td>需要独立 ZooKeeper 集群</td>
+<td>无外部依赖</td>
+</tr>
+<tr>
+<td>元数据一致性</td>
+<td>结构性不一致，可能永久分歧</td>
+<td>暂时性落后，最终有序追上</td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>partition 数量受 ZooKeeper 限制</td>
+<td>理论上支持百万级 partition</td>
+</tr>
+<tr>
+<td>运维复杂度</td>
+<td>两套系统</td>
+<td>一套系统</td>
+</tr>
+<tr>
+<td>单节点部署</td>
+<td>不支持</td>
+<td>支持（开发环境友好）</td>
+</tr>
+</tbody></table>
+<p>Kafka 4.0 起完全移除 ZooKeeper 支持，只支持 KRaft 模式。</p>
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>Kafka KRaft 运维文档</strong>：<a href="https://kafka.apache.org/42/operations/kraft/">https://kafka.apache.org/42/operations/kraft/</a></li>
+<li><strong>KIP-500（设计动机）</strong>：<a href="https://cwiki.apache.org/confluence/display/KAFKA/KIP-500">https://cwiki.apache.org/confluence/display/KAFKA/KIP-500</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>kraft</tag>
+        <tag>zookeeper</tag>
+        <tag>raft</tag>
+        <tag>metadata</tag>
+        <tag>controller</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>09 · 工程定位：Kafka 在真实系统中的角色与取舍</title>
+    <url>/2026/03/28/kafka/notes/09-engineering/</url>
+    <content><![CDATA[<h1 id="09-·-工程定位：Kafka-在真实系统中的角色与取舍"><a href="#09-·-工程定位：Kafka-在真实系统中的角色与取舍" class="headerlink" title="09 · 工程定位：Kafka 在真实系统中的角色与取舍"></a>09 · 工程定位：Kafka 在真实系统中的角色与取舍</h1><blockquote>
+<p><strong>目标</strong>：理解 Kafka 适合什么、不适合什么，以及它在真实系统架构中的位置</p>
+</blockquote>
+<hr>
+<h2 id="一、Kafka-的本质定位"><a href="#一、Kafka-的本质定位" class="headerlink" title="一、Kafka 的本质定位"></a>一、Kafka 的本质定位</h2><p><strong>高吞吐、持久化、可重放的异步数据管道。</strong></p>
+<p>所有设计都围绕这个定位展开：append-only log 保证高吞吐和可重放，partition 保证水平扩展，Consumer Group 保证并行消费，offset 由消费者自己管理保证解耦。</p>
+<hr>
+<h2 id="二、典型使用场景"><a href="#二、典型使用场景" class="headerlink" title="二、典型使用场景"></a>二、典型使用场景</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>Kafka 的角色</th>
+<th>为什么适合</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>数据管道 &#x2F; ETL</strong></td>
+<td>连接数据源和目的地，解耦上下游</td>
+<td>高吞吐、持久化、上下游独立演进</td>
+</tr>
+<tr>
+<td><strong>事件流处理</strong></td>
+<td>实时处理用户行为、交易、日志等事件流</td>
+<td>有序、可重放、支持多消费者</td>
+</tr>
+<tr>
+<td><strong>日志聚合</strong></td>
+<td>多台服务器的日志集中收集</td>
+<td>高吞吐写入、持久化存储、可回溯</td>
+</tr>
+<tr>
+<td><strong>事件溯源</strong></td>
+<td>用不可变日志记录所有状态变更</td>
+<td>append-only 天然契合事件溯源模型</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、Kafka-不适合什么"><a href="#三、Kafka-不适合什么" class="headerlink" title="三、Kafka 不适合什么"></a>三、Kafka 不适合什么</h2><h3 id="1-任务队列"><a href="#1-任务队列" class="headerlink" title="1. 任务队列"></a>1. 任务队列</h3><p>传统任务队列（如 RabbitMQ）的工作方式：</p>
+<ul>
+<li>消费者取一条消息 → 处理 → ack → broker 删除该消息</li>
+<li>处理失败可以 nack，broker 自动把消息重新投递给其他消费者</li>
+<li>支持”把任务分发给多个 worker，失败自动重试给别人”</li>
+</ul>
+<p>Kafka 做不到这些：</p>
+<ul>
+<li>消费后不删除消息，broker 不追踪单条消息的消费状态</li>
+<li>没有单条消息级别的 ack&#x2F;nack 机制</li>
+<li>没有”这条失败了请重新分配给别人”的内置能力</li>
+<li>Consumer 按 offset 顺序读取，粒度是 partition 级别而不是消息级别</li>
+</ul>
+<h3 id="2-请求-响应模式"><a href="#2-请求-响应模式" class="headerlink" title="2. 请求-响应模式"></a>2. 请求-响应模式</h3><p>请求-响应需要低延迟的点对点通信：A 发请求，B 快速回应给 A。</p>
+<p>Kafka 是异步解耦的：</p>
+<ul>
+<li>Producer 写完就走，不等回复</li>
+<li>Consumer 什么时候读、读多快，Producer 完全不知道</li>
+<li>没有”把响应路由回原始请求者”的内置机制</li>
+<li>虽然可以用 correlation ID + 回复 topic 模拟，但比直接 HTTP&#x2F;gRPC 复杂得多，延迟也高得多</li>
+</ul>
+<hr>
+<h2 id="四、并行消费与顺序保证"><a href="#四、并行消费与顺序保证" class="headerlink" title="四、并行消费与顺序保证"></a>四、并行消费与顺序保证</h2><p>Kafka 只保证 <strong>单个 partition 内消息有序</strong>，跨 partition 没有顺序保证。</p>
+<p>并行消费意味着多个消费者同时从不同 partition 读取，哪个先处理完是不确定的。这就是 key 路由的核心价值：</p>
+<ul>
+<li>有因果关系的消息：用相同 key 路由到同一个 partition，在 partition 内保序</li>
+<li>无关消息：分散到不同 partition，并行处理提高吞吐</li>
+</ul>
+<p>这是 Kafka 在<strong>吞吐量</strong>和<strong>顺序保证</strong>之间的根本取舍：想要更高吞吐就增加 partition 数量和消费者数量，但跨 partition 的全局顺序就无法保证。</p>
+<hr>
+<h2 id="五、关键工程取舍总结"><a href="#五、关键工程取舍总结" class="headerlink" title="五、关键工程取舍总结"></a>五、关键工程取舍总结</h2><table>
+<thead>
+<tr>
+<th>取舍维度</th>
+<th>Kafka 的选择</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>吞吐 vs 延迟</td>
+<td>批量发送、批量压缩换高吞吐</td>
+<td>引入少量延迟（linger.ms）</td>
+</tr>
+<tr>
+<td>可靠性 vs 可用性</td>
+<td>acks&#x3D;all + min.insync.replicas 保数据不丢</td>
+<td>副本不足时拒绝写入</td>
+</tr>
+<tr>
+<td>顺序 vs 并行</td>
+<td>单 partition 内有序，跨 partition 无序</td>
+<td>全局有序需要单 partition，牺牲并行度</td>
+</tr>
+<tr>
+<td>解耦 vs 实时</td>
+<td>异步解耦，消费者自主控制进度</td>
+<td>不适合低延迟请求-响应</td>
+</tr>
+<tr>
+<td>简单性 vs 灵活性</td>
+<td>offset 由消费者管理</td>
+<td>不支持单条消息级别的 ack&#x2F;nack</td>
+</tr>
+<tr>
+<td>存储效率 vs 随机访问</td>
+<td>顺序写入 + Page Cache + 零拷贝</td>
+<td>不支持高效随机读写</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ol>
+<li><strong>Kafka 设计文档 — Use Cases</strong>：<a href="https://kafka.apache.org/42/getting-started/use-cases/">https://kafka.apache.org/42/getting-started/use-cases/</a></li>
+<li><strong>Kafka 设计文档 — Design</strong>：<a href="https://kafka.apache.org/42/design/design/">https://kafka.apache.org/42/design/design/</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>kafka</tag>
+        <tag>engineering</tag>
+        <tag>positioning</tag>
+        <tag>tradeoffs</tag>
+        <tag>use-cases</tag>
+      </tags>
+  </entry>
+</search>
