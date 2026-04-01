@@ -1,0 +1,662 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>LLM 推理优化学习主干道 | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LLM 推理优化学习主干道前置差距分析 分析日期：2026-03-29     前置能力 是否具备 处理方式    Transformer &#x2F; Attention 基本概念 ❌ 缺失 纳入主干道节点 01   C++ 基础（指针、内存模型、RAII） ❌ 缺失 纳入主干道节点 02-03   CUDA 执行模型（thread&#x2F;warp&#x2F;block&#x2F;share">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM 推理优化学习主干道">
+<meta property="og:url" content="https://functional.top/2026/04/01/llm-inference/index/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="LLM 推理优化学习主干道前置差距分析 分析日期：2026-03-29     前置能力 是否具备 处理方式    Transformer &#x2F; Attention 基本概念 ❌ 缺失 纳入主干道节点 01   C++ 基础（指针、内存模型、RAII） ❌ 缺失 纳入主干道节点 02-03   CUDA 执行模型（thread&#x2F;warp&#x2F;block&#x2F;share">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg">
+<meta property="article:published_time" content="2026-04-01T17:25:44.132Z">
+<meta property="article:modified_time" content="2026-03-29T00:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="llm">
+<meta property="article:tag" content="inference">
+<meta property="article:tag" content="cuda">
+<meta property="article:tag" content="transformer">
+<meta property="article:tag" content="ai-infra">
+<meta property="article:tag" content="cpp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "LLM 推理优化学习主干道",
+  "url": "https://functional.top/2026/04/01/llm-inference/index/",
+  "image": "https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg",
+  "datePublished": "2026-04-01T17:25:44.132Z",
+  "dateModified": "2026-03-29T00:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "John Doe",
+      "url": "https://functional.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><link rel="canonical" href="https://functional.top/2026/04/01/llm-inference/index/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LLM 推理优化学习主干道',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">104</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div></div></div><div class="post type-index" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">LLM 推理优化学习主干道</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">LLM 推理优化学习主干道</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-29T00:00:00.000Z" title="Updated 2026-03-29 00:00:00">2026-03-29</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>9mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="LLM-推理优化学习主干道"><a href="#LLM-推理优化学习主干道" class="headerlink" title="LLM 推理优化学习主干道"></a>LLM 推理优化学习主干道</h1><h2 id="前置差距分析"><a href="#前置差距分析" class="headerlink" title="前置差距分析"></a>前置差距分析</h2><blockquote>
+<p>分析日期：2026-03-29</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>前置能力</th>
+<th>是否具备</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transformer &#x2F; Attention 基本概念</td>
+<td>❌ 缺失</td>
+<td>纳入主干道节点 01</td>
+</tr>
+<tr>
+<td>C++ 基础（指针、内存模型、RAII）</td>
+<td>❌ 缺失</td>
+<td>纳入主干道节点 02-03</td>
+</tr>
+<tr>
+<td>CUDA 执行模型（thread&#x2F;warp&#x2F;block&#x2F;shared memory）</td>
+<td>❌ 缺失</td>
+<td>纳入主干道节点 04-05</td>
+</tr>
+<tr>
+<td>GPU 内存层级（HBM&#x2F;SRAM&#x2F;带宽瓶颈）</td>
+<td>❌ 缺失</td>
+<td>纳入主干道节点 06</td>
+</tr>
+<tr>
+<td>LLM 推理系统（KV cache、batching、调度）</td>
+<td>❌ 缺失</td>
+<td>纳入主干道节点 07-11</td>
+</tr>
+<tr>
+<td>OS 底层（内存管理、进程、调度）</td>
+<td>✅ 已具备</td>
+<td>节点 06、08 直接复用</td>
+</tr>
+<tr>
+<td>向量化执行引擎经验（Gluten）</td>
+<td>⚠️ 部分相关</td>
+<td>节点 05、09 作为理解锚点</td>
+</tr>
+<tr>
+<td>Java &#x2F; Spark Infra 经验</td>
+<td>✅ 已具备</td>
+<td>节点 11 系统设计时复用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="核心抽象"><a href="#核心抽象" class="headerlink" title="核心抽象"></a>核心抽象</h2><p>LLM 推理优化是一个 <strong>在有限硬件资源上最大化语言模型服务吞吐与最小化延迟的工程问题</strong>，所有设计围绕一个核心约束展开：</p>
+<blockquote>
+<p><strong>GPU 显存有限、带宽有限、算力有限——推理优化的本质是在这三个维度上做最优的取舍。</strong></p>
+</blockquote>
+<p>从这个约束出发，可以推导出它的所有核心设计：</p>
+<table>
+<thead>
+<tr>
+<th>抽象</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Transformer &#x2F; Attention</strong></td>
+<td>模型计算的基本单元，推理优化的对象</td>
+</tr>
+<tr>
+<td><strong>C++ &#x2F; CUDA</strong></td>
+<td>推理系统的实现语言，所有 kernel 的载体</td>
+</tr>
+<tr>
+<td><strong>KV Cache</strong></td>
+<td>用显存换计算，避免重复计算历史 token 的 attention</td>
+</tr>
+<tr>
+<td><strong>Prefill &#x2F; Decode 分离</strong></td>
+<td>两个阶段特性不同，需要不同的优化策略</td>
+</tr>
+<tr>
+<td><strong>Batching</strong></td>
+<td>把多个请求打包计算，提升 GPU 利用率</td>
+</tr>
+<tr>
+<td><strong>Memory Hierarchy</strong></td>
+<td>SRAM &#x2F; HBM &#x2F; DRAM 速度差异决定了 kernel 优化的方向</td>
+</tr>
+<tr>
+<td><strong>Quantization</strong></td>
+<td>用精度换显存和速度，是部署侧最常见的压缩手段</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="主干道节点"><a href="#主干道节点" class="headerlink" title="主干道节点"></a>主干道节点</h2><h3 id="第一层：模型与语言基础（不可跳过的前置）"><a href="#第一层：模型与语言基础（不可跳过的前置）" class="headerlink" title="第一层：模型与语言基础（不可跳过的前置）"></a>第一层：模型与语言基础（不可跳过的前置）</h3><table>
+<thead>
+<tr>
+<th>#</th>
+<th>文件</th>
+<th>内容</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a href="../notes/01-transformer-basics.md">01-transformer-basics.md</a></td>
+<td>Transformer 结构与 Attention 计算：模型推理时在算什么</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="../notes/02-cpp-essentials.md">02-cpp-essentials.md</a></td>
+<td>C++ 必要基础：指针、内存模型、RAII、智能指针、模板基础</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="../notes/03-cpp-build-system.md">03-cpp-build-system.md</a></td>
+<td>C++ 编译模型与 CMake：能独立构建和运行 C++ 项目</td>
+<td>✅ 已完成</td>
+</tr>
+</tbody></table>
+<h3 id="第二层：GPU-编程基础"><a href="#第二层：GPU-编程基础" class="headerlink" title="第二层：GPU 编程基础"></a>第二层：GPU 编程基础</h3><table>
+<thead>
+<tr>
+<th>#</th>
+<th>文件</th>
+<th>内容</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td><a href="../notes/04-cuda-execution-model.md">04-cuda-execution-model.md</a></td>
+<td>CUDA 执行模型：thread &#x2F; warp &#x2F; block &#x2F; grid + 第一个 kernel</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="../notes/05-cuda-memory-optimization.md">05-cuda-memory-optimization.md</a></td>
+<td>CUDA 内存优化：coalescing &#x2F; shared memory &#x2F; bank conflict &#x2F; GEMM tiling</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="../notes/06-gpu-performance-model.md">06-gpu-performance-model.md</a></td>
+<td>GPU 性能模型：HBM&#x2F;SRAM 层级、roofline、用 nsight 分析瓶颈</td>
+<td>✅ 已完成</td>
+</tr>
+</tbody></table>
+<h3 id="第三层：推理系统核心"><a href="#第三层：推理系统核心" class="headerlink" title="第三层：推理系统核心"></a>第三层：推理系统核心</h3><table>
+<thead>
+<tr>
+<th>#</th>
+<th>文件</th>
+<th>内容</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7</td>
+<td><a href="../notes/07-autoregressive-generation.md">07-autoregressive-generation.md</a></td>
+<td>自回归生成与 KV Cache：token by token 生成机制和显存代价</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="../notes/08-batching-scheduling.md">08-batching-scheduling.md</a></td>
+<td>Batching 与调度：static batching vs continuous batching</td>
+<td>✅ 已完成</td>
+</tr>
+<tr>
+<td>9</td>
+<td><a href="../notes/09-paged-attention.md">09-paged-attention.md</a></td>
+<td>PagedAttention 与显存管理：vLLM 的核心设计</td>
+<td>⬜ 未开始</td>
+</tr>
+<tr>
+<td>10</td>
+<td><a href="../notes/10-flash-attention.md">10-flash-attention.md</a></td>
+<td>FlashAttention：IO-aware kernel 优化</td>
+<td>⬜ 未开始</td>
+</tr>
+<tr>
+<td>11</td>
+<td><a href="../notes/11-quantization.md">11-quantization.md</a></td>
+<td>量化：用精度换速度和显存（PTQ &#x2F; INT8 &#x2F; FP8）</td>
+<td>⬜ 未开始</td>
+</tr>
+<tr>
+<td>12</td>
+<td><a href="../notes/12-inference-system-design.md">12-inference-system-design.md</a></td>
+<td>推理系统设计全景：延迟 &#x2F; 吞吐 &#x2F; 成本的工程取舍</td>
+<td>⬜ 未开始</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="节点依赖"><a href="#节点依赖" class="headerlink" title="节点依赖"></a>节点依赖</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">01-transformer-basics（模型基础）</span><br><span class="line">    └── 02-cpp-essentials</span><br><span class="line">            └── 03-cpp-build-system</span><br><span class="line">                    └── 04-cuda-execution-model</span><br><span class="line">                            └── 05-cuda-memory-optimization</span><br><span class="line">                                    └── 06-gpu-performance-model</span><br><span class="line">                                            ├── 07-autoregressive-generation</span><br><span class="line">                                            │       └── 08-batching-scheduling</span><br><span class="line">                                            │               └── 09-paged-attention</span><br><span class="line">                                            └── 10-flash-attention（依赖 05 + 07）</span><br><span class="line">                                                    └── 11-quantization（可并行于 09）</span><br><span class="line">                                                            └── 12-inference-system-design（综合）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><p>完成全部节点后，你应该能够：</p>
+<ol>
+<li>解释 Transformer attention 的完整计算流程</li>
+<li>用 C++ 写基本的系统级代码，读懂推理框架的 host 代码</li>
+<li>写出正确的 CUDA kernel（GEMM naive → shared memory tiling）</li>
+<li>用 nsight 分析 kernel 的 occupancy 和 memory throughput</li>
+<li>解释 KV cache 的作用、显存占用和管理策略</li>
+<li>解释 continuous batching 为什么比 static batching 高效</li>
+<li>解释 PagedAttention 的设计动机和实现思路</li>
+<li>解释 FlashAttention 为什么快（IO-aware）</li>
+<li>解释量化的基本原理和常见方案</li>
+<li>读懂 vLLM 的 scheduler 逻辑和核心 CUDA kernel</li>
+</ol>
+<hr>
+<h2 id="节点详情与实践计划"><a href="#节点详情与实践计划" class="headerlink" title="节点详情与实践计划"></a>节点详情与实践计划</h2><h3 id="节点-01-·-Transformer-结构与-Attention-计算"><a href="#节点-01-·-Transformer-结构与-Attention-计算" class="headerlink" title="节点 01 · Transformer 结构与 Attention 计算"></a>节点 01 · Transformer 结构与 Attention 计算</h3><ul>
+<li><strong>核心问题</strong>：模型推理时在算什么？矩阵乘法和 Attention 是什么关系？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a>、<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a></li>
+<li><strong>实践</strong>：本机用 Python&#x2F;NumPy 手写 scaled dot-product attention（约 10 行），验证公式</li>
+<li><strong>完成标准</strong>：能解释 Q&#x2F;K&#x2F;V 的角色、attention 计算步骤、为什么除以 √d_k</li>
+</ul>
+<h3 id="节点-02-·-C-必要基础"><a href="#节点-02-·-C-必要基础" class="headerlink" title="节点 02 · C++ 必要基础"></a>节点 02 · C++ 必要基础</h3><ul>
+<li><strong>核心问题</strong>：C++ 和 Java 的本质差异？指针、栈堆、RAII 解决了什么问题？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://www.learncpp.com/">learncpp.com</a>（Ch9-12 指针&#x2F;引用，Ch15-16 RAII&#x2F;智能指针，Ch26 模板基础）</li>
+<li><strong>实践</strong>：本机写 3 个小程序：①手动 malloc&#x2F;free 演示 dangling pointer；②用 unique_ptr 改写；③写一个模板函数</li>
+<li><strong>完成标准</strong>：能解释为什么 Java 程序员写 C++ 容易出 UB；能用 CMake 构建运行项目</li>
+</ul>
+<h3 id="节点-03-·-C-编译模型与-CMake"><a href="#节点-03-·-C-编译模型与-CMake" class="headerlink" title="节点 03 · C++ 编译模型与 CMake"></a>节点 03 · C++ 编译模型与 CMake</h3><ul>
+<li><strong>核心问题</strong>：C++ 的编译-链接流程？头文件&#x2F;源文件分离的意义？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://www.learncpp.com/cpp-tutorial/introduction-to-the-preprocessor/">learncpp.com Ch7</a>、<a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/guide/tutorial/">CMake Tutorial</a></li>
+<li><strong>实践</strong>：本机用 CMake 构建多文件项目（.h + .cpp + main），<code>cmake .. &amp;&amp; make</code> 跑通</li>
+<li><strong>完成标准</strong>：能解释 .h&#x2F;.cpp 分离的原因；能独立搭建 CMake 项目</li>
+</ul>
+<h3 id="节点-04-·-CUDA-执行模型"><a href="#节点-04-·-CUDA-执行模型" class="headerlink" title="节点 04 · CUDA 执行模型"></a>节点 04 · CUDA 执行模型</h3><ul>
+<li><strong>核心问题</strong>：GPU 和 CPU 的执行模型根本差异？thread&#x2F;warp&#x2F;block&#x2F;grid 如何组织？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/">CUDA C Programming Guide Ch1-3</a></li>
+<li><strong>环境</strong>：AutoDL RTX 3090（选 CUDA 12.x 镜像，按小时计费，用完关机）</li>
+<li><strong>实践</strong>：在 AutoDL 上写并运行：①vector add kernel；②改变 block size 观察性能差异</li>
+<li><strong>完成标准</strong>：能画出 thread&#x2F;warp&#x2F;block&#x2F;grid 层级图；能解释 warp divergence 是什么</li>
+</ul>
+<h3 id="节点-05-·-CUDA-内存优化"><a href="#节点-05-·-CUDA-内存优化" class="headerlink" title="节点 05 · CUDA 内存优化"></a>节点 05 · CUDA 内存优化</h3><ul>
+<li><strong>核心问题</strong>：为什么 naive kernel 慢？coalescing 和 shared memory tiling 如何解决？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/">CUDA C Programming Guide Ch5-6</a>、<a target="_blank" rel="noopener" href="https://github.com/yzhaiustc/Optimizing-GEMM-on-NVIDIA-Turing-GPUs">how-to-optimize-gemm</a></li>
+<li><strong>环境</strong>：AutoDL RTX 3090</li>
+<li><strong>实践</strong>：实现三版 GEMM：①naive（global memory）；②shared memory tiling；③对比 GFLOPS</li>
+<li><strong>完成标准</strong>：tiling 版比 naive 快 5x+；能解释为什么</li>
+</ul>
+<h3 id="节点-06-·-GPU-性能模型与分析工具"><a href="#节点-06-·-GPU-性能模型与分析工具" class="headerlink" title="节点 06 · GPU 性能模型与分析工具"></a>节点 06 · GPU 性能模型与分析工具</h3><ul>
+<li><strong>核心问题</strong>：kernel 的瓶颈是算力还是带宽？如何用 roofline 判断？nsight 怎么读？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://docs.nvidia.com/nsight-compute/">NVIDIA Nsight Compute 文档</a></li>
+<li><strong>环境</strong>：AutoDL RTX 3090（nsight-compute 已预装）</li>
+<li><strong>实践</strong>：对节点 05 的 GEMM kernel 跑 <code>ncu</code> profile，读 occupancy &#x2F; memory throughput &#x2F; compute throughput</li>
+<li><strong>完成标准</strong>：能用 roofline 判断 compute-bound 还是 memory-bound；能解释 occupancy 低的原因</li>
+</ul>
+<h3 id="节点-07-·-自回归生成与-KV-Cache"><a href="#节点-07-·-自回归生成与-KV-Cache" class="headerlink" title="节点 07 · 自回归生成与 KV Cache"></a>节点 07 · 自回归生成与 KV Cache</h3><ul>
+<li><strong>核心问题</strong>：token by token 生成的机制？KV cache 存了什么，为什么能省计算？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://blog.vllm.ai/2023/06/20/vllm.html">vLLM 博客</a>、<a target="_blank" rel="noopener" href="https://lilianweng.github.io/posts/2023-01-10-inference-optimization/">Lilian Weng: LLM Inference</a></li>
+<li><strong>实践</strong>：本机用 Python 写 toy autoregressive decoder，加 KV cache 前后对比计算量；手算 7B 模型的 KV cache 显存占用</li>
+<li><strong>完成标准</strong>：能解释 prefill 和 decode 两个阶段为什么特性不同；能手算显存占用</li>
+</ul>
+<h3 id="节点-08-·-Batching-与调度"><a href="#节点-08-·-Batching-与调度" class="headerlink" title="节点 08 · Batching 与调度"></a>节点 08 · Batching 与调度</h3><ul>
+<li><strong>核心问题</strong>：static batching 为什么浪费 GPU？continuous batching 如何解决？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://www.usenix.org/conference/osdi22/presentation/yu">Orca 论文</a>、<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.06180">vLLM 论文</a> Section 3</li>
+<li><strong>实践</strong>：阅读 vLLM <code>vllm/core/scheduler.py</code>，能解释 <code>_schedule()</code> 主循环逻辑</li>
+<li><strong>完成标准</strong>：能画出 continuous batching 的请求进出图；能解释 iteration-level scheduling</li>
+</ul>
+<h3 id="节点-09-·-PagedAttention-与显存管理"><a href="#节点-09-·-PagedAttention-与显存管理" class="headerlink" title="节点 09 · PagedAttention 与显存管理"></a>节点 09 · PagedAttention 与显存管理</h3><ul>
+<li><strong>核心问题</strong>：KV cache 显存碎片问题是什么？PagedAttention 如何类比 OS 虚拟内存解决？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.06180">vLLM 论文</a>、<a target="_blank" rel="noopener" href="https://github.com/vllm-project/vllm/blob/main/vllm/core/block_manager.py">vLLM block_manager 源码</a></li>
+<li><strong>环境</strong>：AutoDL（运行 vLLM 观察显存分配）</li>
+<li><strong>实践</strong>：阅读 block_manager 源码，解释 physical&#x2F;logical block 映射；在 AutoDL 上运行 vLLM 观察显存</li>
+<li><strong>完成标准</strong>：能解释 block 分配策略；能解释 copy-on-write 在 beam search 中的作用</li>
+</ul>
+<h3 id="节点-10-·-FlashAttention"><a href="#节点-10-·-FlashAttention" class="headerlink" title="节点 10 · FlashAttention"></a>节点 10 · FlashAttention</h3><ul>
+<li><strong>核心问题</strong>：标准 attention 的 IO 瓶颈在哪？FlashAttention 的 tiling 如何解决？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.14135">FlashAttention 论文</a>、<a target="_blank" rel="noopener" href="https://github.com/Dao-AILab/flash-attention">FlashAttention 源码</a></li>
+<li><strong>环境</strong>：AutoDL RTX 3090（安装 flash-attention）</li>
+<li><strong>实践</strong>：对比标准 attention 和 FlashAttention 的显存占用与速度；读懂论文 Algorithm 1 伪代码</li>
+<li><strong>完成标准</strong>：能手画 FlashAttention tiling 示意图；能解释 online softmax trick</li>
+</ul>
+<h3 id="节点-11-·-量化"><a href="#节点-11-·-量化" class="headerlink" title="节点 11 · 量化"></a>节点 11 · 量化</h3><ul>
+<li><strong>核心问题</strong>：INT8&#x2F;FP8 量化如何减少显存？PTQ 和 QAT 的区别和代价？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2208.07339">LLM.int8() 论文</a>、<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.17323">GPTQ 论文</a></li>
+<li><strong>环境</strong>：AutoDL（用 bitsandbytes 加载量化模型）</li>
+<li><strong>实践</strong>：在 AutoDL 上用 bitsandbytes 加载 INT8 量化模型，对比 FP16 和 INT8 的显存与速度</li>
+<li><strong>完成标准</strong>：能解释 absmax 量化计算；能解释为什么大模型量化难（activation outlier）</li>
+</ul>
+<h3 id="节点-12-·-推理系统设计全景"><a href="#节点-12-·-推理系统设计全景" class="headerlink" title="节点 12 · 推理系统设计全景"></a>节点 12 · 推理系统设计全景</h3><ul>
+<li><strong>核心问题</strong>：给定延迟&#x2F;吞吐&#x2F;成本约束，如何选配置？各优化手段如何组合？</li>
+<li><strong>参考材料</strong>：<a target="_blank" rel="noopener" href="https://docs.vllm.ai/">vLLM 文档</a>、<a target="_blank" rel="noopener" href="https://nvidia.github.io/TensorRT-LLM/">TensorRT-LLM 文档</a></li>
+<li><strong>环境</strong>：AutoDL（部署 vLLM + benchmark）</li>
+<li><strong>实践</strong>：在 AutoDL 上用 vLLM 部署 Qwen-7B，用 benchmark 脚本测 throughput&#x2F;latency，调整 batch size 观察变化</li>
+<li><strong>完成标准</strong>：能解释 TTFT&#x2F;TPOT&#x2F;throughput 三个指标；能分析为什么加大 batch size 提升吞吐但增加延迟</li>
+</ul>
+<hr>
+<h2 id="可迁移资产"><a href="#可迁移资产" class="headerlink" title="可迁移资产"></a>可迁移资产</h2><table>
+<thead>
+<tr>
+<th>已有经验</th>
+<th>在哪个节点用得上</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OS 底层（内存管理、进程、调度）</td>
+<td>节点 5、6、9：显存管理和调度直接类比</td>
+</tr>
+<tr>
+<td>Gluten 向量化执行引擎（算子适配）</td>
+<td>节点 6、10：理解执行引擎如何接近硬件</td>
+</tr>
+<tr>
+<td>Spark Plugin 执行引擎内部经验</td>
+<td>节点 8、12：理解系统级调度和执行计划</td>
+</tr>
+<tr>
+<td>Java &#x2F; Spark Infra 实习</td>
+<td>节点 12：系统设计取舍的工程经验</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="知识清单对照"><a href="#知识清单对照" class="headerlink" title="知识清单对照"></a>知识清单对照</h2><blockquote>
+<p>权威源：<a target="_blank" rel="noopener" href="https://github.com/Infrasys-AI/AIInfra">AIInfra Module 05</a>、<a target="_blank" rel="noopener" href="https://lilianweng.github.io/posts/2023-01-10-inference-optimization/">Lilian Weng: LLM Inference Optimization</a>、<a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/">CUDA C Programming Guide</a><br>对照日期：2026-03-29</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>权威源章节&#x2F;概念</th>
+<th>覆盖情况</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transformer &#x2F; Attention 结构</td>
+<td>已覆盖（节点 01）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>C++ 内存模型 &#x2F; RAII</td>
+<td>已覆盖（节点 02-03）</td>
+<td>前置差距补入</td>
+</tr>
+<tr>
+<td>CUDA thread&#x2F;warp&#x2F;block 执行模型</td>
+<td>已覆盖（节点 04）</td>
+<td>前置差距补入</td>
+</tr>
+<tr>
+<td>CUDA 内存优化（coalescing &#x2F; shared memory）</td>
+<td>已覆盖（节点 05）</td>
+<td>前置差距补入</td>
+</tr>
+<tr>
+<td>GPU 性能模型 &#x2F; roofline</td>
+<td>已覆盖（节点 06）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>KV Cache 优化</td>
+<td>已覆盖（节点 07、09）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>批处理策略</td>
+<td>已覆盖（节点 08）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PagedAttention &#x2F; 显存管理</td>
+<td>已覆盖（节点 09）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>FlashAttention &#x2F; 算子优化</td>
+<td>已覆盖（节点 10）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>量化（PTQ &#x2F; QAT）</td>
+<td>已覆盖（节点 11）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>分布式调度 &#x2F; 系统设计全景</td>
+<td>已覆盖（节点 12）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>长序列推理 &#x2F; 并行策略</td>
+<td>进阶&#x2F;超纲</td>
+<td>需先掌握基础系统，Phase 2 再覆盖</td>
+</tr>
+<tr>
+<td>Speculative Decoding &#x2F; MoE 推理</td>
+<td>进阶&#x2F;超纲</td>
+<td>高级加速技术，当前阶段不覆盖</td>
+</tr>
+<tr>
+<td>知识蒸馏 &#x2F; 剪枝 &#x2F; 稀疏</td>
+<td>不需要</td>
+<td>偏模型研究方向，非推理 infra 核心</td>
+</tr>
+</tbody></table>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/llm/">llm</a><a class="post-meta__tags" href="/tags/inference/">inference</a><a class="post-meta__tags" href="/tags/cuda/">cuda</a><a class="post-meta__tags" href="/tags/transformer/">transformer</a><a class="post-meta__tags" href="/tags/ai-infra/">ai-infra</a><a class="post-meta__tags" href="/tags/cpp/">cpp</a></div><div class="post-share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/01/kafka/notes/01-core-concepts/" title="01 · Core Concepts"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">01 · Core Concepts</div></div><div class="info-2"><div class="info-item-1">01 · Core Concepts 目标：理解 Kafka 的四个核心抽象及其关系，能画出消息从 produce 到 consume 的完整路径   核心概念TopicTopic 是逻辑概念，是消息的命名分类单位（如 order-events、user-clicks）。Topic 本身不存储数据，真正存储数据的是 partition。 PartitionPartition 是物理存储单元。每个 partition 在磁盘上是一个目录，目录下包含多个 segment 文件（.log、.index、.timeindex）。Kafka 按大小或时间把数据切割成多个 segment，避免单个文件无限增长。 Partition 解决两个问题：  并行度：多个 partition 分布在不同 broker 上，读写可以同时进行，吞吐量线性扩展。消费端同理，N 个 partition 最多支持 N 个消费者并行消费。 水平扩展：partition 是 Kafka 的最小分布单元，不同 partition 可以在不同 broker 上，单个 topic 的数据量不受单台机器限制。  注意：pa...</div></div></div></a><a class="pagination-related" href="/2026/04/01/kafka/index/" title="Kafka 学习主干道"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Kafka 学习主干道</div></div><div class="info-2"><div class="info-item-1">Kafka 学习主干道核心抽象Kafka 是一个持久化的分布式日志系统，所有设计围绕一个核心约束展开：  消息是不可变的、有序的、可重放的日志，消费者通过 offset 自主控制读取位置  从这个约束出发，可以推导出它的所有设计决策：    抽象 一句话    Topic &#x2F; Partition 日志的逻辑分组与物理分片，分片是并发和扩展的基本单位   Offset 消费者在分区日志中的位置指针，由消费者自己管理   Consumer Group 一组消费者共同消费一个 topic，每个分区只被组内一个消费者消费   Replication &#x2F; ISR 分区副本机制，ISR 决定谁有资格成为 leader   Producer Acks 生产者对”写入成功”的定义，决定可靠性与延迟的取舍   Log Segment 分区在磁盘上的物理存储单元，append-only，支持顺序写    主干道节点   # 文件 内容 状态    1 01-core-concepts.md Topic &#x2F; Partition &#x2F; Offset &#x2F; C...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/01/llm-inference/notes/04-cuda-execution-model/" title="04 · CUDA 执行模型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-01</div><div class="info-item-2">04 · CUDA 执行模型</div></div><div class="info-2"><div class="info-item-1">04 · CUDA 执行模型 目标：理解 GPU 和 CPU 的执行模型根本差异，掌握 thread&#x2F;warp&#x2F;block&#x2F;grid 四层层级，理解 warp divergence 和延迟隐藏机制   一、GPU 和 CPU 的根本差异高层抽象： 12345CPU：少量强大的核心（8-32），每个核心有复杂的分支预测、乱序执行、大缓存     → 设计目标：让单个任务跑得尽可能快GPU：大量简单的核心（3080 Ti 有 10240 个 CUDA core），每个核心只做简单的乘加     → 设计目标：让海量任务同时跑  矩阵乘法天然适合 GPU——拆成几万个独立的乘加操作，同时计算。 为什么 GPU 核心可以这么多： 每个 GPU 核心没有复杂的控制逻辑（分支预测、乱序执行），省下来的晶体管全部用来堆计算单元。代价是编程模型受限——程序员必须显式组织并行。  二、四层执行层级Thread（线程）最小执行单元，执行一次 kernel 函数调用。每个 thread 有独立的寄存器和局部变量。 例：矩阵加法 C[i] = A[i] + B[i]，每个 ...</div></div></div></a><a class="pagination-related" href="/2026/04/01/llm-inference/notes/05-cuda-memory-optimization/" title="05 · CUDA 内存优化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-01</div><div class="info-item-2">05 · CUDA 内存优化</div></div><div class="info-2"><div class="info-item-1">05 · CUDA 内存优化 目标：理解 GPU 内存层级，掌握 Shared Memory Tiling 优化 GEMM 的原理，理解 bank conflict 和延迟隐藏机制   一、GPU 内存层级高层抽象： 123寄存器（Register）  →  Shared Memory  →  L2 Cache  →  HBM（显存）     最快                                                  最慢     最小                                                  最大     层级 作用域 延迟 容量（3080 Ti）    寄存器 每个 thread 私有 ~0 极小   Shared Memory block 内共享 ~5ns 每个 SM 约 100KB   L2 Cache 所有 SM 共享 中等 6MB（4090D 72MB）   HBM 所有 SM 共享 200-800 时钟周期 12GB   核心推论： 同一时刻需要被多次读取的数据，应该先从 HBM 搬到 Shared...</div></div></div></a><a class="pagination-related" href="/2026/04/01/llm-inference/notes/06-gpu-performance-model/" title="06 · GPU 性能模型与分析工具"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-01</div><div class="info-item-2">06 · GPU 性能模型与分析工具</div></div><div class="info-2"><div class="info-item-1">06 · GPU 性能模型与分析工具 目标：理解 Roofline Model，能计算 kernel 的算术强度，判断瓶颈在带宽还是算力，知道该往哪个方向优化   一、两个硬件上限GPU 的性能受两个硬件上限约束： 12算力上限：GPU 每秒能做多少次浮点运算（TFLOPS）带宽上限：GPU 每秒能从显存搬多少数据（TB/s）  4090D 的参数：  算力峰值：82.6 TFLOPS（FP32）&#x3D; 82600 GFLOPS 显存带宽：1008 GB&#x2F;s   二、算术强度算术强度（Arithmetic Intensity）：kernel 的固有属性，由计算量和数据量的比值决定： 1算术强度 = 总浮点运算次数（FLOP） / 总显存访问字节数（Byte）  不需要运行就能算出来，只需数清楚 kernel 做了多少次运算、读写了多少数据。 Vector Add 的算术强度： 123456C[i] = A[i] + B[i]，N 个元素浮点运算：N 次加法 = N FLOP显存访问：读 A（4N Byte）+ 读 B（4N Byte）+ 写 C（4N Byte）=...</div></div></div></a><a class="pagination-related" href="/2026/04/01/llm-inference/notes/01-transformer-basics/" title="01 · Transformer 结构与 Attention 计算"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-01</div><div class="info-item-2">01 · Transformer 结构与 Attention 计算</div></div><div class="info-2"><div class="info-item-1">01 · Transformer 结构与 Attention 计算 目标：理解 LLM 推理时到底在算什么——从 token 输入到新语义向量输出的完整计算流程   一、推理的本质：一切都是矩阵乘法神经网络是一个函数：输入一组数字，输出一组数字。推理（Inference）就是执行这个函数，不涉及任何参数更新。 LLM 推理：  输入：一串 token（文字被切分并编码成数字序列） 输出：下一个 token 的概率分布  整个推理过程中，绝大部分计算量只有一种运算：矩阵乘法（GEMM）。这是 GPU 适合做推理的根本原因——GPU 专为大规模并行矩阵乘法设计。  二、Attention 出现之前：RNN 的问题RNN 处理语言序列的方式是逐词传递隐状态： 123&quot;猫&quot; → [RNN] → h₁&quot;喜欢&quot; → [RNN, 读入 h₁] → h₂&quot;鱼&quot; → [RNN, 读入 h₂] → h₃  问题：隐状态每传一步就被压缩一次，越早的词信息越难保留。处理”鱼”时，”猫”的信息已经被稀释了两次。这叫长程依赖问题。 另一个问题：必须...</div></div></div></a><a class="pagination-related" href="/2026/04/01/llm-inference/notes/07-autoregressive-generation/" title="07 · 自回归生成与 KV Cache"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-01</div><div class="info-item-2">07 · 自回归生成与 KV Cache</div></div><div class="info-2"><div class="info-item-1">07 · 自回归生成与 KV Cache 目标：理解 LLM 推理的完整时序过程，掌握 KV Cache 的作用和显存代价，理解 Prefill 和 Decode 两个阶段的本质差异   一、Transformer 完整计算图（回顾）12345678910111213141516171819token 序列    ↓ Embedding 层[seq_len, d_model]    ↓ Transformer Block × N 层（每层结构相同）        ├── Multi-Head Self-Attention        │     x → Q,K,V（各乘权重矩阵）        │     → reshape 成 [num_heads, seq_len, head_dim]        │     → 每个 head 独立做 Attention        │     → 拼接 + W_O 投影        │     → 残差连接 + LayerNorm        └── FFN              → W₁ 升维（×4）→ ReLU → W₂...</div></div></div></a><a class="pagination-related" href="/2026/04/01/llm-inference/notes/02-cpp-essentials/" title="02 · C++ 必要基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-01</div><div class="info-item-2">02 · C++ 必要基础</div></div><div class="info-2"><div class="info-item-1">02 · C++ 必要基础 目标：理解 C++ 的内存模型和对象生命周期管理，能看懂推理框架 host 代码里的指针、智能指针、模板用法   一、指针与引用C++ 在 C 的指针基础上增加了引用： 123int x = 42;int* p = &amp;x;   // 指针：存储 x 的地址int&amp; r = x;    // 引用：x 的别名，本质是语法糖，编译器实现上通常也是地址      指针 引用    是否可以为 null 可以 不行，必须绑定到对象   是否可以改变指向 可以 不行，绑定后不能换   语法 *p 解引用 直接用 r，和用原变量一样   函数传参的三种方式： 123void foo_value(int x)   &#123; x = 99; &#125;   // 复制，不影响外部void foo_ptr(int* x)    &#123; *x = 99; &#125;  // 传地址，可修改外部void foo_ref(int&amp; x)    &#123; x = 99; &#125;   // 传引用，可修改外部，语法更干净  推理框架...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comments</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#LLM-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96%E5%AD%A6%E4%B9%A0%E4%B8%BB%E5%B9%B2%E9%81%93"><span class="toc-number">1.</span> <span class="toc-text">LLM 推理优化学习主干道</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E5%B7%AE%E8%B7%9D%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">前置差距分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.2.</span> <span class="toc-text">核心抽象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E5%B9%B2%E9%81%93%E8%8A%82%E7%82%B9"><span class="toc-number">1.3.</span> <span class="toc-text">主干道节点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9A%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8D%E5%8F%AF%E8%B7%B3%E8%BF%87%E7%9A%84%E5%89%8D%E7%BD%AE%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">第一层：模型与语言基础（不可跳过的前置）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9AGPU-%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80"><span class="toc-number">1.3.2.</span> <span class="toc-text">第二层：GPU 编程基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9A%E6%8E%A8%E7%90%86%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83"><span class="toc-number">1.3.3.</span> <span class="toc-text">第三层：推理系统核心</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E4%BE%9D%E8%B5%96"><span class="toc-number">1.4.</span> <span class="toc-text">节点依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87"><span class="toc-number">1.5.</span> <span class="toc-text">学习目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E8%AF%A6%E6%83%85%E4%B8%8E%E5%AE%9E%E8%B7%B5%E8%AE%A1%E5%88%92"><span class="toc-number">1.6.</span> <span class="toc-text">节点详情与实践计划</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-01-%C2%B7-Transformer-%E7%BB%93%E6%9E%84%E4%B8%8E-Attention-%E8%AE%A1%E7%AE%97"><span class="toc-number">1.6.1.</span> <span class="toc-text">节点 01 · Transformer 结构与 Attention 计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-02-%C2%B7-C-%E5%BF%85%E8%A6%81%E5%9F%BA%E7%A1%80"><span class="toc-number">1.6.2.</span> <span class="toc-text">节点 02 · C++ 必要基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-03-%C2%B7-C-%E7%BC%96%E8%AF%91%E6%A8%A1%E5%9E%8B%E4%B8%8E-CMake"><span class="toc-number">1.6.3.</span> <span class="toc-text">节点 03 · C++ 编译模型与 CMake</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-04-%C2%B7-CUDA-%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.6.4.</span> <span class="toc-text">节点 04 · CUDA 执行模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-05-%C2%B7-CUDA-%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96"><span class="toc-number">1.6.5.</span> <span class="toc-text">节点 05 · CUDA 内存优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-06-%C2%B7-GPU-%E6%80%A7%E8%83%BD%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7"><span class="toc-number">1.6.6.</span> <span class="toc-text">节点 06 · GPU 性能模型与分析工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-07-%C2%B7-%E8%87%AA%E5%9B%9E%E5%BD%92%E7%94%9F%E6%88%90%E4%B8%8E-KV-Cache"><span class="toc-number">1.6.7.</span> <span class="toc-text">节点 07 · 自回归生成与 KV Cache</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-08-%C2%B7-Batching-%E4%B8%8E%E8%B0%83%E5%BA%A6"><span class="toc-number">1.6.8.</span> <span class="toc-text">节点 08 · Batching 与调度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-09-%C2%B7-PagedAttention-%E4%B8%8E%E6%98%BE%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">1.6.9.</span> <span class="toc-text">节点 09 · PagedAttention 与显存管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-10-%C2%B7-FlashAttention"><span class="toc-number">1.6.10.</span> <span class="toc-text">节点 10 · FlashAttention</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-11-%C2%B7-%E9%87%8F%E5%8C%96"><span class="toc-number">1.6.11.</span> <span class="toc-text">节点 11 · 量化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9-12-%C2%B7-%E6%8E%A8%E7%90%86%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%85%A8%E6%99%AF"><span class="toc-number">1.6.12.</span> <span class="toc-text">节点 12 · 推理系统设计全景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%BF%81%E7%A7%BB%E8%B5%84%E4%BA%A7"><span class="toc-number">1.7.</span> <span class="toc-text">可迁移资产</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95%E5%AF%B9%E7%85%A7"><span class="toc-number">1.8.</span> <span class="toc-text">知识清单对照</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/llm-inference/index/" title="LLM 推理优化学习主干道">LLM 推理优化学习主干道</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/01-core-concepts/" title="01 · Core Concepts">01 · Core Concepts</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/02-log-and-pull/" title="02 · 日志抽象与 Push vs Pull">02 · 日志抽象与 Push vs Pull</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/03-storage/" title="03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction">03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/05-replication/" title="05 · Replication / ISR / Leader Election">05 · Replication / ISR / Leader Election</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="Toggle Between Traditional and Simplified Chinese">简</button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll to Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"lang":"zh-CN","input_position":"top","emit_metadata":1,"reactions_enabled":1}
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'fang-tech/fang-tech.github.io',
+      'data-repo-id': 'R_kgDOPJD8XA',
+      'data-category-id': 'DIC_kwDOPJD8XM4CswtE',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="local-search-input"><input placeholder="Search for Posts" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

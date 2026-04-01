@@ -1,0 +1,411 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>进程管理 | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="进程管理进程数据结构进程的数据结构是task struct  cpu资源: 调度优先级   内存地址空间资源: mm_struct   打开的文件资源: file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)    进程自己的信息与状态  进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中 如TASK_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程管理">
+<meta property="og:url" content="https://functional.top/2026/03/08/notes/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="进程管理进程数据结构进程的数据结构是task struct  cpu资源: 调度优先级   内存地址空间资源: mm_struct   打开的文件资源: file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)    进程自己的信息与状态  进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中 如TASK_">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg">
+<meta property="article:published_time" content="2026-03-08T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-11T00:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="进程管理">
+<meta property="article:tag" content="task_struct">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "进程管理",
+  "url": "https://functional.top/2026/03/08/notes/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/",
+  "image": "https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg",
+  "datePublished": "2026-03-08T00:00:00.000Z",
+  "dateModified": "2026-03-11T00:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "John Doe",
+      "url": "https://functional.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><link rel="canonical" href="https://functional.top/2026/03/08/notes/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '进程管理',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">104</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">进程管理</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">进程管理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-03-08T00:00:00.000Z" title="Created 2026-03-08 00:00:00">2026-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-11T00:00:00.000Z" title="Updated 2026-03-11 00:00:00">2026-03-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/OS/">OS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>10mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程的数据结构是task struct</p>
+<ol>
+<li>cpu资源:<ol>
+<li>调度优先级</li>
+</ol>
+</li>
+<li>内存地址空间资源:<ol>
+<li>mm_struct</li>
+</ol>
+</li>
+<li>打开的文件资源:<ol>
+<li>file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)</li>
+</ol>
+</li>
+</ol>
+<p>进程自己的信息与状态</p>
+<ol>
+<li>进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中<ol>
+<li>如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…</li>
+</ol>
+</li>
+<li>唯一ID<ol>
+<li>pid: 线程级别的id</li>
+<li>gtid: 进程级别的id</li>
+</ol>
+</li>
+<li>文件系统信息 <code>struct fs_struct *fs</code></li>
+<li>namespace</li>
+<li>进程树关系: 该进程在整个进程树里面的位置</li>
+</ol>
+<h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_RUNNING            0x00000000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_INTERRUPTIBLE      0x00000001</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_UNINTERRUPTIBLE    0x00000002</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_STOPPED          0x00000004</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_TRACED           0x00000008</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_DEAD               0x00000010</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_ZOMBIE             0x00000020</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_DEAD               0x00000080</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 组合状态（便利宏）: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_KILLABLE           (TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_STOPPED            (TASK_WAKEKILL | __TASK_STOPPED)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_IDLE               (TASK_UNINTERRUPTIBLE | TASK_NOLOAD)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_NORMAL			(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</span></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p>常见状态语义说明:</p>
+<p><strong>存储在task-&gt;state的</strong></p>
+<ul>
+<li>TASK_RUNNING: 进程正在运行队列中, 准备运行&#x2F;正在运行</li>
+<li>TASK_NORAML&#x2F;TASK_INTERRUPTIBLE&#x2F;TASK_UNINTERRUPTIBLE:<ul>
+<li>TASK_NORMAL &#x3D; <code>(TASK_INTERRUPTIBLE | TASK_UNINTERRUPTIBLE)</code> 是这两个状态的综合, 表明进程正在睡眠</li>
+<li>TASK_INTERRUPTIBLE: 进程处于可打断的睡眠状态, 正在等待某个条件满足, 被wake_up唤醒, 或者被信号唤醒. 不会被计入load average</li>
+<li>TASK_UNINTERRUPTIBLE: 进程处于不可中断的睡眠状态, 只能在条件满足时, 被wake_up唤醒, 不能被信号唤醒, 常用于(如磁盘 I&#x2F;O)等不能被中途打断的SLEEP, 这也代表, 在这个状态的进程的数量能一定程度反应当前计算机的物理负载, 这个状态会被计入load average</li>
+<li>TASK_KILLABLE &#x3D; <code>(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)</code> 可以被致命信号杀死(SIGKILL)的不可中断睡眠</li>
+<li>__TASK_STOPPED &#x3D; 进程被暂停执行了, 不会被调度. 1. 收到SIGSTOP &#x2F; SIGSTP &#x2F; SIGTTIN &#x2F; SIGTTOU 信号 2. ptrace attach 后发送 SIGSTOP. 常见的进入情景: 1. Ctrl + z 2. debug. 退出的时机: 收到 SIGCONT 信号</li>
+<li>__TASK_TRACED &#x3D; 进程正在被调试器跟踪</li>
+<li>TASK_IDLE (TASK_UNINTERRUPTIBLE | TASK_NOLOAD):<ul>
+<li>语义: TASK_UNINTERRUPTIBLE类似的不可中断睡眠, 但<strong>不计入 load average</strong></li>
+<li>内核中空闲时会运行的 idle线程, 内核中某些无关紧要的等待</li>
+<li>如果 idle线程用TASK_UNINTERRUPTIBLE而包含TASK_NOLOAD会导致load average空长, 不能反应真实物理资源负载</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>存储在task-&gt;exit_code的</strong></p>
+<ul>
+<li>EXIT_ZOMBIE: 僵尸状态<ul>
+<li>语义: 代码已经执行完毕</li>
+<li>进入的时机: 进程调用exit() -&gt; do_exit() -&gt; exit_notify() 中设置 tsk-&gt;exit_state &#x3D; EXIT_ZOMBIE</li>
+<li>退出的时机: 父进程调用 <code>wait</code> &#x2F; <code>waitpid()</code> 读取退出状态 -&gt; <code>wait_task_zombie()</code> -&gt; <code>exit_state</code>中改为 <code>EXIT_DEAD</code> -&gt; <code>task_struct</code> 被释放</li>
+</ul>
+</li>
+<li>EXIT_DEAD (0x10) : 彻底死亡<ul>
+<li>语义: 进程的task_struct正在被回收或者已经被回收</li>
+<li>进入的时机: 父进程 <code>wait()</code> 成功后, 状态从 <code>EXIT_ZOMBIE</code> 变成 <code>EXIT_DEAD</code></li>
+<li>退出的时机: 这是一个瞬态, 存在的时间极短, 之后 <code>task_struct</code> 被回收</li>
+</ul>
+</li>
+</ul>
+<p><strong>常见的进程类型</strong></p>
+<ul>
+<li><p><strong>僵尸进程</strong>: 进程(task_struct)已经被释放, 但是还保留PID和exit_state为EXIT_ZOMBIE</p>
+<ul>
+<li>为什么需要这个状态: 父进程可能需要在进程被关闭以后, 获取进程的PID并检查它的退出码来衡量进程是不是正常退出的</li>
+<li>资源泄漏: 状态为EXIT_ZOMBIE的进程占用一个PID和少量的内核内存. 如果大量堆积, 会导致内核内存泄漏, 或PID耗尽</li>
+<li>怎么产生的: 父进程没有调用wait()或者waitpid()</li>
+<li>解决方式:<ul>
+<li>父进程调用 wait() &#x2F; waitpid()</li>
+<li>设置 signal(SIGCHLD, SIG_IGN) 让内核自动回收 (do_notigy_parent返回true的时候直接设置状态为EXIT_DEAD)</li>
+<li>杀死父进程 -&gt; 僵尸被init(PID&#x3D;1)收养 -&gt; init会自动 <code>wait()</code>清理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>孤儿进程</strong>: 进程的父进程先于子进程被杀死了, 子进程就成为了孤儿进程</p>
+<ul>
+<li>内核会将孤儿进程的父进程指向init, 或者当前 PID namespace 中的 subreaper 进程, init进程会定期调用 <code>wait()</code>来清理</li>
+<li>本身是正常的, 不会造成问题</li>
+</ul>
+</li>
+<li><p><strong>守护进程</strong>: 在后台运行的, 不再与任何终端关联的长期运行的进程. 如 <code>sshd, nginx</code>等</p>
+<ul>
+<li>不是一个内核概念, 而是一个用户空间的编程的概念</li>
+<li>经典的创建过程: double-fork<ul>
+<li><code>fork()</code> - 创建子进程</li>
+<li>父进程退出 - 子进程被托孤给init</li>
+<li>setsid - 创建新的session (和原终端解绑)</li>
+<li>再次 <code>fork()</code> - 确保不会重新获得中断控制能力</li>
+<li>chdir(“&#x2F;) - 避免占用可卸载的文件系统</li>
+<li>关闭&#x2F;重定向 stdin&#x2F;stdout&#x2F;stderr</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程的唯一ID"><a href="#进程的唯一ID" class="headerlink" title="进程的唯一ID"></a>进程的唯一ID</h3><p><strong>tgid和pid, 为什么要有两个ID</strong><br>经典的用途是区分进程和线程, 本身是进程组概念, 父进程和他fork出来的子进程组成一个进程组, 共享一个tgid.<br>他们的id (pid, tgid)会是 (1, 1), (2, 1), (3, 1). 对于操作系统来说, 只有进程这个概念, 线程实际上是一个轻量级进程, 对于操作系统的调度来说, 进程和线程是同等地位的实体, 唯一通过PID来作为唯一标识, 而tgid是标识”进程”而非”线程”的唯一标识.</p>
+<h3 id="进程树"><a href="#进程树" class="headerlink" title="进程树"></a>进程树</h3><p>通过 <code>task_struct</code> 中的 <code>parent</code>&#x2F;<code>real_parent</code>、<code>children</code>&#x2F;<code>sibling</code> 字段, 所有进程构成一棵<strong>多叉双向树</strong>. Linux 使用侵入式链表(<code>list_head</code>)而非传统多叉树来实现, 使得增删 O(1)、零内存分配、API 全内核复用.</p>
+<p>进程树支撑了 <code>wait()</code> 回收、托孤、<code>SIGCHLD</code> 通知等核心操作. 进程树与进程组(PGID)、会话(Session) 共同构成了完整的作业控制体系.</p>
+<p><strong>详细内容</strong>: <a href="%E8%BF%9B%E7%A8%8B%E6%A0%91.md">进程树</a></p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><h3 id="运行队列-struct-rq"><a href="#运行队列-struct-rq" class="headerlink" title="运行队列 struct rq"></a>运行队列 <code>struct rq</code></h3><p>内核声明了一个per-CPU变量: <code>runqueues</code>, 每个CPU都有自己的rq变量, 通过<code>cpu_rq(cpu)</code>等宏能执行拿到第N号CPU的运行队列指针等操作.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DECLARE_PER_CPU_SHARED_ALIGNED(<span class="keyword">struct</span> rq, runqueues);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> cpu_rq(cpu)		(&amp;per_cpu(runqueues, (cpu)))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> this_rq()		this_cpu_ptr(&amp;runqueues)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> task_rq(p)		cpu_rq(task_cpu(p))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> cpu_curr(cpu)		(cpu_rq(cpu)-&gt;curr)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> raw_rq()		raw_cpu_ptr(&amp;runqueues)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这个数据结构嵌入了<code>cfs_rq</code>, <code>rt_rq</code>, <code>dl_rq</code>三个内部运行队列(注意这里是嵌入, 这三个字段不是指针). 这意味着 rq本身就包含了所有调度类各自的运行队列数据. 每个调度类管自己的调度队列.</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rq</span> &#123;</span></span><br><span class="line">	<span class="type">raw_spinlock_t</span>		__lock; <span class="comment">// 自旋锁, 保护整个队列的并发访问</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span>	*<span class="title">curr</span>;</span> <span class="comment">// 当前正在运行的进程</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cfs_rq</span>		<span class="title">cfs</span>;</span> <span class="comment">// cfs rq, 完全公平调度队列, 直接嵌入</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rt_rq</span>		<span class="title">rt</span>;</span> <span class="comment">// real time rq, 实时调度队列, 直接嵌入</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">dl_rq</span>		<span class="title">dl</span>;</span> <span class="comment">// deadline rq, 强实时调度队列, 有完成截止时间, 直接嵌入</span></span><br><span class="line"></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span>		nr_running; <span class="comment">// 一个CPU上最多有多少进程可以是running状态</span></span><br><span class="line">	u64			nr_switches; <span class="comment">// 上下文切换的次数</span></span><br><span class="line">  <span class="comment">// 其他...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="调度类-struct-sched-class"><a href="#调度类-struct-sched-class" class="headerlink" title="调度类 - struct sched_class"></a>调度类 - <code>struct sched_class</code></h3><p>调度类本身是一个虚函数表, 里面定义了一系列的虚函数(接口), 里面的各个函数实际上是函数指针. 可以把调度类就看作是一个interface&#x2F;vitrual class.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span> &#123;</span></span><br><span class="line">  <span class="comment">// 把一个进程加入到该调度类的子队列</span></span><br><span class="line">	<span class="type">void</span> (*enqueue_task) (<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line">  <span class="comment">// 新进程唤醒的时候, 检查是否应该要抢占当前进程</span></span><br><span class="line">	<span class="type">void</span> (*check_preempt_curr)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line">  <span class="comment">// 把一个进程移除到该调度类的子队列</span></span><br><span class="line">	<span class="type">void</span> (*dequeue_task) (<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> flags);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 从该调度类中选出下一个要运行的进程</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *(*<span class="title">pick_next_task</span>)(<span class="keyword">struct</span> <span class="title">rq</span> *<span class="title">rq</span>);</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 当前进程被换下前的清理工作, 比如对于cfs调度器来说, 就会重新计算vruntime, 然后重新放回cfs.timeline(红黑树)里面</span></span><br><span class="line">	<span class="type">void</span> (*put_prev_task)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p);</span><br><span class="line">  <span class="comment">// 新进程被换上前的初始化工作</span></span><br><span class="line">	<span class="type">void</span> (*set_next_task)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">bool</span> first);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 每个时钟tick时被调用, 检查时间片/vruntime</span></span><br><span class="line">	<span class="type">void</span> (*task_tick)(<span class="keyword">struct</span> rq *rq, <span class="keyword">struct</span> task_struct *p, <span class="type">int</span> queued);</span><br><span class="line">  <span class="comment">// 更新当前进程的运行时间</span></span><br><span class="line">  <span class="type">void</span> (*update_curr)(<span class="keyword">struct</span> rq *rq);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调度类的实现类有五个</p>
+<ol>
+<li>stop_sched_class</li>
+<li>dl_sched_class</li>
+<li>rt_sched_class</li>
+<li>fair_sched_class</li>
+<li>idle_sched_class</li>
+</ol>
+<p>这五个类实现了上面的各个函数, 使用不同的策略和子队列.<br>每个task_struct里面都一个sched_class字段, 指向这个进程对应的调度类全局实例(看成是静态类即可)</p>
+<p>在rq挑选下一个任务的时候, 会按照上面的顺序遍历所有的调度类, 尝试调用他们各自的pick_next_task.<br>如果调度到的不是NULL, 返回找到的任务.</p>
+<h3 id="调度的整体运行流程"><a href="#调度的整体运行流程" class="headerlink" title="调度的整体运行流程"></a>调度的整体运行流程</h3><blockquote>
+<p><code>rq</code>是容器, <code>sched_class</code>是行为, 子队列 (cfs_rq, rt_rq, dl_rq) 是各调度类在容器内的私有存储队列. 三者通过<code>task_struct.sched_class</code>桥接</p>
+</blockquote>
+<p><strong>1. 进程入队: 从唤醒到进入到子队列里面</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">try_wake_up(task_struct* p)</span><br><span class="line">  -&gt; activate_task(rq, p, flags)</span><br><span class="line">    -&gt; enqueue_task(rq, p, flags)</span><br><span class="line">      -&gt; p-&gt;sched_class-&gt;enqueue_task</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果这里的进程是普通的进程, 这里的p-&gt;sched_class就是fair_sched_class,  p-&gt;sched_class-&gt;enqueue_task最后调用的就是enqueue_task_fair(), 这个函数会将p插入到cfs rq中的红黑树子队列中</li>
+<li>如果p是RT进程, 实际调用的就是enqueue_task_rt()</li>
+</ul>
+<p><strong>2. 进程出队: 睡眠或退出</strong></p>
+<p>__schedule()<br>  -&gt; deactivate_task(rq, prev, DEQUEUE_SLEEP)<br>    -&gt; dequeue_task(rq, prev, flags)<br>      -&gt; p-&gt;sched_class-&gt;dequeue_task(rq, p, flags)</p>
+<p><strong>3. 选择下一个进程: pick_next_task的两条路径</strong></p>
+<p><em>这里的pick_next_task并不是调度类里面的这个函数, 而是sched.h里面的一个文件</em></p>
+<p>__scheduler()<br>  -&gt; pick_next_task(rq, prev, &amp;rf)<br>    -&gt; __pick_next_task(rq, prev, rf)</p>
+<p><strong>快速路径</strong></p>
+<p>rq-&gt;nr_running &#x3D;&#x3D; rq-&gt;cfs.h_nr_running ? (全部进程都是normal&#x2F;CFS进程)<br>  -&gt; pick_next_task_fair(rq, prev, rf)<br>    -&gt; 从rq-&gt;cfs.tasks_timeline 取出来最左边的节点</p>
+<p><strong>慢速路径</strong></p>
+<p>for_each_class(class)<br>  class-&gt;pick_next_task(rq)<br>  -&gt; stop_sched_class.pick_next_task(rq) -&gt; 检查 rq-&gt;stop<br>  -&gt; dl_sched_class.pick_next_task(rq)   -&gt; 检查 rq-&gt;dl 红黑树<br>  -&gt; rt_sched_class.pick_next_task(rq)   -&gt; 检查 rq-&gt;rt 优先级数组<br>  -&gt; fair_sched_class.pick_next_task(rq) -&gt; 检查 rq-&gt;cfs 红黑树<br>  -&gt; idle_sched_class.pick_next_task(rq) -&gt; 返回 rq-&gt;idle（兜底）</p>
+<p>for_each_class是一个宏, 会遍历所有的sched_class, 尝试调用每个调度类自己实现的pick_next_task, 直到返回的不是NULL, 返回. 这样就构造出来了不同rq&#x2F;调度器之间的优先级问题.</p>
+<h3 id="将task-struct挂载在运行队列上"><a href="#将task-struct挂载在运行队列上" class="headerlink" title="将task_struct挂载在运行队列上"></a>将task_struct挂载在运行队列上</h3><p><em>这里主要聚焦的是, rq中的子队列, 比如cfs, 是把task_struct直接存在里面的吗, 是怎么挂载上去的?</em></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span>&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>		<span class="title">se</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span>		<span class="title">rt</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span>		<span class="title">dl</span>;</span></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span>	*<span class="title">sched_class</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样是侵入式数据结构设计, 通过将这几个嵌入式的字段挂载在task_struct中, 通过container_of来取出task_struct.<br>同时rb_node嵌入到sched_entity中, 来将这个数据结构挂在红黑树上</p>
+<p><em>为什么不直接操作task_struct呢?</em></p>
+<p>在cgroup分组调度下, CFS需要把“一组进程”当成一个整体来调度, sched_entity可以代表一个进程, 也可以代表一个进程组.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">load_weight</span>		<span class="title">load</span>;</span> <span class="comment">// 该实体的权重, 通过nice值转化出来的, CFS通过这个计算出来应该分到多少CPU时间</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span>			<span class="title">run_node</span>;</span> <span class="comment">//  红黑树节点, 挂在rq.cfs_rq-&gt;task_timeline上</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>		<span class="title">group_node</span>;</span> <span class="comment">// 挂在rq-&gt;cfs_tasks链表上, 用于SMP均衡负载</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span>			on_rq; <span class="comment">// 是否在运行队列里面</span></span><br><span class="line"></span><br><span class="line">	u64				exec_start; <span class="comment">// 当前这一轮开始执行的时间戳, 每次tick或调度的时候更新</span></span><br><span class="line">	u64				sum_exec_runtime; <span class="comment">// 累计实际的运行时间</span></span><br><span class="line">	u64				vruntime; <span class="comment">// 虚拟运行时间, 值越小越优先被选中</span></span><br><span class="line">	u64				prev_sum_exec_runtime; <span class="comment">// 上次调度时候实际运行时间的快照, 用来算, 这次用了多少的时间片</span></span><br><span class="line">	u64				nr_migrations; <span class="comment">// 这个entity被迁移到其他的cpu上的次数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>sched_entity 是 CFS 调度器的操作单元，嵌入在 task_struct.se 中。它通过 run_node 挂在 cfs_rq 的红黑树上，以 vruntime 为排序键。CFS 选人就是取 vruntime 最小的 sched_entity，再通过 container_of 反推到 task_struct。分组调度下，一个 sched_entity 可以代表整个 task_group，通过 parent&#x2F;cfs_rq&#x2F;my_q 构成层级树。</p>
+</blockquote>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/">进程管理</a><a class="post-meta__tags" href="/tags/task-struct/">task_struct</a></div><div class="post-share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/11/OS/%E8%BF%9B%E7%A8%8B%E6%A0%91/" title="进程树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">进程树</div></div><div class="info-2"><div class="info-item-1">进程树 返回综述: 进程管理  进程树的数据结构在 task_struct 中, 通过以下字段构成一棵多叉双向树: 12345678struct task_struct __rcu *real_parent; // 生物学父进程: 谁fork了我struct task_struct __rcu *parent;     // 法律上的父进程: 谁来wait我、收我的SIGCHLD// 通常 real_parent == parent, 仅在 ptrace 调试时不同struct list_head children; // 作为父进程时: 子进程链表的哨兵头(入口)struct list_head sibling;  // 作为子进程时: 挂在父进程children链表上的节点struct task_struct *group_leader; // 线程组的主线程(和进程树无关, 是线程组维度的字段)  parent 和 real_parent, 为什么要有两个 parent?这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进...</div></div></div></a><a class="pagination-related" href="/2026/03/08/OS/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="进程管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">进程管理</div></div><div class="info-2"><div class="info-item-1">进程管理进程数据结构进程的数据结构是task struct  cpu资源: 调度优先级   内存地址空间资源: mm_struct   打开的文件资源: file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)    进程自己的信息与状态  进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中 如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…   唯一ID pid: 线程级别的id gtid: 进程级别的id   文件系统信息 struct fs_struct *fs namespace 进程树关系: 该进程在整个进程树里面的位置  进程的状态123456789101112131415161718/* Used in tsk-&gt;state: */#define TASK_RUNNING            0x00000000#define TASK_INTERRUPTIBLE      ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/11/OS/%E8%BF%9B%E7%A8%8B%E6%A0%91/" title="进程树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-11</div><div class="info-item-2">进程树</div></div><div class="info-2"><div class="info-item-1">进程树 返回综述: 进程管理  进程树的数据结构在 task_struct 中, 通过以下字段构成一棵多叉双向树: 12345678struct task_struct __rcu *real_parent; // 生物学父进程: 谁fork了我struct task_struct __rcu *parent;     // 法律上的父进程: 谁来wait我、收我的SIGCHLD// 通常 real_parent == parent, 仅在 ptrace 调试时不同struct list_head children; // 作为父进程时: 子进程链表的哨兵头(入口)struct list_head sibling;  // 作为子进程时: 挂在父进程children链表上的节点struct task_struct *group_leader; // 线程组的主线程(和进程树无关, 是线程组维度的字段)  parent 和 real_parent, 为什么要有两个 parent?这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进...</div></div></div></a><a class="pagination-related" href="/2026/03/08/OS/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="进程管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-08</div><div class="info-item-2">进程管理</div></div><div class="info-2"><div class="info-item-1">进程管理进程数据结构进程的数据结构是task struct  cpu资源: 调度优先级   内存地址空间资源: mm_struct   打开的文件资源: file_struct files (一个数组, 存的就是打开的文件的地址, 索引即是文件描符 fd)    进程自己的信息与状态  进程状态: 存储在task-&gt;state, task-&gt;exit_state两个字段中 如TASK_RUNNING, TASK_INTERRUPTIBLE, TASK_UNINTERRUPTIBLE, __TASK_STOPED…   唯一ID pid: 线程级别的id gtid: 进程级别的id   文件系统信息 struct fs_struct *fs namespace 进程树关系: 该进程在整个进程树里面的位置  进程的状态123456789101112131415161718/* Used in tsk-&gt;state: */#define TASK_RUNNING            0x00000000#define TASK_INTERRUPTIBLE      ...</div></div></div></a><a class="pagination-related" href="/2026/03/11/notes/%E8%BF%9B%E7%A8%8B%E6%A0%91/" title="进程树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-11</div><div class="info-item-2">进程树</div></div><div class="info-2"><div class="info-item-1">进程树 返回综述: 进程管理  进程树的数据结构在 task_struct 中, 通过以下字段构成一棵多叉双向树: 12345678struct task_struct __rcu *real_parent; // 生物学父进程: 谁fork了我struct task_struct __rcu *parent;     // 法律上的父进程: 谁来wait我、收我的SIGCHLD// 通常 real_parent == parent, 仅在 ptrace 调试时不同struct list_head children; // 作为父进程时: 子进程链表的哨兵头(入口)struct list_head sibling;  // 作为子进程时: 挂在父进程children链表上的节点struct task_struct *group_leader; // 线程组的主线程(和进程树无关, 是线程组维度的字段)  parent 和 real_parent, 为什么要有两个 parent?这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comments</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">进程管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">进程数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">1.1.1.</span> <span class="toc-text">进程的状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%94%AF%E4%B8%80ID"><span class="toc-number">1.1.2.</span> <span class="toc-text">进程的唯一ID</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E6%A0%91"><span class="toc-number">1.1.3.</span> <span class="toc-text">进程树</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="toc-number">1.2.</span> <span class="toc-text">进程调度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E9%98%9F%E5%88%97-struct-rq"><span class="toc-number">1.2.1.</span> <span class="toc-text">运行队列 struct rq</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E7%B1%BB-struct-sched-class"><span class="toc-number">1.2.2.</span> <span class="toc-text">调度类 - struct sched_class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E7%9A%84%E6%95%B4%E4%BD%93%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">调度的整体运行流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86task-struct%E6%8C%82%E8%BD%BD%E5%9C%A8%E8%BF%90%E8%A1%8C%E9%98%9F%E5%88%97%E4%B8%8A"><span class="toc-number">1.2.4.</span> <span class="toc-text">将task_struct挂载在运行队列上</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/llm-inference/index/" title="LLM 推理优化学习主干道">LLM 推理优化学习主干道</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/01-core-concepts/" title="01 · Core Concepts">01 · Core Concepts</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/02-log-and-pull/" title="02 · 日志抽象与 Push vs Pull">02 · 日志抽象与 Push vs Pull</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/03-storage/" title="03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction">03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/05-replication/" title="05 · Replication / ISR / Leader Election">05 · Replication / ISR / Leader Election</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="Toggle Between Traditional and Simplified Chinese">简</button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll to Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"lang":"zh-CN","input_position":"top","emit_metadata":1,"reactions_enabled":1}
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'fang-tech/fang-tech.github.io',
+      'data-repo-id': 'R_kgDOPJD8XA',
+      'data-category-id': 'DIC_kwDOPJD8XM4CswtE',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="local-search-input"><input placeholder="Search for Posts" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

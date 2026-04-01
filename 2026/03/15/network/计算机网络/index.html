@@ -1,0 +1,1234 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>计算机网络 | Hexo</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TCP&#x2F;IP 四层模型总览   层级 名称 职责 核心协议 数据单元    4 应用层 为用户程序提供网络服务接口，定义数据格式和交互规则 HTTP、DNS、FTP、SSH、SMTP 报文（Message）   3 传输层 端到端通信，通过端口号区分同一主机上的不同进程 TCP、UDP、QUIC 段 &#x2F; 数据报   2 网络层 主机到主机的寻址和路由，跨网络转发 IP、ICMP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络">
+<meta property="og:url" content="https://functional.top/2026/03/15/network/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TCP&#x2F;IP 四层模型总览   层级 名称 职责 核心协议 数据单元    4 应用层 为用户程序提供网络服务接口，定义数据格式和交互规则 HTTP、DNS、FTP、SSH、SMTP 报文（Message）   3 传输层 端到端通信，通过端口号区分同一主机上的不同进程 TCP、UDP、QUIC 段 &#x2F; 数据报   2 网络层 主机到主机的寻址和路由，跨网络转发 IP、ICMP">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg">
+<meta property="article:published_time" content="2026-03-15T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-15T00:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="TCP">
+<meta property="article:tag" content="HTTP">
+<meta property="article:tag" content="QUIC">
+<meta property="article:tag" content="DNS">
+<meta property="article:tag" content="epoll">
+<meta property="article:tag" content="IO多路复用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "计算机网络",
+  "url": "https://functional.top/2026/03/15/network/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/",
+  "image": "https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg",
+  "datePublished": "2026-03-15T00:00:00.000Z",
+  "dateModified": "2026-03-15T00:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "John Doe",
+      "url": "https://functional.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg"><link rel="canonical" href="https://functional.top/2026/03/15/network/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '计算机网络',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">104</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">计算机网络</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-folder"></i><span> 项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Architecture/Distributed-Systems"><i class="fa-fw fa-solid fa-layer-group"></i><span> 分布式架构</span></a></li><li><a class="site-page child" href="/categories/Project/AI-Agentic-System/"><i class="fa-fw fa-solid fa-robot"></i><span> AI Agentic System</span></a></li><li><a class="site-page child" href="/categories/Project/Lottery/"><i class="fa-fw fa-solid fa-ticket"></i><span> Lottery</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-gear"></i><span> 中间件</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Middleware/MySQL/"><i class="fa-fw fa-solid fa-database"></i><span> MySQL</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-laptop-code"></i><span> 语言</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Java/"><i class="fa-fw fa-brands fa-java"></i><span> Java</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa-solid fa-cogs"></i><span> 计算机基础</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Computer-Fundamentals/Algorithm"><i class="fa-fw fas fa-route"></i><span> 算法</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/OS"><i class="fa-fw fas fa-desktop"></i><span> OS</span></a></li><li><a class="site-page child" href="/categories/Computer-Fundamentals/Network"><i class="fa-fw fas fa-network-wired"></i><span> 计算机网络</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">计算机网络</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-03-15T00:00:00.000Z" title="Created 2026-03-15 00:00:00">2026-03-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-15T00:00:00.000Z" title="Updated 2026-03-15 00:00:00">2026-03-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Network/">Network</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">9.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>33mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="TCP-IP-四层模型总览"><a href="#TCP-IP-四层模型总览" class="headerlink" title="TCP&#x2F;IP 四层模型总览"></a>TCP&#x2F;IP 四层模型总览</h2><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>名称</th>
+<th>职责</th>
+<th>核心协议</th>
+<th>数据单元</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>4</strong></td>
+<td>应用层</td>
+<td>为用户程序提供网络服务接口，定义数据格式和交互规则</td>
+<td>HTTP、DNS、FTP、SSH、SMTP</td>
+<td>报文（Message）</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>传输层</td>
+<td>端到端通信，通过端口号区分同一主机上的不同进程</td>
+<td>TCP、UDP、QUIC</td>
+<td>段 &#x2F; 数据报</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>网络层</td>
+<td>主机到主机的寻址和路由，跨网络转发</td>
+<td>IP、ICMP、ARP</td>
+<td>包（Packet）</td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td>网络接口层</td>
+<td>在物理介质上传输比特流，帧封装与硬件寻址</td>
+<td>以太网、WiFi、PPP</td>
+<td>帧（Frame）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>与 OSI 七层的对应</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">TCP/IP 四层          OSI 七层</span><br><span class="line">┌──────────┐    ┌──────────────┐</span><br><span class="line">│  应用层   │ ←→ │ 应用/表示/会话 │</span><br><span class="line">├──────────┤    ├──────────────┤</span><br><span class="line">│  传输层   │ ←→ │   传输层      │</span><br><span class="line">├──────────┤    ├──────────────┤</span><br><span class="line">│  网络层   │ ←→ │   网络层      │</span><br><span class="line">├──────────┤    ├──────────────┤</span><br><span class="line">│ 网络接口层 │ ←→ │ 数据链路/物理  │</span><br><span class="line">└──────────┘    └──────────────┘</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>数据封装与解封装</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">应用层:     [HTTP 数据]</span><br><span class="line">              ↓ + TCP头</span><br><span class="line">传输层:     [TCP头 | HTTP 数据]              ← 段 Segment</span><br><span class="line">              ↓ + IP头</span><br><span class="line">网络层:     [IP头 | TCP头 | HTTP 数据]        ← 包 Packet</span><br><span class="line">              ↓ + 帧头 + FCS</span><br><span class="line">网络接口层: [帧头 | IP头 | TCP头 | HTTP 数据 | FCS]  ← 帧 Frame</span><br></pre></td></tr></table></figure>
+
+<p>每层只关心<strong>本层头部</strong>，对上层数据视为不透明 payload — 分层解耦的核心。接收方向逆过程，逐层剥头部。</p>
+<blockquote>
+<p>每层解决的核心问题</p>
+</blockquote>
+<ul>
+<li><strong>应用层</strong>：定义”说什么” — 消息格式、请求&#x2F;响应语义</li>
+<li><strong>传输层</strong>：解决”哪个进程” — 通过<strong>端口号</strong>区分应用，TCP 可靠有序，UDP 快速轻量</li>
+<li><strong>网络层</strong>：解决”到哪台主机” — 通过 <strong>IP 地址</strong>全局寻址，路由器逐跳转发，IP 是尽力而为（不可靠、无连接）</li>
+<li><strong>网络接口层</strong>：解决”下一跳怎么到” — 通过 <strong>MAC 地址</strong>在局域网内定位物理设备，ARP 把 IP 解析成 MAC</li>
+</ul>
+<h2 id="TCP-UDP"><a href="#TCP-UDP" class="headerlink" title="TCP&#x2F;UDP"></a>TCP&#x2F;UDP</h2><blockquote>
+<p>介绍一下TCP</p>
+</blockquote>
+<p>TCP 是传输层协议，向上层提供<strong>面向连接的、可靠的、基于字节流</strong>的端到端传输服务，具备流量控制与拥塞控制能力。</p>
+<p>TCP 建立连接的过程是三次握手，断开连接的过程是四次挥手。</p>
+<blockquote>
+<p>建立连接的详细 timeline 与双方各自的 action：</p>
+</blockquote>
+<ol>
+<li><strong>服务端准备阶段</strong>：调用 <code>socket()</code> 系统调用，内核创建 <code>struct sock</code> 等内核对象并初始化操作函数与回调。然后调用 <code>bind()</code>，将 socket 绑定到具体的 IP:port。再调用 <code>listen()</code>，申请并初始化半连接队列（哈希表）和全连接队列（链表）。</li>
+<li><strong>客户端准备阶段</strong>：同样调用 <code>socket()</code> 创建内核对象。客户端通常<strong>不调用</strong> <code>bind()</code>，端口由后续 <code>connect()</code> 内部自动选择。</li>
+<li><strong>第一次握手（客户端 → 服务端 SYN）</strong>：客户端调用 <code>connect()</code>，内核将 socket 状态设为 <code>TCP_SYN_SENT</code>，通过 <code>inet_hash_connect()</code> 从 <code>ip_local_port_range</code> 中动态选择一个可用端口，构造并发送 SYN 包，同时启动重传定时器。</li>
+<li><strong>第二次握手（服务端 → 客户端 SYN+ACK）</strong>：服务端网卡收到 SYN 包后，通过 DMA 将数据帧写入内核预分配的 Ring Buffer（环形缓冲区），触发硬中断 → 软中断（NAPI）从 Ring Buffer 取出数据分配 <code>skb</code> → 送入协议栈，由 <code>tcp_v4_rcv</code> → <code>tcp_v4_do_rcv</code> → <code>tcp_rcv_state_process</code> 处理。服务端检查半连接队列和全连接队列是否已满（满则可能丢弃），创建 <code>request_sock</code>，构造并发送 SYN+ACK 响应，将 <code>request_sock</code> 添加到半连接队列，并启动 SYN+ACK 重传定时器。</li>
+<li><strong>第三次握手（客户端 → 服务端 ACK）</strong>：客户端收到 SYN+ACK 后，将 socket 状态设为 <code>TCP_ESTABLISHED</code>，初始化拥塞控制，开启保活定时器，发送 ACK，并清除 <code>connect</code> 时设置的重传定时器。</li>
+<li><strong>服务端完成连接</strong>：服务端收到 ACK 后，在半连接队列中查找对应的 <code>request_sock</code>，创建子 socket，将其从半连接队列移除并加入全连接队列，子 socket 状态设为 <code>TCP_ESTABLISHED</code>。之后服务端调用 <code>accept()</code> 从全连接队列中取出一个已建立的连接返回给用户进程。</li>
+<li><strong>accept() 阻塞机制</strong>：<code>accept()</code> 默认阻塞。若全连接队列为空，内核将进程放入监听 socket 的等待队列，进程状态设为 <code>TASK_INTERRUPTIBLE</code>（可中断睡眠）。当新连接加入全连接队列时，通过 <code>sk_data_ready</code> 回调唤醒进程，进程回到 <code>TASK_RUNNING</code>，从队列头部取出连接返回。</li>
+</ol>
+<blockquote>
+<p>三次握手过程中各阶段创建的内核对象</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>创建的对象</th>
+<th>存放位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>服务端 <code>socket()</code></td>
+<td>监听 socket（完整 <code>struct sock</code>）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>客户端 <code>socket()</code> + <code>connect()</code></td>
+<td>客户端 socket（完整 <code>struct sock</code>）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>收到 SYN（第二次握手）</td>
+<td><code>request_sock</code>（<strong>轻量级</strong>，仅记录握手必要信息）</td>
+<td>半连接队列</td>
+</tr>
+<tr>
+<td>收到 ACK（第三次握手）</td>
+<td>子 socket（完整 <code>struct sock</code>，由 <code>tcp_v4_syn_recv_sock()</code> 创建）</td>
+<td>全连接队列</td>
+</tr>
+<tr>
+<td><code>accept()</code></td>
+<td>从全连接队列取出子 socket</td>
+<td>返回给用户进程</td>
+</tr>
+</tbody></table>
+<p><strong>关键区分</strong>：半连接队列中存放的是轻量的 <code>request_sock</code>，<strong>不是</strong>完整 socket。只有第三次握手完成后才创建完整的子 socket。这样设计是为了<strong>防御 SYN Flood 攻击</strong>——攻击者发大量伪造 SYN 时，轻量的 <code>request_sock</code> 消耗的资源远小于完整 socket，避免服务端内存被迅速耗尽。</p>
+<p><strong>监听 socket 只负责握手，不参与数据通信</strong>。服务端实际用于通信的是第三次握手时创建的子 socket（<code>accept()</code> 返回的 fd）。</p>
+<blockquote>
+<p>服务端与客户端 Socket 编程示例</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ========== 服务端 ==========</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 创建 socket — 内核创建 struct sock，初始化操作函数表</span></span><br><span class="line">    <span class="type">int</span> listen_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. bind — 绑定 IP:port</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">addr</span>;</span></span><br><span class="line">    addr.sin_family = AF_INET;</span><br><span class="line">    addr.sin_port = htons(<span class="number">8080</span>);</span><br><span class="line">    addr.sin_addr.s_addr = htonl(INADDR_ANY);</span><br><span class="line">    bind(listen_fd, (<span class="keyword">struct</span> sockaddr *)&amp;addr, <span class="keyword">sizeof</span>(addr));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. listen — 初始化半连接队列（哈希表）和全连接队列（链表）</span></span><br><span class="line">    <span class="comment">//    128 是 backlog，全连接队列长度 = min(backlog, somaxconn)</span></span><br><span class="line">    listen(listen_fd, <span class="number">128</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 循环 accept — 每次从全连接队列取出一个已完成三次握手的连接</span></span><br><span class="line">    <span class="comment">//    队列为空时阻塞，进程进入 TASK_INTERRUPTIBLE</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">client_addr</span>;</span></span><br><span class="line">        <span class="type">socklen_t</span> len = <span class="keyword">sizeof</span>(client_addr);</span><br><span class="line">        <span class="type">int</span> conn_fd = accept(listen_fd, (<span class="keyword">struct</span> sockaddr *)&amp;client_addr, &amp;len);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. 通信（实际生产中通常 fork 子进程或交给线程池处理）</span></span><br><span class="line">        <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">        read(conn_fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">        write(conn_fd, <span class="string">&quot;OK&quot;</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 6. 关闭该连接 — 触发四次挥手</span></span><br><span class="line">        close(conn_fd);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    close(listen_fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ========== 客户端 ==========</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 创建 socket — 同样创建内核对象</span></span><br><span class="line">    <span class="type">int</span> fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 不调用 bind()，端口由 connect() 内部自动选择</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. connect — 选端口 + 发 SYN + 三次握手</span></span><br><span class="line">    <span class="comment">//    内部：状态 → TCP_SYN_SENT → 选端口 → 发 SYN → 等 SYN+ACK → 发 ACK → ESTABLISHED</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">server_addr</span>;</span></span><br><span class="line">    server_addr.sin_family = AF_INET;</span><br><span class="line">    server_addr.sin_port = htons(<span class="number">8080</span>);</span><br><span class="line">    inet_pton(AF_INET, <span class="string">&quot;127.0.0.1&quot;</span>, &amp;server_addr.sin_addr);</span><br><span class="line">    connect(fd, (<span class="keyword">struct</span> sockaddr *)&amp;server_addr, <span class="keyword">sizeof</span>(server_addr));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 通信</span></span><br><span class="line">    write(fd, <span class="string">&quot;Hello&quot;</span>, <span class="number">5</span>);</span><br><span class="line">    <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">    read(fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 关闭</span></span><br><span class="line">    close(fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>断开连接的过程（四次挥手）</p>
+</blockquote>
+<p>断开连接的双方是对等的，任何一方都可以主动发起关闭。以<strong>客户端主动关闭</strong>为例：</p>
+<ol>
+<li><strong>第一次挥手（客户端 → 服务端 FIN）</strong>：客户端调用 <code>close(fd)</code>，内核进入 <code>tcp_close()</code>。将 socket 状态设为 <code>TCP_FIN_WAIT1</code>，构造并发送 FIN 包（表示”我不再发送数据了”），启动重传定时器。注意 FIN 包会占用一个序列号。</li>
+<li><strong>第二次挥手（服务端 → 客户端 ACK）</strong>：服务端收到 FIN 后，协议栈在 <code>tcp_rcv_state_process</code> 中处理，将服务端 socket 状态设为 <code>TCP_CLOSE_WAIT</code>，<strong>立即回复 ACK</strong>。此时服务端仍可向客户端发送数据（半关闭状态）。客户端收到 ACK 后，状态从 <code>TCP_FIN_WAIT1</code> 变为 <code>TCP_FIN_WAIT2</code>。</li>
+<li><strong>第三次挥手（服务端 → 客户端 FIN）</strong>：服务端处理完剩余数据后，调用 <code>close(fd)</code>，内核同样进入 <code>tcp_close()</code>，将 socket 状态设为 <code>TCP_LAST_ACK</code>，构造并发送 FIN 包，启动重传定时器。</li>
+<li><strong>第四次挥手（客户端 → 服务端 ACK）</strong>：客户端收到 FIN 后，发送 ACK，状态从 <code>TCP_FIN_WAIT2</code> 变为 <strong><code>TIME_WAIT</code></strong>。服务端收到 ACK 后，状态从 <code>TCP_LAST_ACK</code> 变为 <code>TCP_CLOSE</code>，连接彻底释放。</li>
+</ol>
+<blockquote>
+<p>为什么需要 TIME_WAIT？</p>
+</blockquote>
+<p>客户端进入 <code>TIME_WAIT</code> 后<strong>不会立即释放</strong>，而是等待 <strong>2MSL</strong>（Maximum Segment Lifetime，通常 60s）后才进入 <code>TCP_CLOSE</code>。原因：</p>
+<ul>
+<li><strong>确保最后一个 ACK 到达服务端</strong>：如果服务端没收到 ACK，会重传 FIN。客户端在 <code>TIME_WAIT</code> 状态下仍能接收并重新回复 ACK。如果直接关闭，服务端的重传 FIN 会收到 RST，导致异常断连。</li>
+<li><strong>防止旧连接的延迟报文干扰新连接</strong>：等 2MSL 确保网络中属于该连接的所有报文都已过期消亡，不会被后续复用相同四元组的新连接误收。</li>
+</ul>
+<blockquote>
+<p>TIME_WAIT 过多的影响与应对</p>
+</blockquote>
+<p><code>TIME_WAIT</code> 状态的 socket 会占用端口和内核内存。高并发短连接场景下（如 HTTP 短连接），大量 <code>TIME_WAIT</code> 可能导致端口耗尽。常见应对：</p>
+<ul>
+<li><strong><code>net.ipv4.tcp_tw_reuse = 1</code></strong>：允许在 <code>TIME_WAIT</code> 状态下复用端口建立新的<strong>出站</strong>连接（依赖 TCP 时间戳判断新旧报文）</li>
+<li><strong>使用长连接</strong>（HTTP Keep-Alive）减少连接建立&#x2F;断开频率</li>
+<li>扩大 <code>ip_local_port_range</code> 范围</li>
+</ul>
+<blockquote>
+<p>四次挥手状态变迁总结</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>客户端状态</th>
+<th>服务端状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>客户端 <code>close()</code> 发 FIN</td>
+<td><code>FIN_WAIT_1</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>服务端收到 FIN 回 ACK</td>
+<td><code>FIN_WAIT_2</code></td>
+<td><code>CLOSE_WAIT</code></td>
+</tr>
+<tr>
+<td>服务端 <code>close()</code> 发 FIN</td>
+<td><code>FIN_WAIT_2</code></td>
+<td><code>LAST_ACK</code></td>
+</tr>
+<tr>
+<td>客户端收到 FIN 回 ACK</td>
+<td><code>TIME_WAIT</code></td>
+<td><code>CLOSE</code></td>
+</tr>
+<tr>
+<td>等待 2MSL</td>
+<td><code>CLOSE</code></td>
+<td>—</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>TCP Keep-Alive（保活机制）</p>
+</blockquote>
+<p>TCP 保活定时器是<strong>内核级别的心跳机制</strong>，用于检测长时间空闲的连接对端是否还存活。</p>
+<p><strong>工作原理</strong>：开启 <code>SO_KEEPALIVE</code> 的一方，在连接空闲一段时间后，发送一个<strong>序列号比期望值小 1 的 ACK 包</strong>（不是空包），对端收到后回复正常 ACK。如果收不到回复，则按间隔重复探测，连续多次无响应后判定对端死亡，内核关闭连接。</p>
+<p><strong>三个内核参数</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tcp_keepalive_time</code></td>
+<td>7200s（2小时）</td>
+<td>连接空闲多久后开始发探测包</td>
+</tr>
+<tr>
+<td><code>tcp_keepalive_intvl</code></td>
+<td>75s</td>
+<td>每次探测之间的间隔</td>
+</tr>
+<tr>
+<td><code>tcp_keepalive_probes</code></td>
+<td>9</td>
+<td>连续多少次探测无响应就判定对端死亡</td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>保活探测<strong>双方都可以开启</strong>，不是只有客户端。实际更常见的是<strong>服务端开启</strong>，用于清理死连接释放资源</li>
+<li>需要应用层显式设置 <code>SO_KEEPALIVE</code> 套接字选项才生效</li>
+<li>默认 2 小时太慢，很多场景需要秒级感知存活（如 RPC、WebSocket），因此<strong>应用层通常自己实现心跳协议</strong>（如每 30s 发 ping&#x2F;pong），比内核 Keep-Alive 更灵活</li>
+</ul>
+<blockquote>
+<p>MSS 与 MTU</p>
+</blockquote>
+<p><strong>MTU（Maximum Transmission Unit）</strong> 是<strong>数据链路层</strong>对单个帧能承载的最大数据量的限制。以太网默认 MTU &#x3D; <strong>1500 字节</strong>（指 IP 包的最大长度，不含以太网帧头 14B 和 FCS 4B）。</p>
+<p><strong>MSS（Maximum Segment Size）</strong> 是<strong>传输层 TCP</strong> 单个报文段能携带的最大<strong>应用数据</strong>长度，不含 TCP 头部和 IP 头部。计算关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MSS = MTU - IP头部(20B) - TCP头部(20B) = 1500 - 20 - 20 = 1460 字节</span><br></pre></td></tr></table></figure>
+
+<p><strong>MSS 协商发生在三次握手期间</strong>：双方在 SYN 和 SYN+ACK 包的 TCP Options 字段中各自携带自己的 MSS 值，通信时取<strong>双方较小值</strong>作为实际 MSS。</p>
+<p><strong>为什么需要 MSS？</strong> 如果 TCP 不限制报文段大小，一个很大的 TCP 段在 IP 层会被分片（IP Fragmentation）。IP 分片的问题：</p>
+<ul>
+<li><strong>任何一个分片丢失，整个 IP 数据报都要重传</strong>，效率极低</li>
+<li>分片和重组消耗路由器&#x2F;主机资源</li>
+<li>中间设备可能有更小的 MTU（路径 MTU），导致二次分片</li>
+</ul>
+<p>MSS 让 TCP 在源端就将数据切成不超过链路 MTU 的大小，<strong>避免 IP 层分片</strong>，提高传输效率。</p>
+<p><strong>常见值</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>MTU</th>
+<th>MSS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>以太网</td>
+<td>1500B</td>
+<td>1460B</td>
+</tr>
+<tr>
+<td>PPPoE（拨号&#x2F;光猫）</td>
+<td>1492B</td>
+<td>1452B</td>
+</tr>
+<tr>
+<td>本地回环（lo）</td>
+<td>65535B</td>
+<td>65495B</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>拥塞控制与流量控制</p>
+</blockquote>
+<p><strong>流量控制</strong>和<strong>拥塞控制</strong>解决的是两个不同层面的问题：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>流量控制</th>
+<th>拥塞控制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>解决什么问题</strong></td>
+<td>发送方发太快，<strong>接收方</strong>来不及处理</td>
+<td>所有发送方合起来发太多，<strong>网络</strong>承载不住</td>
+</tr>
+<tr>
+<td><strong>作用范围</strong></td>
+<td>端到端（发送方 ↔ 接收方）</td>
+<td>全局（发送方 ↔ 网络）</td>
+</tr>
+<tr>
+<td><strong>核心机制</strong></td>
+<td>滑动窗口（接收窗口 rwnd）</td>
+<td>拥塞窗口（cwnd）</td>
+</tr>
+</tbody></table>
+<p><strong>实际发送窗口 &#x3D; min(rwnd, cwnd)</strong>，两者中更小的那个决定发送速率。</p>
+<hr>
+<p><strong>流量控制 — 滑动窗口（rwnd）</strong></p>
+<ul>
+<li>接收方在每个 ACK 中通过 TCP 头部的 <strong>Window 字段</strong>告知发送方自己还能接收多少数据（即 rwnd）</li>
+<li>发送方保证已发送但未确认的数据量不超过 rwnd</li>
+<li>如果接收方缓冲区满了，rwnd &#x3D; 0，发送方停止发送，进入<strong>窗口探测</strong>（Window Probe）：定期发送 1 字节的探测包，等待接收方窗口恢复</li>
+<li>这是一个<strong>端到端的、被动的</strong>速率调节机制</li>
+</ul>
+<hr>
+<p><strong>拥塞控制 — 四个阶段</strong></p>
+<p>拥塞控制的核心变量是 <strong>cwnd</strong>（拥塞窗口）和 <strong>ssthresh</strong>（慢启动阈值）。</p>
+<ol>
+<li><strong>慢启动（Slow Start）</strong>：连接刚建立时 cwnd &#x3D; 1 MSS（或 initcwnd，Linux 默认 10），每收到一个 ACK，cwnd 翻倍（指数增长）。目的是快速探测网络容量。当 cwnd ≥ ssthresh 时，进入拥塞避免。</li>
+<li><strong>拥塞避免（Congestion Avoidance）</strong>：cwnd 每个 RTT 只增加 1 MSS（线性增长），谨慎探测网络极限。持续增长直到检测到丢包。</li>
+<li><strong>快重传（Fast Retransmit）</strong>：发送方收到 <strong>3 个重复 ACK</strong> 时，不等超时定时器，立即重传丢失的报文段。这比等待超时更快地恢复丢包。</li>
+<li><strong>快恢复（Fast Recovery）</strong>：快重传后，ssthresh &#x3D; cwnd &#x2F; 2，cwnd &#x3D; ssthresh + 3 MSS，然后进入拥塞避免（线性增长）。<strong>不回到慢启动</strong>，因为收到重复 ACK 说明网络还能传数据，没有严重拥塞。</li>
+</ol>
+<p><strong>超时重传（RTO Timeout）</strong> 的处理更激进：ssthresh &#x3D; cwnd &#x2F; 2，cwnd <strong>直接重置为 1 MSS</strong>，回到慢启动。因为超时意味着网络可能严重拥塞。</p>
+<hr>
+<p><strong>拥塞控制算法演进</strong></p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Reno</strong></td>
+<td>经典四阶段（慢启动 + 拥塞避免 + 快重传 + 快恢复）</td>
+</tr>
+<tr>
+<td><strong>Cubic</strong></td>
+<td>Linux 默认算法，cwnd 增长函数是三次方曲线，对高带宽长延迟（BDP 大）网络更友好</td>
+</tr>
+<tr>
+<td><strong>BBR</strong></td>
+<td>Google 提出，不依赖丢包信号，而是主动探测瓶颈带宽和最小 RTT，适合高丢包率和长肥管道场景</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>RTO 计算 — Jacobson 算法</strong></p>
+<p>RTO（Retransmission Timeout）决定”等多久没收到 ACK 就判定丢包”，与拥塞控制（决定”发多快”）是<strong>独立的两个机制</strong>。RTO 直接基于 RTT 采样计算（RFC 6298）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SRTT    = (1 - α) × SRTT + α × RTT_sample          // 平滑 RTT，α = 1/8</span><br><span class="line">RTTVAR  = (1 - β) × RTTVAR + β × |SRTT - RTT_sample|  // RTT 偏差，β = 1/4</span><br><span class="line">RTO     = SRTT + 4 × RTTVAR                          // 重传超时</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>RTT 波动大 → RTTVAR 大 → RTO 长，避免误判丢包</li>
+<li>RTT 稳定 → RTTVAR 小 → RTO 短，快速检测真正的丢包</li>
+<li>RTO 有下限（通常 200ms）和上限（通常 120s），防止极端值</li>
+<li>连续超时重传时，RTO <strong>指数退避</strong>（每次翻倍），直到收到有效 ACK 才恢复正常计算</li>
+</ul>
+<blockquote>
+<p>TCP与UDP 优缺点对比</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>TCP</th>
+<th>UDP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>连接</strong></td>
+<td>面向连接，需三次握手建立、四次挥手断开</td>
+<td>无连接，直接发送</td>
+</tr>
+<tr>
+<td><strong>可靠性</strong></td>
+<td>可靠传输（确认、重传、序列号、校验和）</td>
+<td>不可靠，尽力而为，不保证到达和顺序</td>
+</tr>
+<tr>
+<td><strong>有序性</strong></td>
+<td>保证有序交付（通过序列号重排）</td>
+<td>不保证顺序</td>
+</tr>
+<tr>
+<td><strong>流量控制</strong></td>
+<td>有（滑动窗口）</td>
+<td>无</td>
+</tr>
+<tr>
+<td><strong>拥塞控制</strong></td>
+<td>有（慢启动、拥塞避免、快重传、快恢复）</td>
+<td>无</td>
+</tr>
+<tr>
+<td><strong>传输方式</strong></td>
+<td>字节流（无边界，应用层需自行分包）</td>
+<td>数据报（保留消息边界，一次 send 对应一次 recv）</td>
+</tr>
+<tr>
+<td><strong>头部开销</strong></td>
+<td>最小 20B（含序列号、确认号、窗口等）</td>
+<td>固定 8B（源端口、目的端口、长度、校验和）</td>
+</tr>
+<tr>
+<td><strong>通信模式</strong></td>
+<td>一对一（点对点）</td>
+<td>一对一、一对多（广播&#x2F;组播）</td>
+</tr>
+<tr>
+<td><strong>速度</strong></td>
+<td>较慢（连接建立 + 确认重传开销）</td>
+<td>快（无连接、无确认）</td>
+</tr>
+<tr>
+<td><strong>资源消耗</strong></td>
+<td>高（维护连接状态、缓冲区、定时器）</td>
+<td>低</td>
+</tr>
+</tbody></table>
+<p><strong>TCP 适用场景</strong>：需要可靠传输的场景 — HTTP&#x2F;HTTPS、FTP、SSH、数据库连接、邮件（SMTP&#x2F;IMAP）</p>
+<p><strong>UDP 适用场景</strong>：对实时性要求高、允许少量丢包的场景 — DNS 查询、视频&#x2F;语音通话（RTP）、直播、游戏状态同步、QUIC（基于 UDP 实现的可靠传输协议）</p>
+<p><strong>核心取舍</strong>：TCP 用复杂机制换可靠性，UDP 用简单性换速度。实际中也可以在 UDP 之上自行实现可靠传输（如 QUIC、KCP），兼得灵活性和性能。</p>
+<h2 id="I-O-多路复用"><a href="#I-O-多路复用" class="headerlink" title="I&#x2F;O 多路复用"></a>I&#x2F;O 多路复用</h2><blockquote>
+<p>从阻塞式 I&#x2F;O 到多路复用</p>
+</blockquote>
+<p>回顾上面服务端代码，<code>accept()</code> 和 <code>read()</code> 都是<strong>阻塞调用</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 阻塞式服务端 — 一次只能处理一个连接</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="type">int</span> conn_fd = accept(listen_fd, ...);  <span class="comment">// 阻塞，等全连接队列非空</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">    read(conn_fd, buf, <span class="keyword">sizeof</span>(buf));       <span class="comment">// 阻塞，等数据到达</span></span><br><span class="line">    write(conn_fd, <span class="string">&quot;OK&quot;</span>, <span class="number">2</span>);</span><br><span class="line">    close(conn_fd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>问题</strong>：模型是串行的 — <code>read()</code> 等待 A 客户端数据时，B 客户端的连接请求被阻塞在 <code>accept()</code>。</p>
+<p><strong>传统解法</strong>：每个连接 fork 子进程或创建线程。但到 C10K（1 万并发）时，线程&#x2F;进程的创建、调度、上下文切换、内存开销（每个线程栈默认 8MB）无法承受。</p>
+<p><strong>I&#x2F;O 多路复用的核心思想</strong>：用<strong>一个线程</strong>同时监控<strong>多个 fd</strong> 的就绪状态，哪个 fd 有事件（可读&#x2F;可写&#x2F;异常）就处理哪个，避免在任何一个 fd 上阻塞等待。”多路”指多个 I&#x2F;O 通道（fd），”复用”指复用同一个线程。</p>
+<blockquote>
+<p>select &#x2F; poll — 早期方案</p>
+</blockquote>
+<p><strong>select</strong>：</p>
+<ul>
+<li>调用 <code>select(nfds, readfds, writefds, exceptfds, timeout)</code>，传入感兴趣的 fd 集合（bitmap）</li>
+<li>内核遍历所有传入的 fd，检查哪些就绪，标记后返回</li>
+<li><strong>缺陷</strong>：<ul>
+<li>fd 集合用 bitmap 实现，默认上限 <strong>1024</strong>（<code>FD_SETSIZE</code>）</li>
+<li>每次调用都要把 fd 集合从用户态<strong>拷贝到内核态</strong></li>
+<li>内核每次都要<strong>线性遍历</strong>所有 fd，O(n)</li>
+<li>返回后用户态还要再遍历一遍才知道哪个 fd 就绪</li>
+</ul>
+</li>
+</ul>
+<p><strong>poll</strong>：</p>
+<ul>
+<li>用 <code>struct pollfd</code> 数组替代 bitmap，<strong>去掉了 1024 限制</strong></li>
+<li>但其他问题不变：每次拷贝、每次线性遍历、O(n)</li>
+</ul>
+<blockquote>
+<p>epoll — Linux 高性能方案</p>
+</blockquote>
+<p>epoll 是 Linux 2.6 引入的 I&#x2F;O 多路复用机制，解决了 select&#x2F;poll 的所有性能瓶颈。</p>
+<p><strong>三个系统调用</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 创建 epoll 实例，返回 epoll fd</span></span><br><span class="line"><span class="type">int</span> epfd = epoll_create1(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 注册/修改/删除要监控的 fd 及其关注的事件</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span> <span class="title">ev</span>;</span></span><br><span class="line">ev.events = EPOLLIN;    <span class="comment">// 关注可读事件</span></span><br><span class="line">ev.data.fd = conn_fd;</span><br><span class="line">epoll_ctl(epfd, EPOLL_CTL_ADD, conn_fd, &amp;ev);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 等待事件就绪，返回就绪的 fd 列表</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span> <span class="title">events</span>[<span class="title">MAX_EVENTS</span>];</span></span><br><span class="line"><span class="type">int</span> n = epoll_wait(epfd, events, MAX_EVENTS, timeout_ms);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    <span class="comment">// events[i].data.fd 就绪，直接处理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>内核实现原理</strong>：</p>
+<ol>
+<li><p><strong><code>epoll_create1()</code></strong>：内核创建 <code>eventpoll</code> 结构体，包含：</p>
+<ul>
+<li><strong>红黑树（<code>rbr</code>）</strong>：存储所有被监控的 fd（<code>epitem</code> 节点），增删查 O(log n)</li>
+<li><strong>就绪链表（<code>rdllist</code>）</strong>：存储已就绪的 fd</li>
+</ul>
+</li>
+<li><p><strong><code>epoll_ctl(ADD)</code></strong>：在红黑树中插入 <code>epitem</code> 节点，同时向该 fd 对应的设备驱动（如 socket 的等待队列）<strong>注册回调函数</strong>。当 fd 就绪时（如数据到达触发 <code>sk_data_ready</code>），回调将对应 <code>epitem</code> 加入就绪链表</p>
+</li>
+<li><p><strong><code>epoll_wait()</code></strong>：检查就绪链表是否为空。非空则直接返回就绪事件列表；为空则阻塞，直到有回调将 <code>epitem</code> 加入就绪链表后唤醒</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">eventpoll 结构体</span><br><span class="line">┌──────────────────────────────────────────────────┐</span><br><span class="line">│                                                  │</span><br><span class="line">│  红黑树 (rbr)             就绪链表 (rdllist)       │</span><br><span class="line">│  ┌────────┐                                      │</span><br><span class="line">│  │ epitem │──────┐                               │</span><br><span class="line">│  │ fd=3   │      │     ┌────────┐  ┌────────┐    │</span><br><span class="line">│  ├────────┤      │     │ epitem │→ │ epitem │    │</span><br><span class="line">│  │ epitem │      │     │ fd=5   │  │ fd=8   │    │</span><br><span class="line">│  │ fd=5   │──────┘     └────────┘  └────────┘    │</span><br><span class="line">│  ├────────┤                  ↑                    │</span><br><span class="line">│  │ epitem │      回调触发时加入就绪链表              │</span><br><span class="line">│  │ fd=8   │                                      │</span><br><span class="line">│  └────────┘                                      │</span><br><span class="line">│                                                  │</span><br><span class="line">│  epoll_wait() 只需检查 rdllist                    │</span><br><span class="line">└──────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么 epoll 高效</strong>：</p>
+<ul>
+<li><code>epoll_ctl</code> 只在增删 fd 时调用一次，不需要每次 wait 都重新传入 fd 集合 → <strong>无重复拷贝</strong></li>
+<li>fd 就绪通过回调<strong>主动上报</strong>到就绪链表，不需要遍历所有 fd → <strong>无线性扫描</strong></li>
+<li><code>epoll_wait</code> 只返回就绪的 fd，用户态不需要遍历所有监控的 fd → <strong>精准通知</strong></li>
+</ul>
+<blockquote>
+<p>水平触发（LT）与边缘触发（ET）</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>水平触发（Level-Triggered，默认）</th>
+<th>边缘触发（Edge-Triggered）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>触发条件</strong></td>
+<td>fd 处于就绪状态就<strong>持续通知</strong></td>
+<td>fd 从非就绪变为就绪时通知<strong>一次</strong></td>
+</tr>
+<tr>
+<td><strong>行为</strong></td>
+<td>缓冲区有数据未读完 → 下次 <code>epoll_wait</code> 仍然返回该 fd</td>
+<td>缓冲区有数据未读完 → 下次 <code>epoll_wait</code> <strong>不再返回</strong>，直到有新数据到达</td>
+</tr>
+<tr>
+<td><strong>编程要求</strong></td>
+<td>简单，可以分多次读</td>
+<td>必须一次性读完（循环 read 直到 <code>EAGAIN</code>），且 fd 必须设为<strong>非阻塞</strong></td>
+</tr>
+<tr>
+<td><strong>性能</strong></td>
+<td>可能多次通知同一个 fd，有一定开销</td>
+<td>通知次数少，适合高性能场景</td>
+</tr>
+</tbody></table>
+<p><strong>ET 模式的典型写法</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ET 模式下必须非阻塞 + 循环读完</span></span><br><span class="line">ev.events = EPOLLIN | EPOLLET;      <span class="comment">// 边缘触发</span></span><br><span class="line">fcntl(fd, F_SETFL, O_NONBLOCK);     <span class="comment">// 必须非阻塞</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 事件处理</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="type">ssize_t</span> n = read(fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">-1</span> &amp;&amp; errno == EAGAIN) <span class="keyword">break</span>;  <span class="comment">// 读完了</span></span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) &#123; close(fd); <span class="keyword">break</span>; &#125;       <span class="comment">// 对端关闭</span></span><br><span class="line">    process(buf, n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么 ET 必须非阻塞？</strong> 如果用阻塞 fd + 循环读，读完最后一块数据后 <code>read()</code> 会阻塞等待新数据，而不是返回 <code>EAGAIN</code>，导致整个事件循环卡死。</p>
+<blockquote>
+<p>epoll 典型使用模式 — Reactor</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> epfd = epoll_create1(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听 socket 注册到 epoll</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span> <span class="title">ev</span>;</span></span><br><span class="line">ev.events = EPOLLIN;</span><br><span class="line">ev.data.fd = listen_fd;</span><br><span class="line">epoll_ctl(epfd, EPOLL_CTL_ADD, listen_fd, &amp;ev);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span> <span class="title">events</span>[1024];</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="type">int</span> n = epoll_wait(epfd, events, <span class="number">1024</span>, <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (events[i].data.fd == listen_fd) &#123;</span><br><span class="line">            <span class="comment">// 监听 socket 可读 → 有新连接</span></span><br><span class="line">            <span class="type">int</span> conn_fd = accept(listen_fd, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">            fcntl(conn_fd, F_SETFL, O_NONBLOCK);</span><br><span class="line">            ev.events = EPOLLIN | EPOLLET;</span><br><span class="line">            ev.data.fd = conn_fd;</span><br><span class="line">            epoll_ctl(epfd, EPOLL_CTL_ADD, conn_fd, &amp;ev);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 连接 socket 可读 → 有数据到达</span></span><br><span class="line">            handle_read(events[i].data.fd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这就是 <strong>Reactor 模式</strong>：主循环只负责事件分发，具体 I&#x2F;O 操作交给事件处理函数。Nginx、Redis（单线程模型）、Netty 都基于此模式。</p>
+<blockquote>
+<p>阻塞 I&#x2F;O vs select vs poll vs epoll 对比</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>阻塞 I&#x2F;O</th>
+<th>select</th>
+<th>poll</th>
+<th>epoll</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>并发模型</strong></td>
+<td>一连接一线程</td>
+<td>单线程多 fd</td>
+<td>单线程多 fd</td>
+<td>单线程多 fd</td>
+</tr>
+<tr>
+<td><strong>fd 上限</strong></td>
+<td>受线程数限制</td>
+<td>1024（FD_SETSIZE）</td>
+<td>无硬限制</td>
+<td>无硬限制</td>
+</tr>
+<tr>
+<td><strong>fd 传递</strong></td>
+<td>—</td>
+<td>每次调用拷贝到内核</td>
+<td>每次调用拷贝到内核</td>
+<td><code>epoll_ctl</code> 注册一次</td>
+</tr>
+<tr>
+<td><strong>就绪检测</strong></td>
+<td>—</td>
+<td>内核遍历所有 fd O(n)</td>
+<td>内核遍历所有 fd O(n)</td>
+<td>回调驱动，就绪链表</td>
+</tr>
+<tr>
+<td><strong>返回结果</strong></td>
+<td>—</td>
+<td>需遍历找就绪 fd</td>
+<td>需遍历找就绪 fd</td>
+<td>只返回就绪 fd</td>
+</tr>
+<tr>
+<td><strong>触发模式</strong></td>
+<td>—</td>
+<td>LT</td>
+<td>LT</td>
+<td>LT + ET</td>
+</tr>
+<tr>
+<td><strong>适用连接数</strong></td>
+<td>&lt; 几百</td>
+<td>&lt; 千</td>
+<td>&lt; 千</td>
+<td>百万级</td>
+</tr>
+<tr>
+<td><strong>典型应用</strong></td>
+<td>简单工具</td>
+<td>跨平台兼容</td>
+<td>select 的改进替代</td>
+<td>Nginx、Redis、Netty</td>
+</tr>
+</tbody></table>
+<p><strong>面试一句话</strong>：epoll 通过<strong>红黑树</strong>管理 fd、<strong>回调驱动</strong>上报就绪事件、<strong>就绪链表</strong>实现 O(1) 获取，解决了 select&#x2F;poll 的 fd 限制、重复拷贝和线性扫描三大瓶颈，是 Linux 高并发服务器的核心 I&#x2F;O 模型。</p>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><blockquote>
+<p>HTTP 报文结构</p>
+</blockquote>
+<p><strong>请求报文</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">请求行:    方法 URL HTTP版本        例: GET /index.html HTTP/1.1</span><br><span class="line">请求头:    Host: example.com</span><br><span class="line">           Content-Type: application/json</span><br><span class="line">           Connection: keep-alive</span><br><span class="line">           ...</span><br><span class="line">空行:      \r\n</span><br><span class="line">请求体:    (GET 通常无 body，POST/PUT 有)</span><br></pre></td></tr></table></figure>
+
+<p><strong>响应报文</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">状态行:    HTTP版本 状态码 原因短语    例: HTTP/1.1 200 OK</span><br><span class="line">响应头:    Content-Type: text/html</span><br><span class="line">           Content-Length: 1234</span><br><span class="line">           Set-Cookie: ...</span><br><span class="line">           ...</span><br><span class="line">空行:      \r\n</span><br><span class="line">响应体:    (HTML/JSON/二进制等)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>HTTP 常见状态码</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>含义</th>
+<th>常见状态码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1xx</strong></td>
+<td>信息性，请求已接收，继续处理</td>
+<td>100 Continue、101 Switching Protocols</td>
+</tr>
+<tr>
+<td><strong>2xx</strong></td>
+<td>成功</td>
+<td>200 OK、201 Created、204 No Content</td>
+</tr>
+<tr>
+<td><strong>3xx</strong></td>
+<td>重定向，需要进一步操作</td>
+<td>301 永久重定向、302 临时重定向、304 Not Modified</td>
+</tr>
+<tr>
+<td><strong>4xx</strong></td>
+<td>客户端错误</td>
+<td>400 Bad Request、401 Unauthorized、403 Forbidden、404 Not Found、405 Method Not Allowed</td>
+</tr>
+<tr>
+<td><strong>5xx</strong></td>
+<td>服务端错误</td>
+<td>500 Internal Server Error、502 Bad Gateway、503 Service Unavailable、504 Gateway Timeout</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>302 状态码</p>
+</blockquote>
+<p><strong>302 Found（临时重定向）</strong>：服务端告诉客户端”你请求的资源<strong>临时</strong>在另一个 URL”，响应头中包含 <code>Location: &lt;新URL&gt;</code>，浏览器会自动跳转到该 URL。</p>
+<p><strong>与 301 的区别</strong>：</p>
+<ul>
+<li><strong>301 Moved Permanently</strong>：永久重定向，浏览器和搜索引擎会<strong>缓存</strong>这个重定向，后续请求直接访问新 URL</li>
+<li><strong>302 Found</strong>：临时重定向，浏览器<strong>不缓存</strong>，每次仍先访问原 URL，再被重定向</li>
+</ul>
+<p><strong>实际场景</strong>：302 常用于登录跳转（未登录 → 302 → 登录页）、短链接服务、A&#x2F;B 测试等。</p>
+<blockquote>
+<p>没有 Keep-Alive 时 TCP 连接的关闭时机</p>
+</blockquote>
+<p><strong>HTTP&#x2F;1.0（默认短连接）</strong>：每个请求&#x2F;响应完成后，<strong>服务端发送完响应体的最后一个字节后立即 <code>close(fd)</code></strong>，触发四次挥手。每个 HTTP 请求独占一个 TCP 连接的完整生命周期，下一个请求需要重新三次握手。</p>
+<p><strong>HTTP&#x2F;1.1 显式关闭</strong>：如果设置 <code>Connection: close</code>，行为与 HTTP&#x2F;1.0 一样，服务端发完响应后关闭连接。</p>
+<p><strong>接收方如何判断”响应结束”</strong>：</p>
+<ul>
+<li><strong><code>Content-Length</code></strong>：明确告知响应体长度，收满即完成</li>
+<li><strong><code>Transfer-Encoding: chunked</code></strong>：分块传输，收到长度为 0 的 chunk 表示结束</li>
+<li><strong>连接关闭本身</strong>：如果既没有 <code>Content-Length</code> 也没有 chunked，接收方只能靠<strong>收到 FIN</strong> 来判断数据结束。短连接模式下，关闭连接不仅是释放资源，还承担了<strong>标记消息边界</strong>的作用</li>
+</ul>
+<blockquote>
+<p>同浏览器打开同网页两次是否复用 TCP 连接</p>
+</blockquote>
+<p><strong>答案：通常会复用</strong>。</p>
+<p>HTTP&#x2F;1.1 默认开启 <code>Connection: keep-alive</code>（长连接），同一域名下的多个请求会复用同一个 TCP 连接，避免重复三次握手的开销。</p>
+<p><strong>具体行为</strong>：</p>
+<ul>
+<li><strong>HTTP&#x2F;1.1</strong>：浏览器对同一域名通常维护 <strong>6 个并发 TCP 连接</strong>（Chrome 默认），请求在这些连接上排队复用</li>
+<li><strong>HTTP&#x2F;2</strong>：同一域名只需 <strong>1 个 TCP 连接</strong>，通过多路复用（Multiplexing）在单连接上并发传输多个请求&#x2F;响应</li>
+<li>如果连接空闲超过 Keep-Alive 超时时间（服务端配置，如 nginx 默认 75s），连接会被关闭，下次需要重新建连</li>
+</ul>
+<p><strong>如何验证</strong>：</p>
+<ol>
+<li><strong>浏览器 DevTools → Network 面板</strong>：查看 <code>Connection ID</code> 列，相同 ID 表示复用了同一个 TCP 连接</li>
+<li><strong><code>chrome://net-internals/#sockets</code></strong>：查看活跃的 socket 连接池</li>
+<li><strong>抓包（Wireshark&#x2F;tcpdump）</strong>：观察两次 HTTP 请求是否在同一个四元组的 TCP 连接上进行，没有额外的三次握手</li>
+</ol>
+<blockquote>
+<p>HTTP&#x2F;2 与 HTTP&#x2F;1.1 的区别</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>HTTP&#x2F;1.1</th>
+<th>HTTP&#x2F;2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>传输格式</strong></td>
+<td>文本协议（明文可读）</td>
+<td>二进制帧（Binary Framing），更高效解析</td>
+</tr>
+<tr>
+<td><strong>多路复用</strong></td>
+<td>单连接串行（队头阻塞），靠多个 TCP 连接并发</td>
+<td>单连接多路复用（Stream），多个请求&#x2F;响应并发交错传输</td>
+</tr>
+<tr>
+<td><strong>队头阻塞</strong></td>
+<td>HTTP 层有（前一个请求未完成，后面的排队等待）</td>
+<td>HTTP 层解决了（但 TCP 层队头阻塞仍存在）</td>
+</tr>
+<tr>
+<td><strong>头部压缩</strong></td>
+<td>无，每次携带完整头部（Cookie 可能很大）</td>
+<td>HPACK 算法压缩头部，维护动态&#x2F;静态表，增量传输</td>
+</tr>
+<tr>
+<td><strong>服务端推送</strong></td>
+<td>不支持</td>
+<td>Server Push：服务端可以主动推送客户端可能需要的资源</td>
+</tr>
+<tr>
+<td><strong>连接数</strong></td>
+<td>同域名通常 6 个并发 TCP 连接</td>
+<td>同域名 1 个 TCP 连接即可</td>
+</tr>
+<tr>
+<td><strong>优先级</strong></td>
+<td>无</td>
+<td>支持流优先级和依赖关系</td>
+</tr>
+</tbody></table>
+<p><strong>HTTP&#x2F;2 的核心改进</strong>：在传输层和 HTTP 语义之间加了一层<strong>二进制帧层</strong>，将请求&#x2F;响应拆成帧，帧带有 Stream ID，不同 Stream 的帧可以交错发送，从而在单个 TCP 连接上实现真正的并发。</p>
+<p><strong>HTTP&#x2F;2 未解决的问题</strong>：TCP 层队头阻塞 — 如果某个 TCP 包丢失，即使是不同 Stream 的数据，都要等重传完成后才能交付。这正是 HTTP&#x2F;3（QUIC）要解决的问题。</p>
+<h2 id="QUIC-协议（HTTP-3）"><a href="#QUIC-协议（HTTP-3）" class="headerlink" title="QUIC 协议（HTTP&#x2F;3）"></a>QUIC 协议（HTTP&#x2F;3）</h2><blockquote>
+<p>QUIC 是什么</p>
+</blockquote>
+<p>QUIC（Quick UDP Internet Connections）是 Google 设计、IETF 标准化的传输层协议，<strong>基于 UDP 实现</strong>，是 HTTP&#x2F;3 的底层传输协议。核心目标：解决 TCP + TLS 的固有缺陷。</p>
+<blockquote>
+<p>为什么需要 QUIC — TCP 的三个痛点</p>
+</blockquote>
+<ol>
+<li><strong>TCP 队头阻塞</strong>：TCP 是字节流协议，一个包丢失会阻塞该连接上所有数据的交付，即使其他 Stream 的数据已到达。HTTP&#x2F;2 的多路复用在 TCP 上反而放大了这个问题。</li>
+<li><strong>连接建立慢</strong>：TCP 三次握手（1 RTT）+ TLS 1.2 握手（2 RTT）&#x3D; 首次连接需要 3 RTT。即使 TLS 1.3 优化到 1 RTT，TCP + TLS 1.3 仍需 2 RTT。</li>
+<li><strong>协议僵化</strong>：TCP 实现在操作系统内核中，中间设备（防火墙、NAT）对 TCP 头部有固定预期，升级 TCP 协议极其困难。</li>
+</ol>
+<blockquote>
+<p>QUIC 如何解决这些问题</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>QUIC 的解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>队头阻塞</strong></td>
+<td>每个 Stream 独立可靠传输，一个 Stream 丢包<strong>不影响</strong>其他 Stream。丢包重传粒度是 Stream 级别而非连接级别</td>
+</tr>
+<tr>
+<td><strong>连接建立慢</strong></td>
+<td>首次连接 <strong>1 RTT</strong>（握手 + TLS 合并），恢复连接 <strong>0 RTT</strong>（利用缓存的密钥直接发送数据）</td>
+</tr>
+<tr>
+<td><strong>协议僵化</strong></td>
+<td>基于 UDP，协议逻辑在用户态实现，不受内核和中间设备限制，迭代升级更快</td>
+</tr>
+<tr>
+<td><strong>连接迁移</strong></td>
+<td>用 <strong>Connection ID</strong> 标识连接（而非四元组），WiFi ↔ 4G 切换时 IP 变了连接不断</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>QUIC 的核心特性</p>
+</blockquote>
+<p><strong>1. 内建加密</strong>：QUIC 强制使用 TLS 1.3，不仅加密应用数据，连大部分传输层头部也加密。没有明文传输的选项。</p>
+<p><strong>2. 独立 Stream</strong>：QUIC 的多路复用是在传输层原生实现的（不像 HTTP&#x2F;2 是在应用层），每个 Stream 有独立的序列号和重传机制，真正消除了队头阻塞。</p>
+<p><strong>3. 0-RTT 恢复</strong>：客户端缓存之前协商的密钥参数，恢复连接时可以在握手的同时发送加密数据，实现 0-RTT。代价是 0-RTT 数据存在重放攻击风险，需要服务端做幂等保护。</p>
+<p><strong>4. 连接迁移</strong>：TCP 用四元组（源IP、源端口、目的IP、目的端口）标识连接，IP 变了连接就断了。QUIC 用随机生成的 Connection ID 标识，网络切换时只要 Connection ID 不变，连接就可以无缝迁移。</p>
+<blockquote>
+<p>HTTP&#x2F;1.1 vs HTTP&#x2F;2 vs HTTP&#x2F;3（QUIC）总结</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>HTTP&#x2F;1.1</th>
+<th>HTTP&#x2F;2</th>
+<th>HTTP&#x2F;3（QUIC）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>传输层</strong></td>
+<td>TCP</td>
+<td>TCP</td>
+<td>UDP（QUIC）</td>
+</tr>
+<tr>
+<td><strong>加密</strong></td>
+<td>可选（HTTPS）</td>
+<td>实践中强制 TLS</td>
+<td>强制 TLS 1.3</td>
+</tr>
+<tr>
+<td><strong>多路复用</strong></td>
+<td>无（多连接并发）</td>
+<td>有（单 TCP 连接）</td>
+<td>有（单 QUIC 连接，Stream 级独立）</td>
+</tr>
+<tr>
+<td><strong>队头阻塞</strong></td>
+<td>HTTP 层 + TCP 层</td>
+<td>TCP 层</td>
+<td>无</td>
+</tr>
+<tr>
+<td><strong>连接建立</strong></td>
+<td>TCP 1 RTT + TLS</td>
+<td>TCP 1 RTT + TLS</td>
+<td>首次 1 RTT，恢复 0 RTT</td>
+</tr>
+<tr>
+<td><strong>连接迁移</strong></td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持（Connection ID）</td>
+</tr>
+</tbody></table>
+<h2 id="综合"><a href="#综合" class="headerlink" title="综合"></a>综合</h2><blockquote>
+<p>输入 URL 到渲染内容发生了什么</p>
+</blockquote>
+<h3 id="一、宏观端到端流程"><a href="#一、宏观端到端流程" class="headerlink" title="一、宏观端到端流程"></a>一、宏观端到端流程</h3><ol>
+<li><strong>URL 解析</strong>：浏览器解析输入的 URL，提取协议（https）、域名（example.com）、端口（443）、路径（&#x2F;index.html）。</li>
+<li><strong>DNS 解析</strong>：将域名解析为 IP 地址。查找顺序：浏览器缓存 → 操作系统缓存（&#x2F;etc&#x2F;hosts） → 本地 DNS 服务器（递归查询） → 根域名服务器 → 顶级域名服务器 → 权威域名服务器（迭代查询）。</li>
+<li><strong>TCP 连接建立</strong>：浏览器与目标 IP:port 进行三次握手建立 TCP 连接。</li>
+<li><strong>TLS 握手</strong>（HTTPS）：在 TCP 之上进行 TLS 握手，协商加密算法、交换密钥、验证服务端证书。TLS 1.2 需要额外 2 RTT，TLS 1.3 需要 1 RTT。</li>
+<li><strong>发送 HTTP 请求</strong>：浏览器构造 HTTP 请求报文（请求行 + 请求头 + 请求体），通过已建立的加密连接发送。</li>
+<li><strong>服务端处理</strong>：服务端（Nginx&#x2F;应用服务器）接收请求，可能涉及反向代理、负载均衡、路由分发、业务逻辑处理、数据库查询等，最终构造 HTTP 响应。</li>
+<li><strong>接收 HTTP 响应</strong>：浏览器接收响应报文（状态行 + 响应头 + 响应体）。</li>
+<li><strong>HTML 解析与渲染</strong>：<ul>
+<li>解析 HTML 构建 <strong>DOM 树</strong></li>
+<li>遇到 <code>&lt;link&gt;</code> 加载 CSS，解析构建 <strong>CSSOM 树</strong></li>
+<li>遇到 <code>&lt;script&gt;</code> 加载并执行 JS（可能阻塞 DOM 解析，除非 async&#x2F;defer）</li>
+<li>DOM + CSSOM 合成 <strong>渲染树</strong>（Render Tree）</li>
+<li><strong>布局（Layout）</strong>：计算每个节点的位置和大小</li>
+<li><strong>绘制（Paint）</strong>：将节点绘制成像素</li>
+<li><strong>合成（Composite）</strong>：GPU 合成各图层，最终显示到屏幕</li>
+</ul>
+</li>
+</ol>
+<h3 id="二、微观视角-—-协议栈、中断与-Ring-Buffer"><a href="#二、微观视角-—-协议栈、中断与-Ring-Buffer" class="headerlink" title="二、微观视角 — 协议栈、中断与 Ring Buffer"></a>二、微观视角 — 协议栈、中断与 Ring Buffer</h3><p>以<strong>客户端发出 HTTP 请求、服务端响应数据到达客户端</strong>为例，展开收包链路：</p>
+<p><strong>发送方向（客户端 → 网络）</strong>：</p>
+<ol>
+<li>应用层：浏览器调用 <code>write(fd, data)</code> &#x2F; <code>send()</code>，数据通过系统调用进入内核</li>
+<li>传输层：TCP 将数据按 MSS 分段，加上 TCP 头部（序列号、端口等），放入发送队列</li>
+<li>网络层：加上 IP 头部（源&#x2F;目的 IP），进行路由查找</li>
+<li>数据链路层：加上以太网帧头（源&#x2F;目的 MAC），通过网卡驱动发送</li>
+<li>网卡：将帧转成电信号&#x2F;光信号发到网线上</li>
+</ol>
+<p><strong>接收方向（网络 → 客户端浏览器）</strong>：</p>
+<ol>
+<li><strong>网卡收包</strong>：网卡接收电信号，还原成数据帧</li>
+<li><strong>DMA 写入 Ring Buffer</strong>：网卡通过 DMA 将数据帧<strong>直接写入内核预分配的环形缓冲区</strong>，CPU 不参与数据搬运</li>
+<li><strong>硬中断</strong>：网卡触发硬中断通知 CPU “有数据到了”。硬中断处理极短，只做两件事：记录时间戳 + 调度软中断（NAPI）</li>
+<li><strong>软中断（NET_RX_SOFTIRQ）</strong>：<ul>
+<li>从 Ring Buffer 中取出数据帧，分配 <code>skb</code>（socket buffer）</li>
+<li>送入协议栈处理</li>
+</ul>
+</li>
+<li><strong>网络层</strong>：<code>ip_rcv()</code> 解析 IP 头，校验，根据协议字段分发到传输层</li>
+<li><strong>传输层</strong>：<code>tcp_v4_rcv()</code> 解析 TCP 头，根据四元组找到对应的 socket，将数据放入 socket 的接收队列（<code>sk_receive_queue</code>）</li>
+<li><strong>唤醒进程</strong>：调用 <code>sk_data_ready</code> 回调，唤醒在 <code>read()</code> &#x2F; <code>recv()</code> &#x2F; <code>epoll_wait()</code> 上阻塞的进程</li>
+<li><strong>应用层</strong>：浏览器从内核接收队列读出数据，交给 HTTP 解析器 → HTML 解析器 → 渲染引擎</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────┐</span><br><span class="line">│ 网卡收到帧                                                │</span><br><span class="line">│   ↓ DMA                                                  │</span><br><span class="line">│ Ring Buffer                                              │</span><br><span class="line">│   ↓ 硬中断 → 调度软中断                                    │</span><br><span class="line">│ 软中断（NAPI）取出 skb                                     │</span><br><span class="line">│   ↓                                                      │</span><br><span class="line">│ ip_rcv()  → 网络层解包                                     │</span><br><span class="line">│   ↓                                                      │</span><br><span class="line">│ tcp_v4_rcv() → 传输层解包 → 放入 sk_receive_queue          │</span><br><span class="line">│   ↓ sk_data_ready 唤醒                                    │</span><br><span class="line">│ 用户进程 read() 读取数据                                    │</span><br><span class="line">│   ↓                                                      │</span><br><span class="line">│ 浏览器 HTTP 解析 → DOM/CSSOM → 渲染                        │</span><br><span class="line">└──────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>DNS 的迭代查询和递归查询</p>
+</blockquote>
+<p><strong>递归查询</strong>：客户端问本地 DNS 服务器，本地 DNS <strong>代替客户端</strong>去逐级查询，最终把结果返回给客户端。客户端只发一次请求，等一个最终答案。</p>
+<p><strong>迭代查询</strong>：本地 DNS 服务器向上级服务器查询时，上级服务器<strong>不代替查询</strong>，而是返回”你去问谁”，本地 DNS 再自己去问下一个服务器。</p>
+<p><strong>实际查询流程</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">客户端 ──递归──→ 本地DNS服务器</span><br><span class="line">                    │</span><br><span class="line">                    ├─迭代→ 根域名服务器     → 返回 &quot;.com 找这个TLD服务器&quot;</span><br><span class="line">                    │</span><br><span class="line">                    ├─迭代→ .com TLD服务器    → 返回 &quot;example.com 找这个权威服务器&quot;</span><br><span class="line">                    │</span><br><span class="line">                    ├─迭代→ 权威DNS服务器     → 返回 &quot;example.com → 93.184.216.34&quot;</span><br><span class="line">                    │</span><br><span class="line">                    └──────→ 客户端          ← 最终 IP 地址</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键区分</strong>：</p>
+<ul>
+<li><strong>客户端 → 本地 DNS</strong>：<strong>递归查询</strong>（客户端发一次，本地 DNS 负责到底）</li>
+<li><strong>本地 DNS → 根&#x2F;TLD&#x2F;权威</strong>：<strong>迭代查询</strong>（本地 DNS 自己一轮一轮地问）</li>
+</ul>
+<p><strong>DNS 缓存层级</strong>（越靠前越先命中则越快）：</p>
+<ol>
+<li><strong>浏览器缓存</strong>：Chrome 默认缓存 60s</li>
+<li><strong>操作系统缓存</strong>：如 <code>/etc/hosts</code>、nscd&#x2F;systemd-resolved 缓存</li>
+<li><strong>本地 DNS 服务器缓存</strong>：ISP 提供的 DNS 或 8.8.8.8 等公共 DNS，根据 TTL 缓存</li>
+<li>以上都未命中才走完整的迭代查询链路</li>
+</ol>
+<p><strong>DNS 使用的传输层协议</strong>：</p>
+<ul>
+<li>默认 <strong>UDP 端口 53</strong>（查询报文通常很小，一个 UDP 包搞定）</li>
+<li>如果响应超过 <strong>512 字节</strong>（如区域传输），会切换到 <strong>TCP 端口 53</strong></li>
+<li>现代趋势：DoH（DNS over HTTPS）、DoT（DNS over TLS）提供加密 DNS 查询</li>
+</ul>
+<p><strong>域名层级结构</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">www . example . com .</span><br><span class="line"> │      │      │   │</span><br><span class="line"> │      │      │   └─ 根域（通常省略的最后一个点）</span><br><span class="line"> │      │      └─ 顶级域（TLD，如 .com .cn .org）</span><br><span class="line"> │      └─ 二级域（SLD，如 example）</span><br><span class="line"> └─ 主机名 / 子域名</span><br></pre></td></tr></table></figure>
+
+<p>DNS 查询就是从根开始逐级缩小范围：根 → <code>.com</code> → <code>example.com</code> → <code>www.example.com</code>。</p>
+<p><strong>TTL（Time To Live）</strong>：权威 DNS 返回的记录带 TTL（如 3600s &#x3D; 1小时），各级缓存按 TTL 决定缓存多久。TTL 到期后缓存失效，下次查询需要重新走迭代。TTL 越短 → DNS 变更生效越快，但缓存命中率低、DNS 压力大。</p>
+<p><strong>常见 DNS 记录类型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>记录类型</th>
+<th>含义</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A</strong></td>
+<td>域名 → IPv4 地址</td>
+<td><code>example.com → 93.184.216.34</code></td>
+</tr>
+<tr>
+<td><strong>AAAA</strong></td>
+<td>域名 → IPv6 地址</td>
+<td><code>example.com → 2606:2800:220:1:...</code></td>
+</tr>
+<tr>
+<td><strong>CNAME</strong></td>
+<td>域名 → 另一个域名（别名）</td>
+<td><code>www.example.com → cdn.example.net</code>，还需再查 cdn.example.net 的 A 记录</td>
+</tr>
+<tr>
+<td><strong>MX</strong></td>
+<td>邮件服务器记录</td>
+<td><code>example.com → mail.example.com</code></td>
+</tr>
+<tr>
+<td><strong>NS</strong></td>
+<td>域名的权威 DNS 服务器</td>
+<td><code>example.com → ns1.example.com</code></td>
+</tr>
+<tr>
+<td><strong>TXT</strong></td>
+<td>任意文本（常用于 SPF&#x2F;DKIM 验证）</td>
+<td><code>v=spf1 include:_spf.google.com</code></td>
+</tr>
+</tbody></table>
+<p><strong>CNAME 与 CDN</strong>：CDN 场景大量使用 CNAME。例如 <code>www.example.com</code> CNAME 到 <code>www.example.com.cdn.cloudflare.net</code>，CDN 的 DNS 再根据用户地理位置返回最近的边缘节点 IP。</p>
+<p><strong>DNS 负载均衡</strong>：权威 DNS 可以对同一域名返回不同的 IP（轮询&#x2F;权重&#x2F;地理位置），实现简单的服务端负载均衡。但 DNS 负载均衡粒度粗、生效慢（受 TTL 影响），通常作为第一层分流，配合 Nginx&#x2F;LVS 等做更精细的负载均衡。</p>
+<blockquote>
+<p>正向代理与反向代理</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>正向代理（Forward Proxy）</th>
+<th>反向代理（Reverse Proxy）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>代理谁</strong></td>
+<td>代理<strong>客户端</strong></td>
+<td>代理<strong>服务端</strong></td>
+</tr>
+<tr>
+<td><strong>谁知道它的存在</strong></td>
+<td>客户端知道，服务端不知道</td>
+<td>服务端知道，客户端不知道</td>
+</tr>
+<tr>
+<td><strong>典型场景</strong></td>
+<td>VPN、科学上网、企业出口网关</td>
+<td>Nginx、CDN、API Gateway</td>
+</tr>
+<tr>
+<td><strong>隐藏谁</strong></td>
+<td>隐藏客户端的真实 IP</td>
+<td>隐藏后端服务器的真实 IP 和架构</td>
+</tr>
+</tbody></table>
+<p>一句话区分：正向代理是”客户端的代言人”，反向代理是”服务端的代言人”。</p>
+<p><strong>反向代理工作流程</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">客户端  ──→  反向代理（Nginx）  ──→  后端服务器 A</span><br><span class="line">                                ──→  后端服务器 B</span><br><span class="line">                                ──→  后端服务器 C</span><br></pre></td></tr></table></figure>
+
+<p>客户端访问域名，DNS 指向反向代理的 IP。反向代理接收请求，根据规则转发给后端服务器，后端响应经反向代理返回给客户端。客户端全程不知道后端架构。</p>
+<p><strong>反向代理的核心作用</strong>：</p>
+<ol>
+<li><strong>负载均衡</strong>：把请求分发到多台后端，策略有轮询、加权轮询、IP Hash、最少连接</li>
+<li><strong>隐藏后端架构</strong>：后端用内网 IP，不暴露在公网，提升安全性</li>
+<li><strong>SSL 终结</strong>：反向代理统一处理 TLS 握手和加解密，后端之间走 HTTP 明文，减轻后端压力</li>
+<li><strong>缓存加速</strong>：缓存静态资源直接响应客户端，不必每次打到后端</li>
+<li><strong>请求过滤&#x2F;限流</strong>：在代理层做 WAF、限速、黑白名单</li>
+<li><strong>路径路由</strong>：根据 URL 路径分发到不同后端服务（<code>/api</code> → 应用服务器，<code>/static</code> → 文件服务器）</li>
+</ol>
+<p>CDN 本质上就是分布在全球的反向代理缓存节点。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><a class="post-meta__tags" href="/tags/TCP/">TCP</a><a class="post-meta__tags" href="/tags/HTTP/">HTTP</a><a class="post-meta__tags" href="/tags/QUIC/">QUIC</a><a class="post-meta__tags" href="/tags/DNS/">DNS</a><a class="post-meta__tags" href="/tags/epoll/">epoll</a><a class="post-meta__tags" href="/tags/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">IO多路复用</a></div><div class="post-share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117002.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/30/algorithm/Algorithm-Index/" title="算法刷题目录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">算法刷题目录</div></div><div class="info-2"><div class="info-item-1">题目统计   分类 数量 占比    array 13 15.12%   bfs 2 2.33%   binary_search 3 3.49%   dfs 7 8.14%   dp 17 19.77%   graph 1 1.16%   greedy 1 1.16%   linkedlist 14 16.28%   math 1 1.16%   sliding_window 4 4.65%   stack 1 1.16%   string 10 11.63%   structure 5 5.81%   tree 4 4.65%   two_pointers 3 3.49%   array 121.买卖股票的最佳时机 1262.可被三整除的最大和 16.最接近的三数之和 215.数组中的第k个最大元素 2946.循环移位后的矩阵相似检查 31.下一个排列 41.缺失的第一个正数 54.螺旋矩阵 56.合并区间 560.和为-k-的子数组 704.二分查找 88.合并两个有序数组 912.排序数组  bfs 102.二叉树的层序遍历 103.二叉树的锯齿形层序遍历  binary_...</div></div></div></a><a class="pagination-related" href="/2026/03/11/notes/%E8%BF%9B%E7%A8%8B%E6%A0%91/" title="进程树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">进程树</div></div><div class="info-2"><div class="info-item-1">进程树 返回综述: 进程管理  进程树的数据结构在 task_struct 中, 通过以下字段构成一棵多叉双向树: 12345678struct task_struct __rcu *real_parent; // 生物学父进程: 谁fork了我struct task_struct __rcu *parent;     // 法律上的父进程: 谁来wait我、收我的SIGCHLD// 通常 real_parent == parent, 仅在 ptrace 调试时不同struct list_head children; // 作为父进程时: 子进程链表的哨兵头(入口)struct list_head sibling;  // 作为子进程时: 挂在父进程children链表上的节点struct task_struct *group_leader; // 线程组的主线程(和进程树无关, 是线程组维度的字段)  parent 和 real_parent, 为什么要有两个 parent?这个场景主要是为了应对 debug 即 ptrace 场景, 在不使用调试器的时候, 两者指向的都是父进...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comments</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-IP-%E5%9B%9B%E5%B1%82%E6%A8%A1%E5%9E%8B%E6%80%BB%E8%A7%88"><span class="toc-number">1.</span> <span class="toc-text">TCP&#x2F;IP 四层模型总览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-UDP"><span class="toc-number">2.</span> <span class="toc-text">TCP&#x2F;UDP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">I&#x2F;O 多路复用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP"><span class="toc-number">4.</span> <span class="toc-text">HTTP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#QUIC-%E5%8D%8F%E8%AE%AE%EF%BC%88HTTP-3%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">QUIC 协议（HTTP&#x2F;3）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%BC%E5%90%88"><span class="toc-number">6.</span> <span class="toc-text">综合</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%8F%E8%A7%82%E7%AB%AF%E5%88%B0%E7%AB%AF%E6%B5%81%E7%A8%8B"><span class="toc-number">6.1.</span> <span class="toc-text">一、宏观端到端流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%BE%AE%E8%A7%82%E8%A7%86%E8%A7%92-%E2%80%94-%E5%8D%8F%E8%AE%AE%E6%A0%88%E3%80%81%E4%B8%AD%E6%96%AD%E4%B8%8E-Ring-Buffer"><span class="toc-number">6.2.</span> <span class="toc-text">二、微观视角 — 协议栈、中断与 Ring Buffer</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/llm-inference/index/" title="LLM 推理优化学习主干道">LLM 推理优化学习主干道</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/01-core-concepts/" title="01 · Core Concepts">01 · Core Concepts</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/02-log-and-pull/" title="02 · 日志抽象与 Push vs Pull">02 · 日志抽象与 Push vs Pull</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/03-storage/" title="03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction">03 · 存储设计：Segment、Page Cache、零拷贝、Retention、Log Compaction</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/kafka/notes/05-replication/" title="05 · Replication / ISR / Leader Election">05 · Replication / ISR / Leader Election</a><time datetime="2026-04-01T17:25:44.132Z" title="Created 2026-04-01 17:25:44">2026-04-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/fang-tech/Pic/img/202507101117129.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By John Doe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="Toggle Between Traditional and Simplified Chinese">简</button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll to Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = {"lang":"zh-CN","input_position":"top","emit_metadata":1,"reactions_enabled":1}
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'fang-tech/fang-tech.github.io',
+      'data-repo-id': 'R_kgDOPJD8XA',
+      'data-category-id': 'DIC_kwDOPJD8XM4CswtE',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="local-search-input"><input placeholder="Search for Posts" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
